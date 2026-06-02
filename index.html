@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Võ Tuấn Quốc - Portfolio</title>
+    <title>Võ Tuấn Quốc - Video Portfolio</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,7 +13,7 @@
             <div class="logo">Võ Tuấn Quốc</div>
             <ul class="nav-links">
                 <li><a href="#home" class="active">Trang chủ</a></li>
-                <li><a href="#portfolio">Portfolio</a></li>
+                <li><a href="#videos">Videos</a></li>
                 <li><a href="#contact">Liên hệ</a></li>
             </ul>
         </div>
@@ -23,34 +23,50 @@
     <section id="home" class="hero">
         <div class="container hero-content">
             <h1 class="hero-title">Võ Tuấn Quốc</h1>
-            <p class="hero-subtitle">Video Editor & Designer</p>
-            <p class="hero-description">Tạo nội dung sáng tạo với các video chất lượng cao và thiết kế đẹp mắt</p>
-            <a href="#portfolio" class="btn btn-primary">Xem Tác Phẩm</a>
+            <p class="hero-subtitle">Video Editor & Content Creator</p>
+            <p class="hero-description">Sáng tạo nội dung video chất lượng cao cho Social, TVC, Reel/TikTok, ADS</p>
+            <a href="#videos" class="btn btn-primary">Xem Videos</a>
         </div>
     </section>
 
-    <!-- Portfolio Section -->
-    <section id="portfolio" class="portfolio">
+    <!-- Videos Section -->
+    <section id="videos" class="videos">
         <div class="container">
-            <h2 class="section-title">Portfolio</h2>
+            <h2 class="section-title">Videos Portfolio</h2>
             
-            <!-- Videos Tab -->
+            <!-- Tabs -->
             <div class="tabs">
-                <button class="tab-btn active" data-tab="videos">Videos</button>
-                <button class="tab-btn" data-tab="designs">Thiết Kế</button>
+                <button class="tab-btn active" data-tab="social">Social</button>
+                <button class="tab-btn" data-tab="tvc">TVC</button>
+                <button class="tab-btn" data-tab="reel">Reel/TikTok</button>
+                <button class="tab-btn" data-tab="ads">ADS</button>
             </div>
 
-            <!-- Videos Content -->
-            <div class="tab-content active" id="videos">
-                <div class="portfolio-grid" id="videoGrid">
+            <!-- Social Videos -->
+            <div class="tab-content active" id="social">
+                <div class="videos-grid" id="socialGrid">
                     <!-- Videos will be loaded here -->
                 </div>
             </div>
 
-            <!-- Designs Content -->
-            <div class="tab-content" id="designs">
-                <div class="portfolio-grid" id="designGrid">
-                    <!-- Designs will be loaded here -->
+            <!-- TVC Videos -->
+            <div class="tab-content" id="tvc">
+                <div class="videos-grid" id="tvcGrid">
+                    <!-- Videos will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Reel/TikTok Videos -->
+            <div class="tab-content" id="reel">
+                <div class="videos-grid" id="reelGrid">
+                    <!-- Videos will be loaded here -->
+                </div>
+            </div>
+
+            <!-- ADS Videos -->
+            <div class="tab-content" id="ads">
+                <div class="videos-grid" id="adsGrid">
+                    <!-- Videos will be loaded here -->
                 </div>
             </div>
         </div>
@@ -61,14 +77,9 @@
         <div class="container">
             <h2 class="section-title">Liên Hệ</h2>
             <div class="contact-content">
-                <div class="contact-info">
-                    <h3>Hãy liên hệ với tôi</h3>
-                    <p>Nếu bạn có bất kỳ câu hỏi hoặc yêu cầu, hãy gửi email cho tôi.</p>
-                    <a href="mailto:quoctuanvo209@gmail.com" class="btn btn-primary">Gửi Email</a>
-                </div>
-                <div class="contact-email">
-                    <p><strong>Email:</strong> quoctuanvo209@gmail.com</p>
-                </div>
+                <p>Hãy liên hệ với tôi để hợp tác và tạo những nội dung tuyệt vời</p>
+                <a href="mailto:quoctuanvo209@gmail.com" class="btn btn-primary">Gửi Email</a>
+                <p class="contact-email">📧 quoctuanvo209@gmail.com</p>
             </div>
         </div>
     </section>
@@ -80,7 +91,7 @@
         </div>
     </footer>
 
-    <!-- Modal for Videos -->
+    <!-- Video Modal -->
     <div id="videoModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -88,14 +99,6 @@
                 <source src="" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
-        </div>
-    </div>
-
-    <!-- Modal for Images -->
-    <div id="imageModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <img id="modalImage" src="" alt="">
         </div>
     </div>
 
