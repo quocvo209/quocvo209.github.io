@@ -1,7 +1,7 @@
 // Sample portfolio data - UPDATE WITH YOUR OWN CONTENT
 const portfolioData = {
     videos: [
-        { id: 1, title: 'Video 1', description: 'Mô tả video của bạn', file: 'videos/video1.mp4' },
+        { id: 1, title: 'TỦ LẠNH LG', description: 'Mô tả video của bạn', file: 'videos/TỦ LẠNH LG.mp4' },
         { id: 2, title: 'Video 2', description: 'Mô tả video của bạn', file: 'videos/video2.mp4' },
         { id: 3, title: 'Video 3', description: 'Mô tả video của bạn', file: 'videos/video3.mp4' },
         { id: 4, title: 'Video 4', description: 'Mô tả video của bạn', file: 'videos/video4.mp4' },
