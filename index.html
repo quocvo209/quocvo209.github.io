@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Võ Tuấn Quốc - Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">Võ Tuấn Quốc</div>
+            <ul class="nav-links">
+                <li><a href="#home" class="active">Trang chủ</a></li>
+                <li><a href="#portfolio">Portfolio</a></li>
+                <li><a href="#contact">Liên hệ</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container hero-content">
+            <h1 class="hero-title">Võ Tuấn Quốc</h1>
+            <p class="hero-subtitle">Video Editor & Designer</p>
+            <p class="hero-description">Tạo nội dung sáng tạo với các video chất lượng cao và thiết kế đẹp mắt</p>
+            <a href="#portfolio" class="btn btn-primary">Xem Tác Phẩm</a>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="portfolio">
+        <div class="container">
+            <h2 class="section-title">Portfolio</h2>
+            
+            <!-- Videos Tab -->
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="videos">Videos</button>
+                <button class="tab-btn" data-tab="designs">Thiết Kế</button>
+            </div>
+
+            <!-- Videos Content -->
+            <div class="tab-content active" id="videos">
+                <div class="portfolio-grid" id="videoGrid">
+                    <!-- Videos will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Designs Content -->
+            <div class="tab-content" id="designs">
+                <div class="portfolio-grid" id="designGrid">
+                    <!-- Designs will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">Liên Hệ</h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>Hãy liên hệ với tôi</h3>
+                    <p>Nếu bạn có bất kỳ câu hỏi hoặc yêu cầu, hãy gửi email cho tôi.</p>
+                    <a href="mailto:quoctuanvo209@gmail.com" class="btn btn-primary">Gửi Email</a>
+                </div>
+                <div class="contact-email">
+                    <p><strong>Email:</strong> quoctuanvo209@gmail.com</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Võ Tuấn Quốc. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Modal for Videos -->
+    <div id="videoModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <video id="modalVideo" width="100%" controls>
+                <source src="" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+
+    <!-- Modal for Images -->
+    <div id="imageModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <img id="modalImage" src="" alt="">
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
