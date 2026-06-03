@@ -1,143 +1,114 @@
-// Smooth scroll for navigation
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({ behavior: 'smooth' });
-        }
-    });
-});
+const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+const mobileMenu = document.getElementById('mobile-menu');
 
-// Update active nav link on scroll
-window.addEventListener('scroll', () => {
-    const sections = document.querySelectorAll('section');
-    const navLinks = document.querySelectorAll('.nav-link');
-    
-    let current = '';
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.clientHeight;
-        if (scrollY >= sectionTop - 200) {
-            current = section.getAttribute('id');
-        }
-    });
-    
-    navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href') === `#${current}`) {
-            link.classList.add('active');
-        }
-    });
-});
-
-// Modal functionality
-const modal = document.getElementById('videoModal');
-const modalVideo = document.getElementById('modalVideo');
-const closeBtn = document.querySelector('.close');
-
-// Open modal
-function openVideoModal(videoSrc) {
-    modalVideo.src = videoSrc;
-    modal.style.display = 'block';
-    document.body.style.overflow = 'hidden';
-}
-
-// Close modal
-function closeModal() {
-    modal.style.display = 'none';
-    modalVideo.src = '';
-    document.body.style.overflow = 'auto';
-}
-
-closeBtn.addEventListener('click', closeModal);
-
-window.addEventListener('click', (e) => {
-    if (e.target === modal) {
-        closeModal();
+mobileMenuBtn.addEventListener('click', () => {
+    mobileMenu.classList.toggle('hidden');
+    const icon = mobileMenuBtn.querySelector('i');
+    if (mobileMenu.classList.contains('hidden')) {
+        icon.className = 'fa-solid fa-bars-staggered text-2xl';
+    } else {
+        icon.className = 'fa-solid fa-xmark text-2xl';
     }
 });
 
-// Keyboard close modal
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.style.display === 'block') {
-        closeModal();
+// Tự động đóng menu khi chọn một mục điều hướng
+const mobileLinks = document.querySelectorAll('.mobile-link');
+mobileLinks.forEach(link => {
+    link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+        mobileMenuBtn.querySelector('i').className = 'fa-solid fa-bars-staggered text-2xl';
+    });
+});
+
+
+// 2. LẬP TRÌNH ĐÓNG / MỞ TRÌNH XEM VIDEO (VIDEO LIGHTBOX MODAL)
+const videoModal = document.getElementById('video-modal');
+const videoModalContainer = document.getElementById('video-modal-container');
+const videoIframe = document.getElementById('modal-video-iframe');
+
+function openVideoModal(videoUrl) {
+    // Tự động thêm autoplay khi người dùng click vào xem
+    const autoplayUrl = videoUrl.includes('?') ? `${videoUrl}&autoplay=1` : `${videoUrl}?autoplay=1`;
+    videoIframe.src = autoplayUrl;
+    videoModal.classList.remove('hidden');
+    
+    // Tạo hiệu ứng mờ nền mượt mà
+    setTimeout(() => {
+        videoModal.classList.remove('opacity-0');
+        videoModalContainer.classList.remove('scale-95');
+        videoModalContainer.classList.add('scale-100');
+    }, 50);
+}
+
+function closeVideoModal() {
+    videoModal.classList.add('opacity-0');
+    videoModalContainer.classList.remove('scale-100');
+    videoModalContainer.classList.add('scale-95');
+    
+    // Đợi hoạt ảnh tắt hoàn thành rồi mới tắt iframe để ngắt tiếng video hoàn toàn
+    setTimeout(() => {
+        videoModal.classList.add('hidden');
+        videoIframe.src = ""; 
+    }, 300);
+}
+
+// Cho phép bấm nút ESCAPE trên bàn phím để thoát nhanh video đang xem
+window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !videoModal.classList.contains('hidden')) {
+        closeVideoModal();
     }
 });
 
-// Video categories and loading (optional - for future video loading)
-const videoFolders = {
-    social: 'videos/social',
-    tvc: 'videos/tvc',
-    reel: 'videos/reel',
-    ads: 'videos/ads'
+
+// 3. HIỆU ỨNG TĂNG SỐ SỐ LIỆU TỰ ĐỘNG (STATS COUNT UP ON SCROLL)
+const counters = document.querySelectorAll('[data-val]');
+const observerOptions = {
+    root: null,
+    threshold: 0.1,
+    rootMargin: '0px'
 };
 
-// Load videos from GitHub if structure exists
-async function loadVideos() {
-    try {
-        const categories = ['social', 'tvc', 'reel', 'ads'];
-        
-        for (const category of categories) {
-            const videos = await getVideosFromFolder(category);
-            // Optionally display them
+const counterObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const counter = entry.target;
+            const targetVal = parseInt(counter.getAttribute('data-val'), 10);
+            let currentVal = 0;
+            
+            const increment = Math.ceil(targetVal / 50);
+            const speed = 20; // tốc độ tăng số (ms)
+
+            const updateCount = () => {
+                currentVal += increment;
+                if (currentVal >= targetVal) {
+                    counter.innerText = targetVal === 100 ? targetVal + '%' : targetVal + '+';
+                    observer.unobserve(counter);
+                } else {
+                    counter.innerText = currentVal;
+                    setTimeout(updateCount, speed);
+                }
+            };
+            
+            updateCount();
         }
-    } catch (error) {
-        console.log('Videos loading optional feature:', error);
-    }
-}
-
-async function getVideosFromFolder(category) {
-    try {
-        const response = await fetch(
-            `https://api.github.com/repos/quocvo209/quocvo209.github.io/contents/videos/${category}`
-        );
-        
-        if (!response.ok) {
-            return [];
-        }
-        
-        const files = await response.json();
-        return files
-            .filter(file => /\.(mp4|webm|mov)$/i.test(file.name))
-            .map(file => ({
-                name: file.name,
-                url: `videos/${category}/${file.name}`,
-                size: formatFileSize(file.size)
-            }));
-    } catch (error) {
-        return [];
-    }
-}
-
-function formatFileSize(bytes) {
-    if (bytes === 0) return '0 B';
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
-}
-
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', () => {
-    // Add click handlers to work cards
-    const workCards = document.querySelectorAll('.work-card, .category-card');
-    
-    workCards.forEach(card => {
-        card.addEventListener('click', function(e) {
-            // Placeholder for future video modal functionality
-            // openVideoModal('video-url-here');
-        });
     });
-    
-    // Add smooth hover effects
-    const hoverElements = document.querySelectorAll('.media-placeholder, .media-placeholder-large, .media-placeholder-small');
-    hoverElements.forEach(element => {
-        element.addEventListener('click', function() {
-            // Future: open video modal
-        });
-    });
-    
-    // Optional: load videos
-    // loadVideos();
+}, observerOptions);
+
+counters.forEach(counter => {
+    counterObserver.observe(counter);
 });
+
+
+// 4. MÔ PHỎNG PHẢN HỒI GỬI FORM THÀNH CÔNG
+function handleContactSubmit(event) {
+    event.preventDefault();
+    const form = event.target;
+    const successBox = document.getElementById('contact-success');
+    
+    successBox.classList.remove('hidden');
+    form.reset();
+    
+    setTimeout(() => {
+        successBox.classList.add('hidden');
+    }, 6000);
+}
