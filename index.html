@@ -3,70 +3,229 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Võ Tuấn Quốc - Video Portfolio</title>
+    <title>Võ Tuấn Quốc - Video Editor & Motion Designer</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <!-- Navigation -->
     <nav class="navbar">
         <div class="container">
-            <div class="logo">Võ Tuấn Quốc</div>
+            <div class="logo-section">
+                <h2 class="logo">VÕ TUẤN QUỐC</h2>
+                <p class="logo-subtitle">Video Editor & Motion Designer</p>
+            </div>
             <ul class="nav-links">
-                <li><a href="#home" class="active">Trang chủ</a></li>
-                <li><a href="#videos">Videos</a></li>
-                <li><a href="#contact">Liên hệ</a></li>
+                <li><a href="#home" class="nav-link active">HOME</a></li>
+                <li><a href="#about" class="nav-link">ABOUT</a></li>
+                <li><a href="#works" class="nav-link">MV/TVC</a></li>
+                <li><a href="#ads" class="nav-link">ADS</a></li>
+                <li><a href="#social" class="nav-link">SOCIAL</a></li>
+                <li><a href="#reel" class="nav-link">REEL/TIKTOK</a></li>
+                <li><a href="#contact" class="nav-link">CONTACT</a></li>
             </ul>
+            <a href="#contact" class="btn-work">LET'S WORK <span>→</span></a>
         </div>
     </nav>
 
     <!-- Hero Section -->
     <section id="home" class="hero">
-        <div class="container hero-content">
-            <h1 class="hero-title">Võ Tuấn Quốc</h1>
-            <p class="hero-subtitle">Video Editor & Content Creator</p>
-            <p class="hero-description">Sáng tạo nội dung video chất lượng cao cho Social, TVC/MV, Reel/TikTok, ADS</p>
-            <a href="#videos" class="btn btn-primary">Xem Videos</a>
+        <div class="container hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">LET'S TELL<br>STORIES THROUGH <span class="highlight">VIDEO</span></h1>
+                <p class="hero-description">Mình tạo ra những video quảng cáo, social content và TVC giúp thương hiệu bạt bật hơn.</p>
+                
+                <div class="hero-buttons">
+                    <a href="#works" class="btn btn-dark">
+                        <span class="btn-icon">▶</span> XEM SHOWREEL
+                    </a>
+                    <a href="#works" class="btn btn-outline">
+                        XEM PORTFOLIO <span class="btn-icon">↓</span>
+                    </a>
+                </div>
+
+                <div class="scroll-indicator">
+                    SCROLL
+                    <div class="scroll-arrow">↓</div>
+                </div>
+            </div>
+
+            <div class="hero-media">
+                <div class="hero-image-wrapper">
+                    <div class="image-placeholder">
+                        <p>Hình ảnh của bạn</p>
+                        <small>Thay bằng ảnh thực tế</small>
+                    </div>
+                </div>
+                <div class="media-grid">
+                    <div class="media-item"><div class="media-placeholder">Video 1</div></div>
+                    <div class="media-item"><div class="media-placeholder">Video 2</div></div>
+                    <div class="media-item"><div class="media-placeholder">Video 3</div></div>
+                </div>
+            </div>
         </div>
     </section>
 
-    <!-- Videos Section -->
-    <section id="videos" class="videos">
+    <!-- About Me Section -->
+    <section id="about" class="about">
         <div class="container">
-            <h2 class="section-title">Videos Portfolio</h2>
+            <h2 class="section-title">— ABOUT ME</h2>
             
-            <!-- Tabs -->
-            <div class="tabs">
-                <button class="tab-btn active" data-tab="social">Social</button>
-                <button class="tab-btn" data-tab="tvc">TVC/MV</button>
-                <button class="tab-btn" data-tab="reel">Reel/TikTok</button>
-                <button class="tab-btn" data-tab="ads">ADS</button>
-            </div>
+            <div class="about-content">
+                <div class="about-text">
+                    <h3 class="about-name">Võ Tuấn Quốc</h3>
+                    <p class="about-title">Video Editor & Motion Designer</p>
+                    <p class="about-description">
+                        Chuyên dùng video quảng cáo, MV TVC, social media content, motion graphic và color grading. 
+                        Mình luôn tìm tòi những cách mới để kể chuyện qua video và tạo những sản phẩm mà khán giả nhớ đến.
+                    </p>
 
-            <!-- Social Videos -->
-            <div class="tab-content active" id="social">
-                <div class="videos-grid" id="socialGrid">
-                    <!-- Videos will be loaded here -->
+                    <div class="skills-grid">
+                        <div class="skill-item">
+                            <div class="skill-icon">🎥</div>
+                            <p>Premiere Pro</p>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-icon">✨</div>
+                            <p>After Effects</p>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-icon">🎨</div>
+                            <p>Photoshop</p>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-icon">🎬</div>
+                            <p>DaVinci Resolve</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="about-stats">
+                    <div class="stat-box">
+                        <div class="stat-icon">📅</div>
+                        <div class="stat-number">50+</div>
+                        <div class="stat-label">Dự án hoàn thành</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-number">30+</div>
+                        <div class="stat-label">Khách hàng</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon">⭐</div>
+                        <div class="stat-number">5+</div>
+                        <div class="stat-label">Năm kinh nghiệm</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon">💯</div>
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Tần tảm từ lòng tâm</div>
+                    </div>
                 </div>
             </div>
+        </div>
+    </section>
 
-            <!-- TVC Videos -->
-            <div class="tab-content" id="tvc">
-                <div class="videos-grid" id="tvcGrid">
-                    <!-- Videos will be loaded here -->
-                </div>
+    <!-- Featured Works Section -->
+    <section id="works" class="featured-works">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">FEATURED WORKS</h2>
+                <a href="#portfolio" class="view-all">XEM TẤT CẢ DỰ ÁN <span>→</span></a>
             </div>
 
-            <!-- Reel/TikTok Videos -->
-            <div class="tab-content" id="reel">
-                <div class="videos-grid" id="reelGrid">
-                    <!-- Videos will be loaded here -->
+            <div class="works-grid">
+                <div class="work-card">
+                    <div class="work-media"><div class="media-placeholder-large">LG OLED evo</div></div>
+                    <div class="work-info">
+                        <h4>LG OLED evo</h4>
+                        <p class="work-category">TVC</p>
+                    </div>
+                </div>
+                <div class="work-card">
+                    <div class="work-media"><div class="media-placeholder-large">Panasonic</div></div>
+                    <div class="work-info">
+                        <h4>Panasonic Quality Air For Life</h4>
+                        <p class="work-category">TVC</p>
+                    </div>
+                </div>
+                <div class="work-card">
+                    <div class="work-media"><div class="media-placeholder-large">Samsung</div></div>
+                    <div class="work-info">
+                        <h4>Samsung Bespoke AI</h4>
+                        <p class="work-category">TVC</p>
+                    </div>
+                </div>
+                <div class="work-card">
+                    <div class="work-media"><div class="media-placeholder-large">Campaign</div></div>
+                    <div class="work-info">
+                        <h4>Social Campaign Tết 2024</h4>
+                        <p class="work-category">SOCIAL</p>
+                    </div>
                 </div>
             </div>
+        </div>
+    </section>
 
-            <!-- ADS Videos -->
-            <div class="tab-content" id="ads">
-                <div class="videos-grid" id="adsGrid">
-                    <!-- Videos will be loaded here -->
+    <!-- Portfolio Categories Section -->
+    <section id="portfolio" class="portfolio">
+        <div class="container">
+            <h2 class="section-title">PORTFOLIO CATEGORIES</h2>
+
+            <div class="categories-grid">
+                <!-- MV/TVC -->
+                <div class="category-card">
+                    <div class="category-header">
+                        <span class="category-icon">📺</span>
+                        <h3>MV / TVC</h3>
+                    </div>
+                    <p class="category-count">12 Videos</p>
+                    <div class="category-preview">
+                        <div class="preview-item"><div class="media-placeholder-small">Video 1</div></div>
+                        <div class="preview-item"><div class="media-placeholder-small">Video 2</div></div>
+                        <div class="preview-item"><div class="media-placeholder-small">Video 3</div></div>
+                    </div>
+                </div>
+
+                <!-- ADS -->
+                <div class="category-card">
+                    <div class="category-header">
+                        <span class="category-icon">📢</span>
+                        <h3>ADS</h3>
+                    </div>
+                    <p class="category-count">18 Videos</p>
+                    <div class="category-preview">
+                        <div class="preview-item"><div class="media-placeholder-small">Ad 1</div></div>
+                        <div class="preview-item"><div class="media-placeholder-small">Ad 2</div></div>
+                        <div class="preview-item"><div class="media-placeholder-small">Ad 3</div></div>
+                    </div>
+                </div>
+
+                <!-- SOCIAL -->
+                <div class="category-card">
+                    <div class="category-header">
+                        <span class="category-icon">👥</span>
+                        <h3>SOCIAL</h3>
+                    </div>
+                    <p class="category-count">24 Videos</p>
+                    <div class="category-preview">
+                        <div class="preview-item"><div class="media-placeholder-small">Post 1</div></div>
+                        <div class="preview-item"><div class="media-placeholder-small">Post 2</div></div>
+                        <div class="preview-item"><div class="media-placeholder-small">Post 3</div></div>
+                    </div>
+                </div>
+
+                <!-- REEL/TIKTOK -->
+                <div class="category-card">
+                    <div class="category-header">
+                        <span class="category-icon">📱</span>
+                        <h3>REEL / TIKTOK</h3>
+                    </div>
+                    <p class="category-count">17 Videos</p>
+                    <div class="category-preview">
+                        <div class="preview-item"><div class="media-placeholder-small">Reel 1</div></div>
+                        <div class="preview-item"><div class="media-placeholder-small">Reel 2</div></div>
+                        <div class="preview-item"><div class="media-placeholder-small">Reel 3</div></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -75,11 +234,45 @@
     <!-- Contact Section -->
     <section id="contact" class="contact">
         <div class="container">
-            <h2 class="section-title">Liên Hệ</h2>
-            <div class="contact-content">
-                <p>Hãy liên hệ với tôi để hợp tác và tạo những nội dung tuyệt vời</p>
-                <a href="mailto:quoctuanvo209@gmail.com" class="btn btn-primary">Gửi Email</a>
-                <p class="contact-email">📧 quoctuanvo209@gmail.com</p>
+            <div class="contact-wrapper">
+                <div class="contact-content">
+                    <h2 class="contact-title">Let's work<br>together!</h2>
+                    <p class="contact-description">Nếu bạn muốn tạo ra một video đặc biệt hoặc cần sự giúp đỡ trong dự án, hãy liên hệ với mình ngay!</p>
+                </div>
+
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <span class="contact-icon">✉</span>
+                        <div>
+                            <p class="contact-label">Email</p>
+                            <a href="mailto:tuanquoc.video@gmail.com">tuanquoc.video@gmail.com</a>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-icon">☎</span>
+                        <div>
+                            <p class="contact-label">Phone</p>
+                            <a href="tel:0369123456">0369 123 456</a>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-icon">📍</span>
+                        <div>
+                            <p class="contact-label">Location</p>
+                            <p>Hà Nội, Việt Nam</p>
+                        </div>
+                    </div>
+
+                    <div class="social-links">
+                        <p class="contact-label">Kết nối với mình</p>
+                        <div class="socials">
+                            <a href="#" class="social-link">📱 YouTube</a>
+                            <a href="#" class="social-link">f Facebook</a>
+                            <a href="#" class="social-link">B Be</a>
+                            <a href="#" class="social-link">♪ TikTok</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
