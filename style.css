@@ -1,23 +1,223 @@
-.portfolio{
-    padding:120px 8%;
-    background:#f6efe6;
+/* =========================
+   RESET
+========================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
 
-.section-heading{
-    text-align:center;
-    margin-bottom:60px;
+html{
+    scroll-behavior:smooth;
 }
 
-.section-heading span{
-    color:#b88655;
-    letter-spacing:3px;
-    font-size:12px;
+body{
+    font-family:'Inter',sans-serif;
+    background:#F6EFE6;
+    color:#2B2118;
+    overflow-x:hidden;
 }
 
-.section-heading h2{
-    font-size:56px;
+/* =========================
+   GLOBAL
+========================= */
+
+.container{
+    width:90%;
+    max-width:1200px;
+    margin:auto;
+}
+
+section{
+    padding:120px 0;
+}
+
+a{
+    text-decoration:none;
+}
+
+/* =========================
+   COLORS
+========================= */
+
+:root{
+    --bg:#F6EFE6;
+    --card:#FFF9F2;
+    --brown:#6B4A2F;
+    --gold:#B88655;
+    --text:#2B2118;
+    --border:#E8DCCD;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.header{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    z-index:999;
+    backdrop-filter:blur(12px);
+    background:rgba(246,239,230,.85);
+    border-bottom:1px solid rgba(0,0,0,.05);
+}
+
+.header .container{
+    height:80px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.logo{
+    font-size:14px;
+    font-weight:700;
+    letter-spacing:2px;
+}
+
+nav{
+    display:flex;
+    gap:40px;
+}
+
+nav a{
+    color:var(--text);
+    font-size:14px;
+    transition:.3s;
+}
+
+nav a:hover{
+    color:var(--gold);
+}
+
+/* =========================
+   HERO
+========================= */
+
+.hero{
+    min-height:100vh;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:80px;
+    align-items:center;
+    width:90%;
+    max-width:1200px;
+    margin:auto;
+}
+
+.tag{
+    display:inline-block;
+    margin-bottom:20px;
+    color:var(--gold);
+    font-size:13px;
+    letter-spacing:2px;
+}
+
+.hero h1{
+    font-size:72px;
+    line-height:1;
+    margin-bottom:24px;
+}
+
+.hero p{
+    max-width:500px;
+    line-height:1.8;
+    color:#665C54;
+    margin-bottom:40px;
+}
+
+.btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:16px 32px;
+    border-radius:999px;
+    background:var(--brown);
+    color:white;
+    transition:.3s;
+}
+
+.btn:hover{
+    transform:translateY(-3px);
+}
+
+.hero-right video{
+    width:100%;
+    border-radius:28px;
+    object-fit:cover;
+    box-shadow:0 30px 60px rgba(0,0,0,.12);
+}
+
+/* =========================
+   ABOUT
+========================= */
+
+.about-grid{
+    display:grid;
+    grid-template-columns:420px 1fr;
+    gap:80px;
+    align-items:center;
+}
+
+.about-image img{
+    width:100%;
+    border-radius:30px;
+    display:block;
+}
+
+.about-content span{
+    color:var(--gold);
+    letter-spacing:2px;
+    font-size:13px;
+}
+
+.about-content h2{
     margin-top:15px;
-    color:#2e241b;
+    font-size:52px;
+}
+
+.about-content h3{
+    margin-top:10px;
+    color:var(--brown);
+    font-weight:500;
+}
+
+.about-content p{
+    margin-top:30px;
+    max-width:600px;
+    line-height:1.8;
+    color:#665C54;
+}
+
+.skills{
+    margin-top:35px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+}
+
+.skills div{
+    padding:12px 18px;
+    border-radius:999px;
+    background:var(--card);
+    border:1px solid var(--border);
+}
+
+/* =========================
+   PORTFOLIO
+========================= */
+
+.portfolio{
+    background:#F2EADF;
+}
+
+.portfolio h2{
+    text-align:center;
+    font-size:60px;
+    margin-bottom:60px;
 }
 
 .portfolio-grid{
@@ -27,31 +227,102 @@
 }
 
 .portfolio-card{
-    background:#fffaf5;
-    border:1px solid #e7dccc;
-    border-radius:24px;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:30px;
     padding:40px;
-    text-decoration:none;
-    transition:.4s;
+    transition:.35s;
+    color:var(--text);
 }
 
 .portfolio-card:hover{
     transform:translateY(-10px);
+    box-shadow:0 20px 50px rgba(0,0,0,.08);
 }
 
-.portfolio-number{
+.portfolio-card span{
+    color:var(--gold);
     font-size:14px;
-    color:#b88655;
-    margin-bottom:25px;
 }
 
 .portfolio-card h3{
-    font-size:32px;
-    color:#2e241b;
-    margin-bottom:15px;
+    margin-top:20px;
+    font-size:34px;
 }
 
 .portfolio-card p{
-    color:#6c6258;
-    line-height:1.7;
+    margin-top:16px;
+    line-height:1.8;
+    color:#665C54;
+}
+
+/* =========================
+   CONTACT
+========================= */
+
+.contact{
+    text-align:center;
+}
+
+.contact h2{
+    font-size:64px;
+    margin-bottom:25px;
+}
+
+.contact p{
+    color:#665C54;
+    font-size:18px;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:992px){
+
+    .hero{
+        grid-template-columns:1fr;
+        padding-top:140px;
+    }
+
+    .hero h1{
+        font-size:52px;
+    }
+
+    .about-grid{
+        grid-template-columns:1fr;
+    }
+
+    .portfolio-grid{
+        grid-template-columns:1fr;
+    }
+
+    .portfolio h2{
+        font-size:42px;
+    }
+
+    .contact h2{
+        font-size:42px;
+    }
+
+}
+
+@media(max-width:768px){
+
+    nav{
+        display:none;
+    }
+
+    .hero h1{
+        font-size:42px;
+    }
+
+    .about-content h2{
+        font-size:38px;
+    }
+
+    .portfolio-card h3{
+        font-size:28px;
+    }
+
 }
