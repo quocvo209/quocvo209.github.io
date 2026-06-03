@@ -1,209 +1,835 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" class="scroll-smooth">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Võ Tuấn Quốc - Portfolio (Replica)</title>
-<style>
-  /* Cài đặt CSS cơ bản (màu sắc, font chữ từ mẫu) */
-  body {
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Bạn có thể thay bằng font chính xác sau */
-    background-color: #F8F1EA; /* Màu nền ấm giống mẫu */
-    color: #333;
-    line-height: 1.6;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Võ Tuấn Quốc | Video Editor & Motion Designer Portfolio</title>
+    
+    <!-- Tailwind CSS CDN for Utility Classes -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Google Fonts: Plus Jakarta Sans for body, Syne for headings, and Playfair Display for signature style -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400;1,600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            bg: '#FAF5F0',       /* Warm cream background từ ảnh mẫu */
+                            dark: '#261610',     /* Premium deep warm brown/black */
+                            gold: '#D39F63',     /* Elegant gold accent color */
+                            sand: '#EDE4DA',     /* Secondary light-beige color for borders/cards */
+                            muted: '#7A6E67'     /* Soft brown-grey for body text */
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        heading: ['"Syne"', 'sans-serif'],
+                        signature: ['"Playfair Display"', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
 
-  /* Định dạng Container chính */
-  .container {
-    max-width: 1300px;
-    margin: 0 auto;
-    padding: 0 20px;
-  }
+    <style>
+        /* Tùy chỉnh thanh cuộn thanh lịch */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FAF5F0;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D39F63;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #261610;
+        }
 
-  /* --- HEADER STYLES (Header) --- */
-  header {
-    background-color: #fff;
-    padding: 20px 0;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    position: fixed;
-    width: 100%;
-    top: 0;
-    z-index: 1000;
-  }
+        /* Luồng sáng vàng ấm lơ lửng phía sau nền */
+        .bg-blob-1 {
+            background: radial-gradient(circle, rgba(211, 159, 99, 0.15) 0%, rgba(250, 245, 240, 0) 70%);
+        }
+        .bg-blob-2 {
+            background: radial-gradient(circle, rgba(38, 22, 16, 0.05) 0%, rgba(250, 245, 240, 0) 80%);
+        }
 
-  .header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+        /* Hiệu ứng nổi ba chiều nhẹ cho các thẻ b-roll lơ lửng */
+        .perspective-lg {
+            perspective: 1000px;
+        }
+        
+        .floating-card-hover {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .floating-card-hover:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(38, 22, 16, 0.08);
+        }
 
-  .logo {
-    text-transform: uppercase;
-    font-weight: bold;
-    font-size: 1.2rem;
-    color: #000;
-  }
-  .logo span {
-    font-weight: normal;
-    color: #DAA162; /* Màu vàng nâu của text phụ */
-    font-size: 0.9rem;
-    display: block;
-  }
-
-  nav ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    gap: 25px;
-  }
-
-  nav ul li a {
-    text-decoration: none;
-    text-transform: uppercase;
-    color: #555;
-    font-size: 0.85rem;
-    font-weight: 600;
-  }
-  nav ul li a:hover {
-    color: #DAA162;
-  }
-
-  .btn-header {
-    background-color: #3B241C; /* Màu nâu đậm từ mẫu */
-    color: #fff;
-    padding: 10px 25px;
-    border-radius: 20px;
-    text-decoration: none;
-    text-transform: uppercase;
-    font-size: 0.8rem;
-    font-weight: bold;
-  }
-
-  /* --- HERO SECTION STYLES (Giới thiệu) --- */
-  .hero-section {
-    padding-top: 150px; /* Bù cho Header cố định */
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 40px;
-  }
-
-  .hero-text {
-    flex: 1;
-  }
-
-  .hero-text h1 {
-    font-size: 3rem;
-    font-weight: 800;
-    color: #3B241C;
-    line-height: 1.2;
-    margin-bottom: 15px;
-  }
-  .hero-text h1 span {
-    color: #DAA162; /* Highlight màu vàng */
-  }
-
-  .hero-text p {
-    font-size: 1.1rem;
-    color: #666;
-    margin-bottom: 30px;
-  }
-
-  .hero-buttons {
-    display: flex;
-    gap: 20px;
-  }
-
-  .btn-primary {
-    background-color: #3B241C;
-    color: #fff;
-    padding: 12px 30px;
-    border-radius: 25px;
-    text-decoration: none;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .btn-secondary {
-    background-color: #E3D9CD;
-    color: #3B241C;
-    padding: 12px 30px;
-    border-radius: 25px;
-    text-decoration: none;
-    font-weight: bold;
-  }
-
-  .hero-image {
-    flex: 1.2;
-    position: relative;
-    /* Giả lập hình ảnh background */
-    width: 100%;
-    height: 400px;
-    background-image: url('placeholder_showreel.jpg'); /* Thay bằng ảnh thực */
-    background-size: cover;
-    background-position: center;
-    border-radius: 15px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-  }
-  
-  .play-button {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 70px;
-    height: 70px;
-    background-color: rgba(255,255,255,0.7);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #DAA162;
-    font-size: 2rem;
-    cursor: pointer;
-  }
-
-</style>
+        /* Hiệu ứng phóng to mượt mà của danh mục ảnh nhỏ */
+        .sub-thumb {
+            transition: all 0.3s ease;
+        }
+        .sub-thumb:hover {
+            transform: scale(1.05);
+            filter: brightness(1.1);
+        }
+    </style>
 </head>
-<body>
+<body class="bg-brand-bg text-brand-dark font-sans overflow-x-hidden antialiased">
 
-<header>
-  <div class="container header-content">
-    <div class="logo">Võ Tuấn Quốc<span>Video Editor & Motion Designer</span></div>
-    <nav>
-      <ul>
-        <li><a href="#">HOME</a></li>
-        <li><a href="#">ABOUT</a></li>
-        <li><a href="#">MV/TVC</a></li>
-        <li><a href="#">ADS</a></li>
-        <li><a href="#">SOCIAL</a></li>
-        <li><a href="#">REEL/TIKTOK</a></li>
-        <li><a href="#">CONTACT</a></li>
-      </ul>
-    </nav>
-    <a href="#" class="btn-header">LET'S WORK &rarr;</a>
-  </div>
-</header>
+    <!-- Cực quang nền tạo chiều sâu ấm áp -->
+    <div class="absolute top-0 right-0 w-[800px] h-[800px] bg-blob-1 pointer-events-none z-0"></div>
+    <div class="absolute top-[1000px] left-0 w-[600px] h-[600px] bg-blob-2 pointer-events-none z-0"></div>
+    <div class="absolute bottom-0 right-0 w-[700px] h-[700px] bg-blob-1 pointer-events-none z-0"></div>
 
-<div class="container">
-  <section class="hero-section">
-    <div class="hero-text">
-      <h1>LET'S TELL<br>STORIES THROUGH<br><span>VIDEO.</span></h1>
-      <p>Mình tạo ra những video quảng cáo, social content và TVC giúp thương hiệu nổi bật hơn.</p>
-      <div class="hero-buttons">
-        <a href="#" class="btn-primary">&rtrif; XEM SHOWREEL</a>
-        <a href="#" class="btn-secondary">XEM PORTFOLIO &darr;</a>
-      </div>
+    <!-- HEADER / NAVIGATION -->
+    <header class="sticky top-0 z-50 backdrop-blur-md bg-brand-bg/85 border-b border-brand-sand/50 transition-all duration-300">
+        <div class="max-w-[1400px] mx-auto px-6 lg:px-12 py-5 flex items-center justify-between">
+            <!-- Khu vực Logo thương hiệu -->
+            <a href="#home" class="group flex flex-col">
+                <span class="font-heading text-lg lg:text-xl tracking-wider uppercase font-extrabold text-brand-dark group-hover:text-brand-gold transition-colors duration-300">
+                    VÕ TUẤN QUỐC
+                </span>
+                <span class="font-signature italic text-xs text-brand-gold font-semibold tracking-wide -mt-1">
+                    Video Editor & Motion Designer
+                </span>
+            </a>
+
+            <!-- Menu điều hướng chính -->
+            <nav class="hidden lg:flex items-center space-x-8">
+                <a href="#home" class="text-xs font-bold tracking-widest text-brand-dark hover:text-brand-gold transition-colors duration-300 relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-brand-gold after:transform after:scale-x-100 after:origin-left transition-transform">HOME</a>
+                <a href="#about" class="text-xs font-bold tracking-widest text-brand-muted hover:text-brand-dark transition-colors duration-300 relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-brand-gold after:transform after:scale-x-0 hover:after:scale-x-100 after:transition-transform duration-300">ABOUT</a>
+                <a href="#featured" class="text-xs font-bold tracking-widest text-brand-muted hover:text-brand-dark transition-colors duration-300 relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-brand-gold after:transform after:scale-x-0 hover:after:scale-x-100 after:transition-transform duration-300">MV/TVC</a>
+                <a href="#featured" class="text-xs font-bold tracking-widest text-brand-muted hover:text-brand-dark transition-colors duration-300 relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-brand-gold after:transform after:scale-x-0 hover:after:scale-x-100 after:transition-transform duration-300">ADS</a>
+                <a href="#categories" class="text-xs font-bold tracking-widest text-brand-muted hover:text-brand-dark transition-colors duration-300 relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-brand-gold after:transform after:scale-x-0 hover:after:scale-x-100 after:transition-transform duration-300">SOCIAL</a>
+                <a href="#categories" class="text-xs font-bold tracking-widest text-brand-muted hover:text-brand-dark transition-colors duration-300 relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-brand-gold after:transform after:scale-x-0 hover:after:scale-x-100 after:transition-transform duration-300">REEL/TIKTOK</a>
+                <a href="#contact" class="text-xs font-bold tracking-widest text-brand-muted hover:text-brand-dark transition-colors duration-300 relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-brand-gold after:transform after:scale-x-0 hover:after:scale-x-100 after:transition-transform duration-300">CONTACT</a>
+            </nav>
+
+            <!-- Nút hành động kêu gọi -->
+            <div class="flex items-center space-x-4">
+                <a href="#contact" class="hidden sm:inline-flex items-center justify-center px-6 py-2.5 bg-brand-dark text-white rounded-full text-xs font-semibold tracking-wider hover:bg-brand-gold hover:text-brand-dark transition-all duration-300 border border-transparent hover:border-brand-gold shadow-lg shadow-brand-dark/10">
+                    LET'S WORK <i class="fa-solid fa-arrow-right ml-2 text-[10px]"></i>
+                </a>
+                
+                <!-- Nút bật menu trên thiết bị di động -->
+                <button id="mobile-menu-btn" class="lg:hidden p-2 text-brand-dark focus:outline-none" aria-label="Toggle mobile menu">
+                    <i class="fa-solid fa-bars-staggered text-2xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Menu kéo thả trên điện thoại di động -->
+        <div id="mobile-menu" class="hidden lg:hidden fixed top-[72px] left-0 w-full bg-brand-bg border-b border-brand-sand shadow-xl z-40 transition-all duration-300">
+            <div class="px-6 py-8 flex flex-col space-y-4">
+                <a href="#home" class="mobile-link text-sm font-bold tracking-widest text-brand-dark">HOME</a>
+                <a href="#about" class="mobile-link text-sm font-bold tracking-widest text-brand-muted">ABOUT</a>
+                <a href="#featured" class="mobile-link text-sm font-bold tracking-widest text-brand-muted">MV/TVC</a>
+                <a href="#featured" class="mobile-link text-sm font-bold tracking-widest text-brand-muted">ADS</a>
+                <a href="#categories" class="mobile-link text-sm font-bold tracking-widest text-brand-muted">SOCIAL</a>
+                <a href="#categories" class="mobile-link text-sm font-bold tracking-widest text-brand-muted">REEL/TIKTOK</a>
+                <a href="#contact" class="mobile-link text-sm font-bold tracking-widest text-brand-muted">CONTACT</a>
+                <a href="#contact" class="inline-flex items-center justify-center w-full py-3 bg-brand-dark text-white rounded-full text-sm font-bold tracking-wider">
+                    LET'S WORK &rarr;
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN BODY PORTFOLIO -->
+    <main class="relative z-10 max-w-[1400px] mx-auto px-6 lg:px-12">
+
+        <!-- HERO SECTION -->
+        <section id="home" class="pt-8 pb-16 lg:py-16 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <!-- Hero bên trái: Tiêu đề lớn và các nút bấm xem dự án -->
+            <div class="lg:col-span-5 flex flex-col space-y-6 lg:pr-4">
+                <div class="inline-flex items-center space-x-2 text-brand-gold font-semibold tracking-widest text-xs uppercase">
+                    <span class="w-8 h-[1px] bg-brand-gold"></span>
+                    <span>CREATIVE VIDEO EDITOR</span>
+                </div>
+                
+                <h1 class="font-heading text-4xl sm:text-5xl lg:text-[54px] leading-[1.1] text-brand-dark font-extrabold tracking-tight">
+                    LET'S TELL<br>STORIES<br>THROUGH <span class="text-brand-gold relative">VIDEO.<span class="absolute bottom-1 left-0 w-full h-[6px] bg-brand-gold/10 -z-10"></span></span>
+                </h1>
+                
+                <p class="text-brand-muted text-sm sm:text-base max-w-md leading-relaxed">
+                    Mình tạo ra những video quảng cáo, social content và TVC độc đáo, sắc nét giúp nâng tầm nhận diện và thúc đẩy giá trị của thương hiệu nổi bật hơn.
+                </p>
+
+                <!-- Bộ đôi nút bấm tương tác theo nguyên mẫu -->
+                <div class="flex flex-wrap gap-4 pt-2">
+                    <button onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ')" class="inline-flex items-center px-6 py-3.5 bg-brand-dark text-white hover:bg-brand-gold hover:text-brand-dark rounded-full font-bold text-xs tracking-wider transition-all duration-300 shadow-md shadow-brand-dark/20 group">
+                        <span class="w-7 h-7 rounded-full bg-white/15 group-hover:bg-brand-dark/10 flex items-center justify-center mr-3 transition-colors">
+                            <i class="fa-solid fa-play text-[10px] text-brand-gold"></i>
+                        </span>
+                        XEM SHOWREEL
+                    </button>
+                    <a href="#featured" class="inline-flex items-center px-6 py-3.5 border border-brand-dark/20 hover:border-brand-gold bg-brand-sand/30 hover:bg-brand-sand text-brand-dark rounded-full font-bold text-xs tracking-wider transition-all duration-300">
+                        XEM PORTFOLIO <i class="fa-solid fa-arrow-down ml-2 text-[10px] animate-bounce"></i>
+                    </a>
+                </div>
+
+                <!-- Thanh chỉ dẫn cuộn xuống cuộn trang tự động -->
+                <div class="hidden lg:flex flex-col items-start space-y-2 pt-10 text-xs font-bold text-brand-muted tracking-widest uppercase">
+                    <span>SCROLL</span>
+                    <span class="w-[1px] h-12 bg-brand-muted/40 relative overflow-hidden">
+                        <span class="absolute top-0 left-0 w-full h-1/2 bg-brand-gold animate-infinite-scroll"></span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Hero bên phải: Màn hình biên tập dựng phim và các khung ảnh B-Roll xếp lơ lửng -->
+            <div class="lg:col-span-7 relative flex justify-center">
+                <!-- Khung chính: Workspace biên tập dựng hình -->
+                <div class="relative w-full max-w-[580px] h-[340px] sm:h-[400px] rounded-2xl overflow-hidden shadow-2xl border border-brand-sand/60 bg-[#120B08] group">
+                    <img src="https://images.unsplash.com/photo-1622737133809-d95047b9e673?auto=format&fit=crop&w=1200&q=80" alt="Video Editing Desk" class="w-full h-full object-cover opacity-85 group-hover:scale-105 transition-transform duration-700">
+                    
+                    <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/85 via-brand-dark/20 to-transparent"></div>
+
+                    <!-- Nút kích hoạt phát Showreel ở giữa màn hình chính -->
+                    <div class="absolute inset-0 flex flex-col items-center justify-center z-10">
+                        <button onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ')" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-brand-bg/95 hover:bg-brand-gold flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-110 group/play cursor-pointer">
+                            <i class="fa-solid fa-play text-xl sm:text-2xl text-brand-gold group-hover/play:text-brand-dark translate-x-[2px] transition-colors"></i>
+                        </button>
+                        <span class="mt-4 text-[10px] sm:text-xs font-extrabold tracking-widest text-white uppercase bg-brand-dark/70 px-4 py-1.5 rounded-full border border-white/10 backdrop-blur-sm">
+                            SHOWREEL <span class="text-brand-gold ml-1">00:32</span>
+                        </span>
+                    </div>
+
+                    <div class="absolute bottom-4 left-4 text-left z-10 pointer-events-none">
+                        <p class="text-xs text-brand-gold font-bold tracking-widest uppercase">EDITING BAY</p>
+                        <p class="text-[10px] text-white/60 tracking-wider">PREMIERE WORKSTATION</p>
+                    </div>
+                </div>
+
+                <!-- Các khung ảnh B-Roll xếp nghiêng lơ lửng (tái hiện giống hình ảnh thiết kế gốc) -->
+                <div class="absolute right-[-15px] sm:right-[-25px] top-[-30px] sm:top-[-40px] flex flex-col space-y-4 z-20 pointer-events-none sm:pointer-events-auto">
+                    <!-- Thẻ 1: Máy ảnh trên gá quay -->
+                    <div class="w-24 h-20 sm:w-36 sm:h-24 rounded-lg overflow-hidden border border-brand-sand shadow-lg rotate-3 hover:rotate-0 hover:scale-110 transition-all duration-300 bg-brand-dark">
+                        <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=400&q=80" alt="B-Roll Camera Set" class="w-full h-full object-cover">
+                    </div>
+                    <!-- Thẻ 2: Monitor quay phim trường -->
+                    <div class="w-24 h-20 sm:w-36 sm:h-24 rounded-lg overflow-hidden border border-brand-sand shadow-lg -rotate-3 hover:rotate-0 hover:scale-110 transition-all duration-300 bg-brand-dark">
+                        <img src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=400&q=80" alt="Behind the Scenes" class="w-full h-full object-cover">
+                    </div>
+                    <!-- Thẻ 3: Ống kính điện ảnh -->
+                    <div class="hidden sm:block w-36 h-24 rounded-lg overflow-hidden border border-brand-sand shadow-lg rotate-6 hover:rotate-0 hover:scale-110 transition-all duration-300 bg-brand-dark">
+                        <img src="https://images.unsplash.com/photo-1617791160536-598cf32026fb?auto=format&fit=crop&w=400&q=80" alt="Cinematic shooting" class="w-full h-full object-cover">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABOUT ME & STATS SECTION -->
+        <section id="about" class="py-16 border-t border-brand-sand/50 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            <!-- Chân dung bên trái và chữ ký bay bổng -->
+            <div class="lg:col-span-5 relative flex justify-center lg:justify-start">
+                <div class="relative w-full max-w-[380px] aspect-[4/5] rounded-[40px] overflow-hidden shadow-2xl border-4 border-white bg-brand-dark group">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80" alt="Võ Tuấn Quốc portrait" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                    
+                    <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/70 via-transparent to-transparent"></div>
+
+                    <!-- Chữ ký viết tay "Quốc" mô phỏng chính xác màu vàng óng -->
+                    <div class="absolute bottom-6 left-6 text-left">
+                        <h3 class="font-signature text-5xl sm:text-6xl text-brand-gold italic font-normal tracking-wide drop-shadow-md select-none">
+                            Quốc
+                        </h3>
+                    </div>
+
+                    <!-- Nút xem clip giới thiệu bản thân nhanh -->
+                    <button onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ')" class="absolute bottom-6 right-6 w-12 h-12 rounded-full bg-white/20 hover:bg-brand-gold backdrop-blur-md flex items-center justify-center transition-all duration-300 hover:scale-110">
+                        <i class="fa-solid fa-play text-white hover:text-brand-dark text-sm translate-x-[1px]"></i>
+                    </button>
+                </div>
+
+                <!-- Viền trang trí vàng bay bổng dưới ảnh chân dung -->
+                <div class="absolute -z-10 top-6 left-6 w-full max-w-[380px] aspect-[4/5] rounded-[40px] border border-brand-gold/30 pointer-events-none"></div>
+            </div>
+
+            <!-- Giới thiệu bản thân và các logo công cụ biên tập đồ họa -->
+            <div class="lg:col-span-7 flex flex-col space-y-6">
+                <div class="inline-flex items-center space-x-2 text-brand-gold font-semibold tracking-widest text-xs uppercase">
+                    <span class="w-8 h-[1px] bg-brand-gold"></span>
+                    <span>ABOUT ME</span>
+                </div>
+                
+                <div>
+                    <h2 class="font-heading text-3xl sm:text-4xl text-brand-dark font-extrabold">Võ Tuấn Quốc</h2>
+                    <p class="font-signature text-brand-gold text-lg italic mt-1 font-semibold">Video Editor & Motion Designer</p>
+                </div>
+
+                <p class="text-brand-muted text-sm sm:text-base leading-relaxed">
+                    Chuyên dựng video quảng cáo, MV, TVC, social media content, motion graphic và chỉnh màu (color grading). Mình luôn tập trung vào việc kể câu chuyện một cách giàu cảm xúc, nhịp điệu mượt mà, cấu trúc rõ ràng và đạt hiệu quả tiếp thị cao nhất cho thương hiệu của bạn.
+                </p>
+
+                <!-- Software Skills Icons Row - Tạo chuẩn xác các Logo phần mềm bằng CSS cao cấp -->
+                <div class="pt-2">
+                    <p class="text-xs font-bold tracking-widest uppercase text-brand-dark/80 mb-4">SOFTWARE SUITE</p>
+                    <div class="flex flex-wrap gap-4">
+                        <!-- Premiere Badge -->
+                        <div class="flex items-center space-x-3 bg-brand-sand/50 border border-brand-sand px-4 py-2.5 rounded-2xl hover:bg-brand-dark hover:border-brand-dark hover:text-white transition-all duration-300 group">
+                            <span class="w-8 h-8 rounded-lg bg-[#00005C] text-[#1473E6] flex items-center justify-center font-bold text-sm tracking-tighter">Pr</span>
+                            <span class="text-xs font-bold tracking-wide">Premiere Pro</span>
+                        </div>
+                        <!-- After Effects Badge -->
+                        <div class="flex items-center space-x-3 bg-brand-sand/50 border border-brand-sand px-4 py-2.5 rounded-2xl hover:bg-brand-dark hover:border-brand-dark hover:text-white transition-all duration-300 group">
+                            <span class="w-8 h-8 rounded-lg bg-[#00005C] text-[#9999FF] flex items-center justify-center font-bold text-sm tracking-tighter">Ae</span>
+                            <span class="text-xs font-bold tracking-wide">After Effects</span>
+                        </div>
+                        <!-- Photoshop Badge -->
+                        <div class="flex items-center space-x-3 bg-brand-sand/50 border border-brand-sand px-4 py-2.5 rounded-2xl hover:bg-brand-dark hover:border-brand-dark hover:text-white transition-all duration-300 group">
+                            <span class="w-8 h-8 rounded-lg bg-[#001E36] text-[#31A8FF] flex items-center justify-center font-bold text-sm tracking-tighter">Ps</span>
+                            <span class="text-xs font-bold tracking-wide">Photoshop</span>
+                        </div>
+                        <!-- Davinci Resolve Badge -->
+                        <div class="flex items-center space-x-3 bg-brand-sand/50 border border-brand-sand px-4 py-2.5 rounded-2xl hover:bg-brand-dark hover:border-brand-dark hover:text-white transition-all duration-300 group">
+                            <span class="w-8 h-8 rounded-lg bg-gradient-to-tr from-red-500 via-yellow-500 to-blue-500 flex items-center justify-center p-[2px]">
+                                <span class="w-full h-full bg-brand-bg rounded-md flex items-center justify-center"><i class="fa-solid fa-circle-nodes text-brand-dark text-xs"></i></span>
+                            </span>
+                            <span class="text-xs font-bold tracking-wide">DaVinci Resolve</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KEY METRICS GRID STATS (Bám sát layout 4 ô từ hình mẫu gốc) -->
+                <div class="grid grid-cols-2 gap-4 sm:gap-6 pt-6">
+                    <!-- Metric 1 -->
+                    <div class="bg-brand-sand/40 border border-brand-sand/70 rounded-[24px] p-6 flex items-start space-x-4 hover:shadow-lg hover:shadow-brand-dark/5 transition-all duration-300">
+                        <div class="w-10 h-10 rounded-full bg-brand-gold/15 flex items-center justify-center text-brand-gold shrink-0">
+                            <i class="fa-solid fa-clapperboard text-sm"></i>
+                        </div>
+                        <div>
+                            <span class="block text-3xl font-heading font-extrabold text-brand-dark tracking-tight leading-none" data-val="50">0</span>
+                            <span class="block text-xs font-bold text-brand-muted tracking-wide mt-2">Dự án hoàn thành</span>
+                        </div>
+                    </div>
+                    <!-- Metric 2 -->
+                    <div class="bg-brand-sand/40 border border-brand-sand/70 rounded-[24px] p-6 flex items-start space-x-4 hover:shadow-lg hover:shadow-brand-dark/5 transition-all duration-300">
+                        <div class="w-10 h-10 rounded-full bg-brand-gold/15 flex items-center justify-center text-brand-gold shrink-0">
+                            <i class="fa-solid fa-users text-sm"></i>
+                        </div>
+                        <div>
+                            <span class="block text-3xl font-heading font-extrabold text-brand-dark tracking-tight leading-none" data-val="30">0</span>
+                            <span class="block text-xs font-bold text-brand-muted tracking-wide mt-2">Khách hàng</span>
+                        </div>
+                    </div>
+                    <!-- Metric 3 -->
+                    <div class="bg-brand-sand/40 border border-brand-sand/70 rounded-[24px] p-6 flex items-start space-x-4 hover:shadow-lg hover:shadow-brand-dark/5 transition-all duration-300">
+                        <div class="w-10 h-10 rounded-full bg-brand-gold/15 flex items-center justify-center text-brand-gold shrink-0">
+                            <i class="fa-solid fa-calendar-check text-sm"></i>
+                        </div>
+                        <div>
+                            <span class="block text-3xl font-heading font-extrabold text-brand-dark tracking-tight leading-none" data-val="5">0</span>
+                            <span class="block text-xs font-bold text-brand-muted tracking-wide mt-2">Năm kinh nghiệm</span>
+                        </div>
+                    </div>
+                    <!-- Metric 4 -->
+                    <div class="bg-brand-sand/40 border border-brand-sand/70 rounded-[24px] p-6 flex items-start space-x-4 hover:shadow-lg hover:shadow-brand-dark/5 transition-all duration-300">
+                        <div class="w-10 h-10 rounded-full bg-brand-gold/15 flex items-center justify-center text-brand-gold shrink-0">
+                            <i class="fa-solid fa-award text-sm"></i>
+                        </div>
+                        <div>
+                            <span class="block text-3xl font-heading font-extrabold text-brand-dark tracking-tight leading-none" data-val="100">0</span>
+                            <span class="block text-xs font-bold text-brand-muted tracking-wide mt-2">Tận tâm với sản phẩm</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- FEATURED WORKS SECTION -->
+        <section id="featured" class="py-16 border-t border-brand-sand/50">
+            <!-- Header tiêu đề phần -->
+            <div class="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-10">
+                <div class="flex flex-col space-y-2">
+                    <div class="inline-flex items-center space-x-2 text-brand-gold font-semibold tracking-widest text-xs uppercase">
+                        <span class="w-8 h-[1px] bg-brand-gold"></span>
+                        <span>HIGHLIGHTED REELS</span>
+                    </div>
+                    <h2 class="font-heading text-3xl sm:text-4xl text-brand-dark font-extrabold">Featured Works</h2>
+                </div>
+                <a href="#categories" class="inline-flex items-center text-xs font-bold tracking-widest uppercase text-brand-dark hover:text-brand-gold transition-colors duration-300 group">
+                    XEM TẤT CẢ DỰ ÁN <i class="fa-solid fa-arrow-right ml-2 text-[10px] transform group-hover:translate-x-1.5 transition-transform"></i>
+                </a>
+            </div>
+
+            <!-- Khối lưới 4 tác phẩm tiêu biểu (LG, Panasonic, Samsung, Social campaign) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Tác phẩm 1: LG OLED -->
+                <div onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ')" class="floating-card-hover group relative rounded-2xl overflow-hidden aspect-[16/10] bg-brand-dark cursor-pointer border border-brand-sand/50">
+                    <img src="https://images.unsplash.com/photo-1593305841991-05c297ba4575?auto=format&fit=crop&w=600&q=80" alt="LG OLED evo" class="w-full h-full object-cover opacity-80 group-hover:scale-110 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/90 via-brand-dark/30 to-transparent"></div>
+                    
+                    <div class="absolute bottom-5 left-5 right-5 flex items-end justify-between z-10">
+                        <div class="text-left">
+                            <span class="text-[9px] font-extrabold tracking-widest text-brand-gold uppercase">TVC</span>
+                            <h4 class="text-base font-heading font-extrabold text-white leading-tight mt-1">LG OLED evo</h4>
+                        </div>
+                        <span class="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md group-hover:bg-brand-gold group-hover:text-brand-dark flex items-center justify-center text-white transition-all duration-300">
+                            <i class="fa-solid fa-play text-[10px] translate-x-[1px]"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Tác phẩm 2: Panasonic -->
+                <div onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ')" class="floating-card-hover group relative rounded-2xl overflow-hidden aspect-[16/10] bg-brand-dark cursor-pointer border border-brand-sand/50">
+                    <img src="https://images.unsplash.com/photo-1585338114026-3635a77414b4?auto=format&fit=crop&w=600&q=80" alt="Panasonic Quality Air For Life" class="w-full h-full object-cover opacity-80 group-hover:scale-110 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/90 via-brand-dark/30 to-transparent"></div>
+                    
+                    <div class="absolute bottom-5 left-5 right-5 flex items-end justify-between z-10">
+                        <div class="text-left">
+                            <span class="text-[9px] font-extrabold tracking-widest text-brand-gold uppercase">TVC / COMMERCIAL</span>
+                            <h4 class="text-base font-heading font-extrabold text-white leading-tight mt-1">Panasonic Quality Air</h4>
+                        </div>
+                        <span class="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md group-hover:bg-brand-gold group-hover:text-brand-dark flex items-center justify-center text-white transition-all duration-300">
+                            <i class="fa-solid fa-play text-[10px] translate-x-[1px]"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Tác phẩm 3: Samsung -->
+                <div onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ')" class="floating-card-hover group relative rounded-2xl overflow-hidden aspect-[16/10] bg-brand-dark cursor-pointer border border-brand-sand/50">
+                    <img src="https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=600&q=80" alt="Samsung Bespoke AI" class="w-full h-full object-cover opacity-80 group-hover:scale-110 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/90 via-brand-dark/30 to-transparent"></div>
+                    
+                    <div class="absolute bottom-5 left-5 right-5 flex items-end justify-between z-10">
+                        <div class="text-left">
+                            <span class="text-[9px] font-extrabold tracking-widest text-brand-gold uppercase">TVC</span>
+                            <h4 class="text-base font-heading font-extrabold text-white leading-tight mt-1">Samsung Bespoke AI</h4>
+                        </div>
+                        <span class="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md group-hover:bg-brand-gold group-hover:text-brand-dark flex items-center justify-center text-white transition-all duration-300">
+                            <i class="fa-solid fa-play text-[10px] translate-x-[1px]"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Tác phẩm 4: Social Campaign Tết -->
+                <div onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ')" class="floating-card-hover group relative rounded-2xl overflow-hidden aspect-[16/10] bg-brand-dark cursor-pointer border border-brand-sand/50">
+                    <img src="https://images.unsplash.com/photo-1543807535-eceef0bc6599?auto=format&fit=crop&w=600&q=80" alt="Social Campaign Tet" class="w-full h-full object-cover opacity-80 group-hover:scale-110 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/90 via-brand-dark/30 to-transparent"></div>
+                    
+                    <div class="absolute bottom-5 left-5 right-5 flex items-end justify-between z-10">
+                        <div class="text-left">
+                            <span class="text-[9px] font-extrabold tracking-widest text-brand-gold uppercase">SOCIAL SERIES</span>
+                            <h4 class="text-base font-heading font-extrabold text-white leading-tight mt-1">Social Campaign - Tết</h4>
+                        </div>
+                        <span class="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md group-hover:bg-brand-gold group-hover:text-brand-dark flex items-center justify-center text-white transition-all duration-300">
+                            <i class="fa-solid fa-play text-[10px] translate-x-[1px]"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PORTFOLIO CATEGORIES SECTION (Layout nghệ thuật có bộ 3 ảnh phụ nhỏ giống y hệt mẫu) -->
+        <section id="categories" class="py-16 border-t border-brand-sand/50">
+            <div class="flex flex-col space-y-2 mb-10 text-center sm:text-left">
+                <div class="inline-flex items-center justify-center sm:justify-start space-x-2 text-brand-gold font-semibold tracking-widest text-xs uppercase">
+                    <span class="w-8 h-[1px] bg-brand-gold"></span>
+                    <span>PROJECT GENRES</span>
+                </div>
+                <h2 class="font-heading text-3xl sm:text-4xl text-brand-dark font-extrabold">Portfolio Categories</h2>
+            </div>
+
+            <!-- Khối lưới danh mục: Tái hiện chuẩn cấu trúc 1 ảnh lớn + 3 ảnh nhỏ chân trang -->
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
+                
+                <!-- Danh mục 1: MV / TVC -->
+                <div class="bg-brand-sand/30 border border-brand-sand/80 rounded-[32px] p-5 flex flex-col justify-between hover:shadow-2xl hover:shadow-brand-dark/5 hover:-translate-y-1.5 transition-all duration-300">
+                    <div>
+                        <!-- Tiêu đề & Icon thẻ -->
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="w-12 h-12 rounded-full bg-brand-dark text-brand-gold flex items-center justify-center">
+                                <i class="fa-solid fa-music"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-heading font-extrabold text-base leading-tight text-brand-dark">MV / TVC</h4>
+                                <span class="text-xs text-brand-muted font-semibold">12 Videos</span>
+                            </div>
+                        </div>
+
+                        <!-- Khung ảnh chính lớn với Play button -->
+                        <div onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ')" class="relative aspect-[16/10] rounded-2xl overflow-hidden cursor-pointer group mb-4 bg-brand-dark">
+                            <img src="https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?auto=format&fit=crop&w=500&q=80" alt="MV and TVC Reel Cover" class="w-full h-full object-cover opacity-85 group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-brand-dark/25 group-hover:bg-brand-dark/45 transition-colors"></div>
+                            <span class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/95 group-hover:bg-brand-gold flex items-center justify-center shadow-lg transition-colors">
+                                <i class="fa-solid fa-play text-xs text-brand-gold group-hover:text-brand-dark translate-x-[1px]"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Hàng 3 thumbnail phụ nhỏ bên dưới -->
+                    <div class="grid grid-cols-3 gap-2">
+                        <div class="sub-thumb aspect-square rounded-xl overflow-hidden bg-brand-dark cursor-pointer" onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ')">
+                            <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=150&q=80" alt="MV thumb" class="w-full h-full object-cover">
+                        </div>
+                        <div class="sub-thumb aspect-square rounded-xl overflow-hidden bg-brand-dark cursor-pointer" onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ')">
+                            <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=150&q=80" alt="MV thumb" class="w-full h-full object-cover">
+                        </div>
+                        <div class="sub-thumb aspect-square rounded-xl overflow-hidden bg-brand-dark cursor-pointer" onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ')">
+                            <img src="https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?auto=format&fit=crop&w=150&q=80" alt="MV thumb" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Danh mục 2: ADS -->
+                <div class="bg-brand-sand/30 border border-brand-sand/80 rounded-[32px] p-5 flex flex-col justify-between hover:shadow-2xl hover:shadow-brand-dark/5 hover:-translate-y-1.5 transition-all duration-300">
+                    <div>
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="w-12 h-12 rounded-full bg-brand-dark text-brand-gold flex items-center justify-center">
+                                <i class="fa-solid fa-bullhorn"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-heading font-extrabold text-base leading-tight text-brand-dark">ADS</h4>
+                                <span class="text-xs text-brand-muted font-semibold">18 Videos</span>
+                            </div>
+                        </div>
+
+                        <div onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ')" class="relative aspect-[16/10] rounded-2xl overflow-hidden cursor-pointer group mb-4 bg-brand-dark">
+                            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=500&q=80" alt="ADS Cover" class="w-full h-full object-cover opacity-85 group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-brand-dark/25 group-hover:bg-brand-dark/45 transition-colors"></div>
+                            <span class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/95 group-hover:bg-brand-gold flex items-center justify-center shadow-lg transition-colors">
+                                <i class="fa-solid fa-play text-xs text-brand-gold group-hover:text-brand-dark translate-x-[1px]"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2">
+                        <div class="sub-thumb aspect-square rounded-xl overflow-hidden bg-brand-dark cursor-pointer" onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ')">
+                            <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=150&q=80" alt="ADS thumb" class="w-full h-full object-cover">
+                        </div>
+                        <div class="sub-thumb aspect-square rounded-xl overflow-hidden bg-brand-dark cursor-pointer" onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ')">
+                            <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=150&q=80" alt="ADS thumb" class="w-full h-full object-cover">
+                        </div>
+                        <div class="sub-thumb aspect-square rounded-xl overflow-hidden bg-brand-dark cursor-pointer" onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ')">
+                            <img src="https://images.unsplash.com/photo-1553481187-be93c21490a9?auto=format&fit=crop&w=150&q=80" alt="ADS thumb" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Danh mục 3: SOCIAL -->
+                <div class="bg-brand-sand/30 border border-brand-sand/80 rounded-[32px] p-5 flex flex-col justify-between hover:shadow-2xl hover:shadow-brand-dark/5 hover:-translate-y-1.5 transition-all duration-300">
+                    <div>
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="w-12 h-12 rounded-full bg-brand-dark text-brand-gold flex items-center justify-center">
+                                <i class="fa-solid fa-share-nodes"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-heading font-extrabold text-base leading-tight text-brand-dark">SOCIAL</h4>
+                                <span class="text-xs text-brand-muted font-semibold">24 Videos</span>
+                            </div>
+                        </div>
+
+                        <div onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ')" class="relative aspect-[16/10] rounded-2xl overflow-hidden cursor-pointer group mb-4 bg-brand-dark">
+                            <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=500&q=80" alt="Social Cover" class="w-full h-full object-cover opacity-85 group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-brand-dark/25 group-hover:bg-brand-dark/45 transition-colors"></div>
+                            <span class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/95 group-hover:bg-brand-gold flex items-center justify-center shadow-lg transition-colors">
+                                <i class="fa-solid fa-play text-xs text-brand-gold group-hover:text-brand-dark translate-x-[1px]"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2">
+                        <div class="sub-thumb aspect-square rounded-xl overflow-hidden bg-brand-dark cursor-pointer" onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ')">
+                            <img src="https://images.unsplash.com/photo-1562577309-4932fdd64cd1?auto=format&fit=crop&w=150&q=80" alt="social thumb" class="w-full h-full object-cover">
+                        </div>
+                        <div class="sub-thumb aspect-square rounded-xl overflow-hidden bg-brand-dark cursor-pointer" onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ')">
+                            <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=150&q=80" alt="social thumb" class="w-full h-full object-cover">
+                        </div>
+                        <div class="sub-thumb aspect-square rounded-xl overflow-hidden bg-brand-dark cursor-pointer" onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ')">
+                            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=150&q=80" alt="social thumb" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Danh mục 4: REEL / TIKTOK -->
+                <div class="bg-brand-sand/30 border border-brand-sand/80 rounded-[32px] p-5 flex flex-col justify-between hover:shadow-2xl hover:shadow-brand-dark/5 hover:-translate-y-1.5 transition-all duration-300">
+                    <div>
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="w-12 h-12 rounded-full bg-brand-dark text-brand-gold flex items-center justify-center">
+                                <i class="fa-solid fa-mobile-screen-button"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-heading font-extrabold text-base leading-tight text-brand-dark">REEL / TIKTOK</h4>
+                                <span class="text-xs text-brand-muted font-semibold">17 Videos</span>
+                            </div>
+                        </div>
+
+                        <div onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ')" class="relative aspect-[16/10] rounded-2xl overflow-hidden cursor-pointer group mb-4 bg-brand-dark">
+                            <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=500&q=80" alt="Reels Cover" class="w-full h-full object-cover opacity-85 group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-brand-dark/25 group-hover:bg-brand-dark/45 transition-colors"></div>
+                            <span class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/95 group-hover:bg-brand-gold flex items-center justify-center shadow-lg transition-colors">
+                                <i class="fa-solid fa-play text-xs text-brand-gold group-hover:text-brand-dark translate-x-[1px]"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2">
+                        <div class="sub-thumb aspect-square rounded-xl overflow-hidden bg-brand-dark cursor-pointer" onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ')">
+                            <img src="https://images.unsplash.com/photo-1611606063065-ee7946f0787a?auto=format&fit=crop&w=150&q=80" alt="reel thumb" class="w-full h-full object-cover">
+                        </div>
+                        <div class="sub-thumb aspect-square rounded-xl overflow-hidden bg-brand-dark cursor-pointer" onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ')">
+                            <img src="https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?auto=format&fit=crop&w=150&q=80" alt="reel thumb" class="w-full h-full object-cover">
+                        </div>
+                        <div class="sub-thumb aspect-square rounded-xl overflow-hidden bg-brand-dark cursor-pointer" onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ')">
+                            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=150&q=80" alt="reel thumb" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER / "LET'S WORK TOGETHER!" -->
+    <footer id="contact" class="bg-brand-sand/20 border-t border-brand-sand py-16 mt-16 relative overflow-hidden">
+        <div class="max-w-[1400px] mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+            
+            <!-- Chân trang bên trái: Slogan liên hệ hợp tác -->
+            <div class="lg:col-span-5 flex flex-col space-y-6">
+                <div class="flex flex-col space-y-2">
+                    <h2 class="font-heading text-4xl sm:text-5xl text-brand-dark font-extrabold tracking-tight leading-none">
+                        Let's work<br>together!
+                    </h2>
+                    <span class="w-48 h-[3px] bg-brand-gold mt-4 rounded-full"></span>
+                </div>
+                
+                <p class="text-brand-muted text-sm sm:text-base leading-relaxed max-w-sm">
+                    Nếu bạn có dự án cần trao đổi, muốn cải tiến chất lượng hình ảnh, chuyển động hoặc xây dựng nội dung thương hiệu độc đáo, đừng ngần ngại liên hệ với mình nhé!
+                </p>
+
+                <!-- Thư cảm ơn hiển thị khi gửi liên hệ -->
+                <div id="contact-success" class="hidden bg-green-100 text-green-800 p-4 rounded-xl text-xs font-semibold">
+                    Cảm ơn bạn! Thông tin đã gửi thành công, Quốc sẽ liên hệ với bạn sớm nhất.
+                </div>
+
+                <!-- Form gửi thông tin nhanh ngay tại chỗ -->
+                <form id="contact-form" class="flex flex-col space-y-3 max-w-md pt-2" onsubmit="handleContactSubmit(event)">
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="text" placeholder="Tên của bạn *" required class="w-full bg-white border border-brand-sand rounded-xl px-4 py-3 text-xs text-brand-dark placeholder:text-brand-muted/70 focus:outline-none focus:border-brand-gold transition-colors">
+                        <input type="email" placeholder="Email liên hệ *" required class="w-full bg-white border border-brand-sand rounded-xl px-4 py-3 text-xs text-brand-dark placeholder:text-brand-muted/70 focus:outline-none focus:border-brand-gold transition-colors">
+                    </div>
+                    <textarea placeholder="Ý tưởng dự án hoặc tin nhắn ngắn..." rows="3" class="w-full bg-white border border-brand-sand rounded-xl px-4 py-3 text-xs text-brand-dark placeholder:text-brand-muted/70 focus:outline-none focus:border-brand-gold transition-colors resize-none"></textarea>
+                    <button type="submit" class="w-full py-3.5 bg-brand-dark text-white rounded-xl text-xs font-bold tracking-widest uppercase hover:bg-brand-gold hover:text-brand-dark transition-all duration-300">
+                        GỬI TIN NHẮN &nbsp;<i class="fa-solid fa-paper-plane text-[10px]"></i>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Chân trang ở giữa: Chi tiết thông tin liên hệ trực tiếp -->
+            <div class="lg:col-span-4 flex flex-col space-y-8 pt-4 lg:pt-8 lg:pl-6">
+                <!-- Info 1 -->
+                <div class="flex items-center space-x-4 group">
+                    <div class="w-12 h-12 rounded-full border border-brand-sand bg-white flex items-center justify-center text-brand-dark group-hover:bg-brand-gold group-hover:text-brand-dark transition-all duration-300">
+                        <i class="fa-regular fa-envelope text-base"></i>
+                    </div>
+                    <div class="text-left">
+                        <span class="block text-[10px] text-brand-muted uppercase font-bold tracking-widest">EMAIL TRỰC TIẾP</span>
+                        <a href="mailto:tuanquoc.video@gmail.com" class="text-xs sm:text-sm font-bold text-brand-dark hover:text-brand-gold transition-colors">tuanquoc.video@gmail.com</a>
+                    </div>
+                </div>
+
+                <!-- Info 2 -->
+                <div class="flex items-center space-x-4 group">
+                    <div class="w-12 h-12 rounded-full border border-brand-sand bg-white flex items-center justify-center text-brand-dark group-hover:bg-brand-gold group-hover:text-brand-dark transition-all duration-300">
+                        <i class="fa-solid fa-mobile-screen text-base"></i>
+                    </div>
+                    <div class="text-left">
+                        <span class="block text-[10px] text-brand-muted uppercase font-bold tracking-widest">HOTLINE</span>
+                        <a href="tel:0369123456" class="text-xs sm:text-sm font-bold text-brand-dark hover:text-brand-gold transition-colors">0369 123 456</a>
+                    </div>
+                </div>
+
+                <!-- Info 3 -->
+                <div class="flex items-center space-x-4 group">
+                    <div class="w-12 h-12 rounded-full border border-brand-sand bg-white flex items-center justify-center text-brand-dark group-hover:bg-brand-gold group-hover:text-brand-dark transition-all duration-300">
+                        <i class="fa-solid fa-location-dot text-base"></i>
+                    </div>
+                    <div class="text-left">
+                        <span class="block text-[10px] text-brand-muted uppercase font-bold tracking-widest">ĐỊA CHỈ HOẠT ĐỘNG</span>
+                        <span class="text-xs sm:text-sm font-bold text-brand-dark">Hà Nội, Việt Nam</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chân trang bên phải: Mạng xã hội & Monogram viết tắt "QT" -->
+            <div class="lg:col-span-3 flex flex-col items-start lg:items-end justify-between h-full pt-4 lg:pt-8 space-y-12">
+                <div class="flex flex-col items-start lg:items-end space-y-4">
+                    <p class="text-xs font-bold tracking-widest uppercase text-brand-dark">Kết nối với mình</p>
+                    
+                    <div class="flex items-center space-x-3">
+                        <a href="#" aria-label="Youtube" class="w-10 h-10 rounded-full border border-brand-sand bg-white hover:bg-[#FF0000] hover:text-white flex items-center justify-center text-brand-dark transition-all duration-300">
+                            <i class="fa-brands fa-youtube text-sm"></i>
+                        </a>
+                        <a href="#" aria-label="Facebook" class="w-10 h-10 rounded-full border border-brand-sand bg-white hover:bg-[#1877F2] hover:text-white flex items-center justify-center text-brand-dark transition-all duration-300">
+                            <i class="fa-brands fa-facebook-f text-sm"></i>
+                        </a>
+                        <a href="#" aria-label="Behance" class="w-10 h-10 rounded-full border border-brand-sand bg-white hover:bg-[#0057ff] hover:text-white flex items-center justify-center text-brand-dark transition-all duration-300">
+                            <i class="fa-brands fa-behance text-sm"></i>
+                        </a>
+                        <a href="#" aria-label="TikTok" class="w-10 h-10 rounded-full border border-brand-sand bg-white hover:bg-black hover:text-white flex items-center justify-center text-brand-dark transition-all duration-300">
+                            <i class="fa-brands fa-tiktok text-sm"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Logo Monogram viết tắt chữ nghệ thuật ở cuối cùng -->
+                <div class="flex flex-col items-start lg:items-end select-none">
+                    <div class="font-signature text-6xl text-brand-gold italic font-bold leading-none tracking-tighter">
+                        QT
+                    </div>
+                    <p class="text-[9px] text-brand-muted font-bold tracking-widest uppercase mt-2">&copy; 2026 Võ Tuấn Quốc. All rights reserved.</p>
+                </div>
+            </div>
+
+        </div>
+    </footer>
+
+    <!-- STUNNING VIDEO POPUP MODAL (LIGHTBOX) -->
+    <div id="video-modal" class="fixed inset-0 z-50 hidden bg-brand-dark/95 backdrop-blur-md flex items-center justify-center p-4 transition-all duration-300 opacity-0">
+        <!-- Đóng cửa sổ khi bấm ra ngoài -->
+        <div class="absolute inset-0 cursor-pointer" onclick="closeVideoModal()"></div>
+
+        <!-- Khung chứa Video phát trực tuyến -->
+        <div class="relative w-full max-w-[960px] aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/10 scale-95 transition-transform duration-300" id="video-modal-container">
+            <!-- Nút đóng nhanh -->
+            <button onclick="closeVideoModal()" class="absolute top-4 right-4 z-50 w-10 h-10 rounded-full bg-brand-dark/50 hover:bg-brand-gold hover:text-brand-dark text-white flex items-center justify-center transition-all duration-300">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <!-- Khung nhúng video -->
+            <iframe id="modal-video-iframe" class="w-full h-full" src="" title="Video Player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
     </div>
-    <div class="hero-image">
-      <!-- Cảnh nền placeholder -->
-      <div class="play-button">&rtrif;</div>
-    </div>
-  </section>
-</div>
 
+    <!-- CODE JAVASCRIPT CHO CÁC TÍNH NĂNG TƯƠNG TÁC -->
+    <script>
+        // Bật tắt Menu Drawer trên điện thoại di động
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            const icon = mobileMenuBtn.querySelector('i');
+            if (mobileMenu.classList.contains('hidden')) {
+                icon.className = 'fa-solid fa-bars-staggered text-2xl';
+            } else {
+                icon.className = 'fa-solid fa-xmark text-2xl';
+            }
+        });
+
+        // Tự động đóng menu khi bấm vào link điều hướng
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                mobileMenuBtn.querySelector('i').className = 'fa-solid fa-bars-staggered text-2xl';
+            });
+        });
+
+        // Lập trình hiệu ứng đóng/mở hộp thoại phát Video mượt mà
+        const videoModal = document.getElementById('video-modal');
+        const videoModalContainer = document.getElementById('video-modal-container');
+        const videoIframe = document.getElementById('modal-video-iframe');
+
+        function openVideoModal(videoUrl) {
+            // Tự động thêm autoplay để tăng tính chuyên nghiệp khi xem
+            const autoplayUrl = videoUrl.includes('?') ? `${videoUrl}&autoplay=1` : `${videoUrl}?autoplay=1`;
+            videoIframe.src = autoplayUrl;
+            videoModal.classList.remove('hidden');
+            
+            // Hoạt ảnh mờ dần và hiện lên
+            setTimeout(() => {
+                videoModal.classList.remove('opacity-0');
+                videoModalContainer.classList.remove('scale-95');
+                videoModalContainer.classList.add('scale-100');
+            }, 50);
+        }
+
+        function closeVideoModal() {
+            videoModal.classList.add('opacity-0');
+            videoModalContainer.classList.remove('scale-100');
+            videoModalContainer.classList.add('scale-95');
+            
+            // Chờ hoạt ảnh mờ dần kết thúc rồi mới tắt hẳn phần tử
+            setTimeout(() => {
+                videoModal.classList.add('hidden');
+                videoIframe.src = ""; // Xóa nguồn video để ngừng phát âm thanh
+            }, 300);
+        }
+
+        // Đóng hộp thoại khi bấm phím Escape trên bàn phím
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !videoModal.classList.contains('hidden')) {
+                closeVideoModal();
+            }
+        });
+
+        // Hoạt ảnh số liệu tăng trưởng tự động (Stats Count up) khi cuộn chuột tới vùng nhìn thấy
+        const counters = document.querySelectorAll('[data-val]');
+        const observerOptions = {
+            root: null,
+            threshold: 0.1,
+            rootMargin: '0px'
+        };
+
+        const counterObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counter = entry.target;
+                    const targetVal = parseInt(counter.getAttribute('data-val'), 10);
+                    let currentVal = 0;
+                    
+                    const increment = Math.ceil(targetVal / 50);
+                    const speed = 20; // tốc độ nhảy số (ms)
+
+                    const updateCount = () => {
+                        currentVal += increment;
+                        if (currentVal >= targetVal) {
+                            counter.innerText = targetVal === 100 ? targetVal + '%' : targetVal + '+';
+                            observer.unobserve(counter);
+                        } else {
+                            counter.innerText = currentVal;
+                            setTimeout(updateCount, speed);
+                        }
+                    };
+                    
+                    updateCount();
+                }
+            });
+        }, observerOptions);
+
+        counters.forEach(counter => {
+            counterObserver.observe(counter);
+        });
+
+        // Mô phỏng phản hồi khi gửi Form thông tin liên hệ thành công
+        function handleContactSubmit(event) {
+            event.preventDefault();
+            const form = event.target;
+            const successBox = document.getElementById('contact-success');
+            
+            successBox.classList.remove('hidden');
+            form.reset();
+            
+            setTimeout(() => {
+                successBox.classList.add('hidden');
+            }, 6000);
+        }
+    </script>
 </body>
 </html>
