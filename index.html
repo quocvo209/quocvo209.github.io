@@ -1,208 +1,209 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Võ Tuấn Quốc - Portfolio (Replica)</title>
+<style>
+  /* Cài đặt CSS cơ bản (màu sắc, font chữ từ mẫu) */
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Bạn có thể thay bằng font chính xác sau */
+    background-color: #F8F1EA; /* Màu nền ấm giống mẫu */
+    color: #333;
+    line-height: 1.6;
+  }
 
-    <title>Võ Tuấn Quốc | Portfolio</title>
+  /* Định dạng Container chính */
+  .container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
 
-    <link rel="stylesheet" href="style.css">
+  /* --- HEADER STYLES (Header) --- */
+  header {
+    background-color: #fff;
+    padding: 20px 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+  }
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #000;
+  }
+  .logo span {
+    font-weight: normal;
+    color: #DAA162; /* Màu vàng nâu của text phụ */
+    font-size: 0.9rem;
+    display: block;
+  }
+
+  nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 25px;
+  }
+
+  nav ul li a {
+    text-decoration: none;
+    text-transform: uppercase;
+    color: #555;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  nav ul li a:hover {
+    color: #DAA162;
+  }
+
+  .btn-header {
+    background-color: #3B241C; /* Màu nâu đậm từ mẫu */
+    color: #fff;
+    padding: 10px 25px;
+    border-radius: 20px;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    font-weight: bold;
+  }
+
+  /* --- HERO SECTION STYLES (Giới thiệu) --- */
+  .hero-section {
+    padding-top: 150px; /* Bù cho Header cố định */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+  }
+
+  .hero-text {
+    flex: 1;
+  }
+
+  .hero-text h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #3B241C;
+    line-height: 1.2;
+    margin-bottom: 15px;
+  }
+  .hero-text h1 span {
+    color: #DAA162; /* Highlight màu vàng */
+  }
+
+  .hero-text p {
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 30px;
+  }
+
+  .hero-buttons {
+    display: flex;
+    gap: 20px;
+  }
+
+  .btn-primary {
+    background-color: #3B241C;
+    color: #fff;
+    padding: 12px 30px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-secondary {
+    background-color: #E3D9CD;
+    color: #3B241C;
+    padding: 12px 30px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  .hero-image {
+    flex: 1.2;
+    position: relative;
+    /* Giả lập hình ảnh background */
+    width: 100%;
+    height: 400px;
+    background-image: url('placeholder_showreel.jpg'); /* Thay bằng ảnh thực */
+    background-size: cover;
+    background-position: center;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  }
+  
+  .play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70px;
+    height: 70px;
+    background-color: rgba(255,255,255,0.7);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #DAA162;
+    font-size: 2rem;
+    cursor: pointer;
+  }
+
+</style>
 </head>
-
 <body>
 
-    <!-- NAVBAR -->
-
-    <header class="header">
-
-        <div class="container">
-
-            <div class="logo">
-                VÕ TUẤN QUỐC
-            </div>
-
-            <nav>
-
-                <a href="#about">About</a>
-                <a href="#portfolio">Portfolio</a>
-                <a href="#contact">Contact</a>
-
-            </nav>
-
-        </div>
-
-    </header>
-
-    <!-- HERO -->
-
-    <section class="hero">
-
-        <div class="hero-left">
-
-            <span class="tag">
-                VIDEO EDITOR & MOTION DESIGNER
-            </span>
-
-            <h1>
-                LET'S TELL STORIES
-                THROUGH VIDEO.
-            </h1>
-
-            <p>
-                TVC, ADS, SOCIAL CONTENT,
-                REELS/TIKTOK & MOTION GRAPHICS
-            </p>
-
-            <a href="#portfolio" class="btn">
-                View Portfolio
-            </a>
-
-        </div>
-
-        <div class="hero-right">
-
-            <video autoplay muted loop playsinline>
-
-                <source src="VIDEOS/showreel.mp4" type="video/mp4">
-
-            </video>
-
-        </div>
-
-    </section>
-
-    <!-- ABOUT -->
-
-    <section id="about" class="about">
-
-        <div class="container about-grid">
-
-            <div class="about-image">
-
-                <img src="DESIGNS/profile.jpg" alt="Profile">
-
-            </div>
-
-            <div class="about-content">
-
-                <span>ABOUT ME</span>
-
-                <h2>Võ Tuấn Quốc</h2>
-
-                <h3>Video Editor & Motion Designer</h3>
-
-                <p>
-                    Chuyên dựng TVC, quảng cáo,
-                    social content, motion graphics
-                    và short-form video.
-                </p>
-
-                <div class="skills">
-
-                    <div>Premiere Pro</div>
-                    <div>After Effects</div>
-                    <div>Photoshop</div>
-                    <div>DaVinci Resolve</div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-    <!-- PORTFOLIO -->
-
-    <section id="portfolio" class="portfolio">
-
-        <div class="container">
-
-            <h2>Portfolio</h2>
-
-            <div class="portfolio-grid">
-
-                <a href="#" class="portfolio-card">
-
-                    <span>01</span>
-
-                    <h3>MV / TVC</h3>
-
-                    <p>
-                        Music Video,
-                        TVC,
-                        Brand Film
-                    </p>
-
-                </a>
-
-                <a href="#" class="portfolio-card">
-
-                    <span>02</span>
-
-                    <h3>ADS</h3>
-
-                    <p>
-                        Facebook Ads,
-                        Youtube Ads,
-                        Product Video
-                    </p>
-
-                </a>
-
-                <a href="#" class="portfolio-card">
-
-                    <span>03</span>
-
-                    <h3>SOCIAL</h3>
-
-                    <p>
-                        Social Content,
-                        Viral Content
-                    </p>
-
-                </a>
-
-                <a href="#" class="portfolio-card">
-
-                    <span>04</span>
-
-                    <h3>REEL / TIKTOK</h3>
-
-                    <p>
-                        Short-form Content,
-                        Vertical Video
-                    </p>
-
-                </a>
-
-            </div>
-
-        </div>
-
-    </section>
-
-    <!-- CONTACT -->
-
-    <section id="contact" class="contact">
-
-        <div class="container">
-
-            <h2>
-                Let's Work Together
-            </h2>
-
-            <p>
-                Email • Facebook • TikTok • Zalo
-            </p>
-
-        </div>
-
-    </section>
+<header>
+  <div class="container header-content">
+    <div class="logo">Võ Tuấn Quốc<span>Video Editor & Motion Designer</span></div>
+    <nav>
+      <ul>
+        <li><a href="#">HOME</a></li>
+        <li><a href="#">ABOUT</a></li>
+        <li><a href="#">MV/TVC</a></li>
+        <li><a href="#">ADS</a></li>
+        <li><a href="#">SOCIAL</a></li>
+        <li><a href="#">REEL/TIKTOK</a></li>
+        <li><a href="#">CONTACT</a></li>
+      </ul>
+    </nav>
+    <a href="#" class="btn-header">LET'S WORK &rarr;</a>
+  </div>
+</header>
+
+<div class="container">
+  <section class="hero-section">
+    <div class="hero-text">
+      <h1>LET'S TELL<br>STORIES THROUGH<br><span>VIDEO.</span></h1>
+      <p>Mình tạo ra những video quảng cáo, social content và TVC giúp thương hiệu nổi bật hơn.</p>
+      <div class="hero-buttons">
+        <a href="#" class="btn-primary">&rtrif; XEM SHOWREEL</a>
+        <a href="#" class="btn-secondary">XEM PORTFOLIO &darr;</a>
+      </div>
+    </div>
+    <div class="hero-image">
+      <!-- Cảnh nền placeholder -->
+      <div class="play-button">&rtrif;</div>
+    </div>
+  </section>
+</div>
 
 </body>
-
 </html>
