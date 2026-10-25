@@ -1,105 +1,40 @@
-# Portfolio - Võ Tuấn Quốc
+# QuocVo Portfolio — Minimal refresh
 
-## 🎬 Video & Design Portfolio
+This is a static GitHub Pages portfolio with project content managed through Pages CMS.
 
-Portfolio website của **Võ Tuấn Quốc** - Video Editor & Designer
+## Files
+- `index.html`, `style.css`, `script.js`: portfolio interface.
+- `content/projects.json`: project records rendered by the site.
+- `.pages.yml`: Pages CMS configuration.
+- `admin/index.html`: helper page linking to the hosted CMS.
+- `uploads/`: image upload destination for CMS.
 
-### 📸 Các Tính Năng
+## Publish to GitHub Pages
+1. Download and unzip this package.
+2. In your existing `quocvo209.github.io` GitHub repository, upload/replace the files from this package in the repository root. Keep the `.pages.yml` file (GitHub's web uploader may hide dotfiles; if so, add it separately using Add file → Create new file and name it `.pages.yml`).
+3. Commit changes to the same branch that currently publishes the site.
+4. Wait for GitHub Pages to deploy, then check `https://quocvo209.github.io`.
 
-- ✅ **Responsive Design** - Đẹp trên mọi thiết bị (desktop, tablet, mobile)
-- ✅ **Dark Mode** - Giao diện tối hiện đại
-- ✅ **Màu Vàng Be & Nâu** - Thiết kế trendy
-- ✅ **Video Gallery** - Hiển thị 30+ videos
-- ✅ **Design Gallery** - Hiển thị thiết kế
-- ✅ **Smooth Navigation** - Cuộn mượt mà
-- ✅ **Contact Form** - Email liên hệ
+**Important:** Make a backup or download the current repository before replacing files. Do not upload the ZIP itself as a replacement for the website.
 
-### 📁 Cấu Trúc Thư Mục
+## Connect Pages CMS
+1. Open https://app.pagescms.org/ and sign in with GitHub.
+2. Install the Pages CMS GitHub App and grant access only to your portfolio repository.
+3. Open the `quocvo209.github.io` repository and choose the publishing branch (usually `main`).
+4. Pages CMS reads `.pages.yml`. Open **Portfolio projects** to edit the project list.
+5. Add a project with title, category, description, cover image, video URL, and year. Set **Show on website** to true, then save/commit.
+6. Visit `https://quocvo209.github.io/admin/` for the CMS shortcut.
 
-```
-quocvo209.github.io/
-├── index.html          # Trang chính
-├── style.css           # Styling
-├── script.js           # JavaScript
-├── README.md           # File này
-├── videos/             # Thư mục chứa videos (tạo thư mục này)
-│   ├── video1.mp4
-│   ├── video2.mp4
-│   └── ...
-└── designs/            # Thư mục chứa thiết kế (tạo thư mục này)
-    ├── design1.jpg
-    ├── design2.jpg
-    └── ...
-```
+The CMS requires a one-time GitHub App permission setup. This package does not contain or require GitHub passwords or access tokens.
 
-### 🚀 Hướng Dẫn Sử Dụng
+## Add a video project
+- Category should be exactly `MV/TVC`, `Ads`, `Social`, or `Reel/TikTok` so the filters work.
+- Prefer YouTube or Vimeo URLs for video. Do not upload large MP4 files into GitHub.
+- Add an image under Cover image; the CMS stores uploaded media under `uploads/`.
+- If you don't want a project public, set **Show on website** to false.
+- Avoid adding projects with a demo/fake video URL; add only work you are allowed to display publicly.
 
-#### 1. **Thêm Videos**
-
-1. Tạo thư mục `videos` trong repository
-2. Upload 30 videos của bạn vào thư mục này
-3. Cập nhật tên files trong `script.js` (dòng 2-31)
-
-Ví dụ:
-```javascript
-{ id: 1, title: 'Video 1', description: 'Mô tả của bạn', file: 'videos/video1.mp4' },
-```
-
-#### 2. **Thêm Thiết Kế**
-
-1. Tạo thư mục `designs` trong repository
-2. Upload ảnh thiết kế của bạn vào thư mục này
-3. Cập nhật tên files trong `script.js` (dòng 33-38)
-
-Ví dụ:
-```javascript
-{ id: 1, title: 'Design 1', description: 'Mô tả của bạn', image: 'designs/design1.jpg' },
-```
-
-#### 3. **Cập Nhật Thông Tin**
-
-- **Tên**: Tìm và thay thế "Võ Tuấn Quốc" nếu cần
-- **Email**: Đã được cấu hình là `quoctuanvo209@gmail.com`
-- **Mô tả**: Cập nhật trong `script.js`
-
-### 🎨 Customization
-
-#### Thay Đổi Màu Sắc
-
-Mở `style.css` và tìm `:root { }`:
-
-```css
-:root {
-    --primary-color: #D4A574;      /* Màu vàng be */
-    --secondary-color: #8B6F47;    /* Màu nâu */
-    --accent-color: #F5DEB3;       /* Màu nhạt */
-}
-```
-
-#### Thay Đổi Font
-
-Tìm `font-family` trong `style.css` và thay đổi.
-
-### 📱 Responsive Breakpoints
-
-- Desktop: 1200px+
-- Tablet: 768px - 1199px
-- Mobile: < 768px
-
-### 🌐 Deployment
-
-Website sẽ tự động deploy tại: **https://quocvo209.github.io**
-
-Sau khi bạn push code, GitHub sẽ tự động build và deploy.
-
-### 📧 Liên Hệ
-
-- **Email**: quoctuanvo209@gmail.com
-
-### 📄 License
-
-© 2026 Võ Tuấn Quốc. All rights reserved.
-
----
-
-**Chúc bạn thành công! 🚀**
+## Notes
+- The project list starts empty to avoid publishing placeholder/fake work. The portfolio will show a prompt to add your first project until you add entries in CMS.
+- Contact email currently retained from the original project: `quoctuanvo209@gmail.com`.
+- This is a static site. Contact email opens the visitor's email app; no backend contact form is included.

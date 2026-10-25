@@ -1,114 +1,97 @@
-const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-const mobileMenu = document.getElementById('mobile-menu');
+const grid = document.getElementById("project-grid");
+const filters = document.getElementById("filters");
+const count = document.getElementById("project-count");
+const modal = document.getElementById("video-modal");
+const frame = document.getElementById("video-frame");
+const menuToggle = document.getElementById("menu-toggle");
+const nav = document.querySelector(".nav");
+document.getElementById("year").textContent = new Date().getFullYear();
 
-mobileMenuBtn.addEventListener('click', () => {
-    mobileMenu.classList.toggle('hidden');
-    const icon = mobileMenuBtn.querySelector('i');
-    if (mobileMenu.classList.contains('hidden')) {
-        icon.className = 'fa-solid fa-bars-staggered text-2xl';
-    } else {
-        icon.className = 'fa-solid fa-xmark text-2xl';
+let projects = [];
+let activeFilter = "All";
+
+function safeText(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }[char]));
+}
+function videoEmbed(url) {
+  try {
+    const parsed = new URL(url);
+    if (parsed.hostname.includes("youtu.be")) return `https://www.youtube.com/embed/${parsed.pathname.slice(1)}?autoplay=1`;
+    if (parsed.hostname.includes("youtube.com")) {
+      if (parsed.pathname.includes("/embed/")) return `${url}${url.includes("?") ? "&" : "?"}autoplay=1`;
+      const id = parsed.searchParams.get("v");
+      if (id) return `https://www.youtube.com/embed/${id}?autoplay=1`;
     }
-});
-
-// Tự động đóng menu khi chọn một mục điều hướng
-const mobileLinks = document.querySelectorAll('.mobile-link');
-mobileLinks.forEach(link => {
-    link.addEventListener('click', () => {
-        mobileMenu.classList.add('hidden');
-        mobileMenuBtn.querySelector('i').className = 'fa-solid fa-bars-staggered text-2xl';
-    });
-});
-
-
-// 2. LẬP TRÌNH ĐÓNG / MỞ TRÌNH XEM VIDEO (VIDEO LIGHTBOX MODAL)
-const videoModal = document.getElementById('video-modal');
-const videoModalContainer = document.getElementById('video-modal-container');
-const videoIframe = document.getElementById('modal-video-iframe');
-
-function openVideoModal(videoUrl) {
-    // Tự động thêm autoplay khi người dùng click vào xem
-    const autoplayUrl = videoUrl.includes('?') ? `${videoUrl}&autoplay=1` : `${videoUrl}?autoplay=1`;
-    videoIframe.src = autoplayUrl;
-    videoModal.classList.remove('hidden');
-    
-    // Tạo hiệu ứng mờ nền mượt mà
-    setTimeout(() => {
-        videoModal.classList.remove('opacity-0');
-        videoModalContainer.classList.remove('scale-95');
-        videoModalContainer.classList.add('scale-100');
-    }, 50);
-}
-
-function closeVideoModal() {
-    videoModal.classList.add('opacity-0');
-    videoModalContainer.classList.remove('scale-100');
-    videoModalContainer.classList.add('scale-95');
-    
-    // Đợi hoạt ảnh tắt hoàn thành rồi mới tắt iframe để ngắt tiếng video hoàn toàn
-    setTimeout(() => {
-        videoModal.classList.add('hidden');
-        videoIframe.src = ""; 
-    }, 300);
-}
-
-// Cho phép bấm nút ESCAPE trên bàn phím để thoát nhanh video đang xem
-window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !videoModal.classList.contains('hidden')) {
-        closeVideoModal();
+    if (parsed.hostname.includes("vimeo.com")) {
+      const id = parsed.pathname.split("/").filter(Boolean).pop();
+      if (/^\d+$/.test(id)) return `https://player.vimeo.com/video/${id}?autoplay=1`;
     }
-});
-
-
-// 3. HIỆU ỨNG TĂNG SỐ SỐ LIỆU TỰ ĐỘNG (STATS COUNT UP ON SCROLL)
-const counters = document.querySelectorAll('[data-val]');
-const observerOptions = {
-    root: null,
-    threshold: 0.1,
-    rootMargin: '0px'
-};
-
-const counterObserver = new IntersectionObserver((entries, observer) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            const counter = entry.target;
-            const targetVal = parseInt(counter.getAttribute('data-val'), 10);
-            let currentVal = 0;
-            
-            const increment = Math.ceil(targetVal / 50);
-            const speed = 20; // tốc độ tăng số (ms)
-
-            const updateCount = () => {
-                currentVal += increment;
-                if (currentVal >= targetVal) {
-                    counter.innerText = targetVal === 100 ? targetVal + '%' : targetVal + '+';
-                    observer.unobserve(counter);
-                } else {
-                    counter.innerText = currentVal;
-                    setTimeout(updateCount, speed);
-                }
-            };
-            
-            updateCount();
-        }
-    });
-}, observerOptions);
-
-counters.forEach(counter => {
-    counterObserver.observe(counter);
-});
-
-
-// 4. MÔ PHỎNG PHẢN HỒI GỬI FORM THÀNH CÔNG
-function handleContactSubmit(event) {
-    event.preventDefault();
-    const form = event.target;
-    const successBox = document.getElementById('contact-success');
-    
-    successBox.classList.remove('hidden');
-    form.reset();
-    
-    setTimeout(() => {
-        successBox.classList.add('hidden');
-    }, 6000);
+    return url;
+  } catch { return url; }
 }
+function openVideo(url) {
+  if (!url) return;
+  frame.src = videoEmbed(url);
+  modal.classList.add("open");
+  modal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("no-scroll");
+}
+function closeVideo() {
+  modal.classList.remove("open");
+  modal.setAttribute("aria-hidden", "true");
+  frame.src = "";
+  document.body.classList.remove("no-scroll");
+}
+document.getElementById("modal-close").addEventListener("click", closeVideo);
+modal.addEventListener("click", event => { if (event.target === modal) closeVideo(); });
+window.addEventListener("keydown", event => { if (event.key === "Escape") closeVideo(); });
+menuToggle.addEventListener("click", () => {
+  const opened = nav.classList.toggle("mobile-open");
+  menuToggle.setAttribute("aria-expanded", String(opened));
+  menuToggle.textContent = opened ? "×" : "☰";
+});
+nav.querySelectorAll("a").forEach(link => link.addEventListener("click", () => {
+  nav.classList.remove("mobile-open");
+  menuToggle.setAttribute("aria-expanded", "false");
+  menuToggle.textContent = "☰";
+}));
+
+function renderProjects() {
+  const visible = projects.filter(project => activeFilter === "All" || project.category === activeFilter);
+  count.textContent = String(visible.length);
+  if (!visible.length) {
+    const isAll = activeFilter === "All";
+    grid.innerHTML = `<div class="empty-state"><strong>${isAll ? "Your next project goes here." : "No projects in this category yet."}</strong>${isAll ? "Add your first project from the CMS. Once saved, it will appear here automatically." : "Choose another category to explore more work."}<br>${isAll ? '<a href="https://app.pagescms.org/" target="_blank" rel="noopener">Open portfolio CMS ↗</a>' : ""}</div>`;
+    return;
+  }
+  grid.innerHTML = visible.map(project => {
+    const title = safeText(project.title || "Untitled project");
+    const category = safeText(project.category || "Other");
+    const description = safeText(project.description || "");
+    const thumbnail = safeText(project.thumbnail || "");
+    const video = safeText(project.video_url || "");
+    const year = safeText(project.year || "");
+    const thumb = thumbnail ? `<img src="${thumbnail}" alt="${title}" loading="lazy">` : `<div class="thumb-placeholder" aria-label="${title}"></div>`;
+    return `<article class="project-card">
+      <a class="project-thumb" href="${video || "#contact"}" data-video="${video}" aria-label="View ${title}">
+        ${thumb}${video ? '<span class="play-mark" aria-hidden="true">▶</span>' : ""}
+      </a>
+      <div class="project-meta"><div><h3 class="project-title">${title}</h3><p class="project-description">${description}</p></div><span class="project-category">${category}${year ? " · " + year : ""}</span></div>
+    </article>`;
+  }).join("");
+  grid.querySelectorAll("[data-video]").forEach(link => link.addEventListener("click", event => {
+    const url = link.getAttribute("data-video");
+    if (url) { event.preventDefault(); openVideo(url); }
+  }));
+}
+filters.querySelectorAll("[data-filter]").forEach(button => button.addEventListener("click", () => {
+  activeFilter = button.dataset.filter;
+  filters.querySelectorAll(".filter").forEach(item => item.classList.toggle("active", item === button));
+  renderProjects();
+}));
+fetch("content/projects.json")
+  .then(response => { if (!response.ok) throw new Error("Could not load projects"); return response.json(); })
+  .then(data => { projects = Array.isArray(data) ? data.filter(item => item && item.published !== false) : []; renderProjects(); })
+  .catch(() => { grid.innerHTML = '<div class="empty-state"><strong>Projects could not be loaded.</strong>Please check that <code>content/projects.json</code> exists in the repository.</div>'; });
