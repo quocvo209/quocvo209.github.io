@@ -65,11 +65,11 @@ function renderHero() {
   const featured = projects.find(project => project && project.published !== false && (project.featured === true || project.featured === "true"))
     || projects.find(project => project && project.published !== false);
   if (!featured) return;
-  const title = safeText(featured.title || "Selected project");
+  const title = safeText(featured.title || "Dự án tiêu biểu");
   const thumbnail = String(featured.thumbnail || "").trim();
   const video = String(featured.video_url || "").trim();
   heroReelCaption.textContent = title + (featured.category ? " — " + featured.category : "");
-  heroReel.setAttribute("aria-label", video ? "Play " + title : "Explore " + title);
+  heroReel.setAttribute("aria-label", video ? "Phát " + title : "Xem " + title);
   if (thumbnail) {
     const image = document.createElement("img");
     image.src = thumbnail;
@@ -92,19 +92,19 @@ function renderProjects() {
   count.textContent = String(visible.length);
   if (!visible.length) {
     const isAll = activeFilter === "All";
-    grid.innerHTML = `<div class="empty-state"><strong>${isAll ? "Your next project goes here." : "No projects in this category yet."}</strong>${isAll ? "Add your first project from the CMS. Once saved, it will appear here automatically." : "Choose another category to explore more work."}<br>${isAll ? '<a href="https://app.pagescms.org/" target="_blank" rel="noopener">Open portfolio CMS ↗</a>' : ""}</div>`;
+    grid.innerHTML = `<div class="empty-state"><strong>${isAll ? "Dự án tiếp theo của bạn sẽ xuất hiện ở đây." : "Chưa có dự án nào trong danh mục này."}</strong>${isAll ? "Hãy thêm dự án đầu tiên từ CMS. Sau khi lưu, dự án sẽ tự động hiển thị tại đây." : "Hãy chọn danh mục khác để xem thêm dự án."}<br>${isAll ? '<a href="https://app.pagescms.org/" target="_blank" rel="noopener">Mở CMS quản lý dự án ↗</a>' : ""}</div>`;
     return;
   }
   grid.innerHTML = visible.map(project => {
-    const title = safeText(project.title || "Untitled project");
-    const category = safeText(project.category || "Other");
+    const title = safeText(project.title || "Dự án chưa đặt tên");
+    const category = safeText(project.category || "Khác");
     const description = safeText(project.description || "");
     const thumbnail = safeText(project.thumbnail || "");
     const video = safeText(project.video_url || "");
     const year = safeText(project.year || "");
     const thumb = thumbnail ? `<img src="${thumbnail}" alt="${title}" loading="lazy">` : `<div class="thumb-placeholder" aria-label="${title}"></div>`;
     return `<article class="project-card">
-      <a class="project-thumb" href="${video || "#contact"}" data-video="${video}" aria-label="View ${title}">
+      <a class="project-thumb" href="${video || "#contact"}" data-video="${video}" aria-label="Xem ${title}">
         ${thumb}${video ? '<span class="play-mark" aria-hidden="true">▶</span>' : ""}
       </a>
       <div class="project-meta"><div><h3 class="project-title">${title}</h3><p class="project-description">${description}</p></div><span class="project-category">${category}${year ? " · " + year : ""}</span></div>
@@ -123,4 +123,4 @@ filters.querySelectorAll("[data-filter]").forEach(button => button.addEventListe
 fetch("content/projects.json")
   .then(response => { if (!response.ok) throw new Error("Could not load projects"); return response.json(); })
   .then(data => { projects = Array.isArray(data) ? data.filter(item => item && item.published !== false) : []; renderHero(); renderProjects(); })
-  .catch(() => { grid.innerHTML = '<div class="empty-state"><strong>Projects could not be loaded.</strong>Please check that <code>content/projects.json</code> exists in the repository.</div>'; });
+  .catch(() => { grid.innerHTML = '<div class="empty-state"><strong>Không thể tải dự án.</strong>Vui lòng kiểm tra file <code>content/projects.json</code> đã có trong repository.</div>'; });
