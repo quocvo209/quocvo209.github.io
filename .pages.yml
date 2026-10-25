@@ -1,1 +1,51 @@
+media:
+  input: uploads
+  output: /uploads
+
+content:
+  - name: projects
+    label: Portfolio projects
+    type: file
+    path: content/projects.json
+    format: json
+    list: true
+    fields:
+      - name: title
+        label: Project title
+        type: string
+        required: true
+      - name: category
+        label: Category
+        type: string
+        required: true
+        description: "Use one of: MV/TVC, Ads, Social, Reel/TikTok"
+      - name: description
+        label: Short description
+        type: text
+      - name: thumbnail
+        label: Cover image
+        type: image
+      - name: video_url
+        label: Video URL
+        type: string
+        description: "YouTube, Vimeo, or another embeddable video URL"
+      - name: year
+        label: Year
+        type: string
+      - name: published
+        label: Show on website
+        type: boolean
+        default: true
+
+  - name: uploads
+    label: Uploaded images
+    type: collection
+    path: uploads
+    format: raw
+    view:
+      fields: []
+    fields:
+      - name: file
+        label: File
+        type: string
 
