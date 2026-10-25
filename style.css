@@ -10,3 +10,11 @@
 .tools li{border:1px solid #BFB29F;border-radius:30px;padding:9px 15px;font-size:12px;color:#4D463D}
 a:focus-visible,button:focus-visible{outline:2px solid var(--accent-dark);outline-offset:3px}
 @media(max-width:700px){.about-stats{grid-template-columns:1fr;gap:18px}.about-stats span{max-width:none}}
+
+.tools li{display:inline-flex;align-items:center;gap:10px;padding:7px 15px 7px 8px}
+.tool-icon{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:5px;font:800 11px/1 Manrope,sans-serif;letter-spacing:-.02em;flex:none;overflow:hidden}
+.tool-icon.pr,.tool-icon.ae{background:#00005B;color:#9999FF}
+.tool-icon.ps{background:#001E36;color:#31A8FF}
+.tool-icon.lr{background:#001A26;color:#74B8F0}
+.tool-icon.dv{background:none;border-radius:50%}
+.tool-icon svg{display:block}

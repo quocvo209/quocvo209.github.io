@@ -65,7 +65,7 @@ function renderHero() {
   const featured = projects.find(project => project && project.published !== false && (project.featured === true || project.featured === "true"))
     || projects.find(project => project && project.published !== false);
   if (!featured) return;
-  const title = safeText(featured.title || "Dự án tiêu biểu");
+  const title = safeText(featured.title || "Dự án");
   const thumbnail = String(featured.thumbnail || "").trim();
   const video = String(featured.video_url || "").trim();
   heroReelCaption.textContent = title + (featured.category ? " — " + featured.category : "");
@@ -92,7 +92,7 @@ function renderProjects() {
   count.textContent = String(visible.length);
   if (!visible.length) {
     const isAll = activeFilter === "All";
-    grid.innerHTML = `<div class="empty-state"><strong>${isAll ? "Dự án tiếp theo của bạn sẽ xuất hiện ở đây." : "Chưa có dự án nào trong danh mục này."}</strong>${isAll ? "Hãy thêm dự án đầu tiên từ CMS. Sau khi lưu, dự án sẽ tự động hiển thị tại đây." : "Hãy chọn danh mục khác để xem thêm dự án."}<br>${isAll ? '<a href="https://app.pagescms.org/" target="_blank" rel="noopener">Mở CMS quản lý dự án ↗</a>' : ""}</div>`;
+    grid.innerHTML = `<div class="empty-state"><strong>${isAll ? "Chưa có dự án nào." : "Chưa có dự án nào trong mục này."}</strong>${isAll ? "Thêm dự án từ CMS, sau khi lưu dự án sẽ tự hiện ở đây." : "Chọn mục khác để xem thêm dự án."}<br>${isAll ? '<a href="https://app.pagescms.org/" target="_blank" rel="noopener">Mở CMS quản lý dự án ↗</a>' : ""}</div>`;
     return;
   }
   grid.innerHTML = visible.map(project => {
