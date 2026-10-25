@@ -4,6 +4,9 @@ const count = document.getElementById("project-count");
 const modal = document.getElementById("video-modal");
 const frame = document.getElementById("video-frame");
 const menuToggle = document.getElementById("menu-toggle");
+const heroReel = document.getElementById("hero-reel");
+const heroReelImage = document.getElementById("hero-reel-image");
+const heroReelCaption = document.getElementById("hero-reel-caption");
 const nav = document.querySelector(".nav");
 document.getElementById("year").textContent = new Date().getFullYear();
 
@@ -58,6 +61,32 @@ nav.querySelectorAll("a").forEach(link => link.addEventListener("click", () => {
   menuToggle.textContent = "☰";
 }));
 
+function renderHero() {
+  const featured = projects.find(project => project && project.published !== false && (project.featured === true || project.featured === "true"))
+    || projects.find(project => project && project.published !== false);
+  if (!featured) return;
+  const title = safeText(featured.title || "Selected project");
+  const thumbnail = String(featured.thumbnail || "").trim();
+  const video = String(featured.video_url || "").trim();
+  heroReelCaption.textContent = title + (featured.category ? " — " + featured.category : "");
+  heroReel.setAttribute("aria-label", video ? "Play " + title : "Explore " + title);
+  if (thumbnail) {
+    const image = document.createElement("img");
+    image.src = thumbnail;
+    image.alt = title;
+    image.loading = "eager";
+    image.onerror = () => { image.remove(); };
+    heroReelImage.replaceChildren(image);
+  }
+  if (video) {
+    heroReel.href = video;
+    heroReel.addEventListener("click", event => { event.preventDefault(); openVideo(video); });
+    document.getElementById("hero-reel-play").textContent = "▶";
+  } else {
+    heroReel.href = "#work";
+  }
+}
+
 function renderProjects() {
   const visible = projects.filter(project => activeFilter === "All" || project.category === activeFilter);
   count.textContent = String(visible.length);
@@ -93,5 +122,5 @@ filters.querySelectorAll("[data-filter]").forEach(button => button.addEventListe
 }));
 fetch("content/projects.json")
   .then(response => { if (!response.ok) throw new Error("Could not load projects"); return response.json(); })
-  .then(data => { projects = Array.isArray(data) ? data.filter(item => item && item.published !== false) : []; renderProjects(); })
+  .then(data => { projects = Array.isArray(data) ? data.filter(item => item && item.published !== false) : []; renderHero(); renderProjects(); })
   .catch(() => { grid.innerHTML = '<div class="empty-state"><strong>Projects could not be loaded.</strong>Please check that <code>content/projects.json</code> exists in the repository.</div>'; });
