@@ -83,6 +83,7 @@ content:
                 - Color Grading
                 - Reels/TikTok
                 - ADS
+                - Bạch Ngọc Liên Socials
             description: Muốn thêm danh mục mới thì thêm vào danh sách "values" trong file .pages.yml
           - name: thumbnail
             label: Ảnh thumbnail
