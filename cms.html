@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PageCMS Quản Lý | Quốc Võ Production</title>
+    <title>Quản Trị CMS | Quốc Võ Production</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- React & Babel -->
@@ -38,8 +38,8 @@
         h1, h2, h3, h4, h5, h6 { font-family: 'Be Vietnam Pro', sans-serif; }
     </style>
 </head>
-<body class="bg-beige-50 text-espresso-900 min-h-screen p-4 md:p-8">
-    <div id="root"></div>
+<body class="bg-beige-50 text-espresso-900 min-h-screen p-4 md:p-8 flex items-center justify-center">
+    <div id="root" class="w-full"></div>
 
     <script type="text/babel">
         const { useState, useEffect } = React;
@@ -51,27 +51,45 @@
             return <i data-lucide={name} className={className} {...props}></i>;
         };
 
-        function CMSApp() {
+        function SecureCMS() {
+            const [isLoggedIn, setIsLoggedIn] = useState(false);
+            const [password, setPassword] = useState('');
+            const [errorMsg, setErrorMsg] = useState('');
+
+            // Quản lý dữ liệu
             const [projects, setProjects] = useState([]);
             const [btsPhotos, setBtsPhotos] = useState([]);
 
-            // Form state dự án
             const [title, setTitle] = useState('');
             const [category, setCategory] = useState('TVC/MV');
             const [url, setUrl] = useState('');
             const [thumb, setThumb] = useState('');
             const [desc, setDesc] = useState('');
 
-            // Form state BTS
             const [btsUrl, setBtsUrl] = useState('');
             const [btsCaption, setBtsCaption] = useState('');
 
+            // Mật khẩu quản trị của riêng bạn (Bạn có thể đổi chữ 'quocvo2026' thành mật khẩu bạn thích)
+            const ADMIN_PASSWORD = 'quocvo2026';
+
+            const handleLogin = (e) => {
+                e.preventDefault();
+                if (password === ADMIN_PASSWORD) {
+                    setIsLoggedIn(true);
+                    setErrorMsg('');
+                } else {
+                    setErrorMsg('Mật khẩu không chính xác! Vui lòng thử lại.');
+                }
+            };
+
             useEffect(() => {
-                const savedProjects = localStorage.getItem('qv_projects');
-                const savedBts = localStorage.getItem('qv_bts');
-                if (savedProjects) setProjects(JSON.parse(savedProjects));
-                if (savedBts) setBtsPhotos(JSON.parse(savedBts));
-            }, []);
+                if (isLoggedIn) {
+                    const savedProjects = localStorage.getItem('qv_projects');
+                    const savedBts = localStorage.getItem('qv_bts');
+                    if (savedProjects) setProjects(JSON.parse(savedProjects));
+                    if (savedBts) setBtsPhotos(JSON.parse(savedBts));
+                }
+            }, [isLoggedIn]);
 
             useEffect(() => {
                 if (window.lucide) window.lucide.createIcons();
@@ -92,7 +110,7 @@
                 setProjects(updated);
                 localStorage.setItem('qv_projects', JSON.stringify(updated));
                 setTitle(''); setUrl(''); setThumb(''); setDesc('');
-                alert('Đã thêm dự án mới thành công!');
+                alert('Đã thêm dự án mới thành công vào web!');
             };
 
             const handleAddBts = (e) => {
@@ -115,29 +133,67 @@
             };
 
             const deleteBts = (id) => {
-                if (confirm('Bạn có chắc muốn xóa ảnh hậu trường này?')) {
+                if (confirm('Bạn có chắc muốn xóa ảnh này?')) {
                     const updated = btsPhotos.filter(b => b.id !== id);
                     setBtsPhotos(updated);
                     localStorage.setItem('qv_bts', JSON.stringify(updated));
                 }
             };
 
+            // Nếu chưa đăng nhập, hiển thị màn hình khóa mật khẩu
+            if (!isLoggedIn) {
+                return (
+                    <div className="max-w-md w-full bg-white rounded-3xl p-8 shadow-2xl border border-beige-200 text-center">
+                        <div className="w-16 h-16 bg-beige-100 text-gold rounded-full flex items-center justify-center mx-auto mb-4">
+                            <Icon name="lock" className="w-8 h-8" />
+                        </div>
+                        <h1 className="text-2xl font-bold mb-2">Đăng Nhập Quản Trị</h1>
+                        <p className="text-xs text-espresso-800/70 mb-6">Khu vực bảo mật dành riêng cho Quốc Võ Production</p>
+                        
+                        <form onSubmit={handleLogin} className="space-y-4 text-left">
+                            <div>
+                                <label className="block text-xs font-semibold mb-1">Mật khẩu truy cập</label>
+                                <input 
+                                    type="password" 
+                                    value={password} 
+                                    onChange={e => setPassword(e.target.value)} 
+                                    placeholder="Nhập mật khẩu..." 
+                                    className="w-full px-4 py-3 rounded-xl border border-beige-300 text-sm focus:outline-none focus:border-gold" 
+                                    required 
+                                />
+                            </div>
+                            {errorMsg && <p className="text-xs text-red-500 font-medium">{errorMsg}</p>}
+                            <button type="submit" className="w-full py-3 rounded-xl bg-espresso-900 text-beige-50 font-semibold hover:bg-gold transition-colors text-sm shadow-md">
+                                Truy Cập Trang Quản Trị
+                            </button>
+                        </form>
+                        <p className="text-[11px] text-espresso-800/50 mt-6">Mật khẩu mặc định: <span className="font-mono font-bold text-gold">quocvo2026</span></p>
+                    </div>
+                );
+            }
+
+            // Giao diện CMS sau khi đăng nhập thành công
             return (
-                <div className="max-w-5xl mx-auto bg-white rounded-3xl p-6 md:p-10 shadow-xl border border-beige-200">
+                <div className="max-w-5xl mx-auto bg-white rounded-3xl p-6 md:p-10 shadow-xl border border-beige-200 w-full my-8">
                     <div className="flex flex-col md:flex-row md:items-center justify-between pb-6 border-b border-beige-200 gap-4 mb-8">
                         <div>
                             <h1 className="text-2xl md:text-3xl font-extrabold flex items-center gap-3">
                                 <Icon name="settings" className="w-8 h-8 text-gold" /> PageCMS Quản Lý Portfolio
                             </h1>
-                            <p className="text-sm text-espresso-800/70 mt-1">Đăng bài, cập nhật video dự án & ảnh hậu trường trực tiếp lên trang chủ index.html</p>
+                            <p className="text-sm text-espresso-800/70 mt-1">Đăng bài, cập nhật video dự án & ảnh hậu trường an toàn</p>
                         </div>
-                        <a href="index.html" target="_blank" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-espresso-900 text-beige-50 hover:bg-gold transition-colors text-sm font-semibold">
-                            <Icon name="external-link" className="w-4 h-4" /> Xem trang web thực tế
-                        </a>
+                        <div className="flex items-center gap-3">
+                            <a href="index.html" target="_blank" className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-beige-200 text-espresso-900 hover:bg-gold hover:text-white transition-colors text-sm font-semibold">
+                                <Icon name="external-link" className="w-4 h-4" /> Xem Website
+                            </a>
+                            <button onClick={() => setIsLoggedIn(false)} className="px-4 py-2.5 rounded-full bg-red-50 text-red-600 hover:bg-red-100 text-sm font-semibold">
+                                Đăng xuất
+                            </button>
+                        </div>
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                        {/* Cột trái: Đăng dự án mới */}
+                        {/* Đăng dự án video */}
                         <div className="space-y-6">
                             <form onSubmit={handleAddProject} className="bg-beige-50 p-6 rounded-2xl border border-beige-200 space-y-4">
                                 <h2 className="text-lg font-bold flex items-center gap-2 text-gold">
@@ -175,10 +231,9 @@
                                 </button>
                             </form>
 
-                            {/* Danh sách dự án hiện có */}
                             <div className="bg-beige-50 p-6 rounded-2xl border border-beige-200">
                                 <h3 className="font-bold text-base mb-4">Danh Sách Dự Án Đang Có ({projects.length})</h3>
-                                <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
+                                <div className="space-y-3 max-h-60 overflow-y-auto pr-1">
                                     {projects.map(p => (
                                         <div key={p.id} className="p-3 bg-white rounded-xl border border-beige-200 flex items-center justify-between gap-3">
                                             <img src={p.thumbnail} className="w-12 h-12 object-cover rounded-lg" alt="" />
@@ -195,7 +250,7 @@
                             </div>
                         </div>
 
-                        {/* Cột phải: Đăng ảnh BTS */}
+                        {/* Đăng ảnh hậu trường BTS */}
                         <div className="space-y-6">
                             <form onSubmit={handleAddBts} className="bg-beige-50 p-6 rounded-2xl border border-beige-200 space-y-4">
                                 <h2 className="text-lg font-bold flex items-center gap-2 text-gold">
@@ -214,10 +269,9 @@
                                 </button>
                             </form>
 
-                            {/* Danh sách ảnh BTS hiện có */}
                             <div className="bg-beige-50 p-6 rounded-2xl border border-beige-200">
                                 <h3 className="font-bold text-base mb-4">Ảnh Hậu Trường Hiện Có ({btsPhotos.length})</h3>
-                                <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
+                                <div className="space-y-3 max-h-60 overflow-y-auto pr-1">
                                     {btsPhotos.map(b => (
                                         <div key={b.id} className="p-3 bg-white rounded-xl border border-beige-200 flex items-center justify-between gap-3">
                                             <img src={b.url} className="w-12 h-12 object-cover rounded-lg" alt="" />
@@ -235,7 +289,7 @@
             );
         }
 
-        ReactDOM.createRoot(document.getElementById('root')).render(<CMSApp />);
+        ReactDOM.createRoot(document.getElementById('root')).render(<SecureCMS />);
     </script>
 </body>
 </html>
