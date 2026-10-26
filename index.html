@@ -70,6 +70,24 @@
             const [activeCategory, setActiveCategory] = useState('All');
             const [selectedProject, setSelectedProject] = useState(null);
             const [sliderPos, setSliderPos] = useState(50);
+            
+            // CMS States & Auth
+            const [showCmsModal, setShowCmsModal] = useState(false);
+            const [isLoggedIn, setIsLoggedIn] = useState(false);
+            const [password, setPassword] = useState('');
+            const [loginError, setLoginError] = useState('');
+
+            // CMS Form states
+            const [title, setTitle] = useState('');
+            const [category, setCategory] = useState('TVC/MV');
+            const [url, setUrl] = useState('');
+            const [thumb, setThumb] = useState('');
+            const [desc, setDesc] = useState('');
+
+            const [btsUrl, setBtsUrl] = useState('');
+            const [btsCaption, setBtsCaption] = useState('');
+
+            const ADMIN_PASSWORD = 'quocvo2026';
 
             useEffect(() => {
                 const savedProjects = localStorage.getItem('qv_projects');
@@ -89,19 +107,81 @@
             const categories = ['All', 'TVC/MV', 'Color Grading', 'Reels/TikTok', 'ADS'];
             const filteredProjects = activeCategory === 'All' ? projects : projects.filter(p => p.category === activeCategory);
 
+            const handleLogin = (e) => {
+                e.preventDefault();
+                if (password === ADMIN_PASSWORD) {
+                    setIsLoggedIn(true);
+                    setLoginError('');
+                } else {
+                    setLoginError('Mật khẩu không chính xác!');
+                }
+            };
+
+            const handleAddProject = (e) => {
+                e.preventDefault();
+                if (!title || !thumb) return;
+                const newItem = {
+                    id: Date.now(),
+                    title,
+                    category,
+                    url: url || 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+                    thumbnail: thumb,
+                    desc
+                };
+                const updated = [newItem, ...projects];
+                setProjects(updated);
+                localStorage.setItem('qv_projects', JSON.stringify(updated));
+                setTitle(''); setUrl(''); setThumb(''); setDesc('');
+                alert('Đã thêm dự án mới thành công!');
+            };
+
+            const handleAddBts = (e) => {
+                e.preventDefault();
+                if (!btsUrl) return;
+                const newItem = { id: Date.now(), url: btsUrl, caption: btsCaption || 'Hậu trường quay phim' };
+                const updated = [newItem, ...btsPhotos];
+                setBtsPhotos(updated);
+                localStorage.setItem('qv_bts', JSON.stringify(updated));
+                setBtsUrl(''); setBtsCaption('');
+                alert('Đã thêm ảnh hậu trường thành công!');
+            };
+
+            const deleteProject = (id) => {
+                if (confirm('Bạn có chắc muốn xóa dự án này?')) {
+                    const updated = projects.filter(p => p.id !== id);
+                    setProjects(updated);
+                    localStorage.setItem('qv_projects', JSON.stringify(updated));
+                }
+            };
+
+            const deleteBts = (id) => {
+                if (confirm('Bạn có chắc muốn xóa ảnh này?')) {
+                    const updated = btsPhotos.filter(b => b.id !== id);
+                    setBtsPhotos(updated);
+                    localStorage.setItem('qv_bts', JSON.stringify(updated));
+                }
+            };
+
             return (
                 <div className="min-h-screen bg-beige-50 text-espresso-900 selection:bg-gold selection:text-white">
+                    {/* Header */}
                     <header className="sticky top-0 z-40 bg-beige-50/80 backdrop-blur-md border-b border-beige-200">
                         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-                            <a href="#" className="text-xl md:text-2xl font-bold tracking-tight uppercase">
-                                QUỐC VÕ <span className="text-gold font-normal">PRODUCTION</span>
-                            </a>
+                            <div className="flex items-center gap-3">
+                                <a href="#" className="text-xl md:text-2xl font-bold tracking-tight uppercase">
+                                    QUỐC VÕ <span className="text-gold font-normal">PRODUCTION</span>
+                                </a>
+                                <button onClick={() => setShowCmsModal(true)} className="text-[10px] text-espresso-800/30 hover:text-gold uppercase tracking-widest px-2 py-1 rounded transition-colors" title="Quản trị viên">
+                                    CMS
+                                </button>
+                            </div>
                             <a href="#contact" className="inline-flex items-center gap-2 text-sm font-semibold px-5 py-2.5 rounded-full bg-espresso-900 text-beige-50 hover:bg-gold transition-colors">
                                 <Icon name="phone" className="w-4 h-4" /> Liên hệ
                             </a>
                         </div>
                     </header>
 
+                    {/* Hero Section */}
                     <section className="pt-24 pb-16 px-6 max-w-7xl mx-auto text-center">
                         <div className="inline-block mb-4 px-4 py-1.5 rounded-full bg-beige-200/60 text-gold text-xs md:text-sm font-semibold tracking-widest uppercase">
                             Video Editor & Videographer • 4 Năm Kinh Nghiệm
@@ -232,6 +312,7 @@
                         <p>© 2026 Quốc Võ Production. All rights reserved.</p>
                     </footer>
 
+                    {/* Video Player Modal */}
                     {selectedProject && (
                         <div className="fixed inset-0 z-50 bg-espresso-900/80 backdrop-blur-md flex items-center justify-center p-4">
                             <div className="bg-white rounded-3xl overflow-hidden max-w-4xl w-full shadow-2xl border border-beige-200">
@@ -247,6 +328,120 @@
                                 <div className="p-6">
                                     <span className="inline-block px-3 py-1 rounded-full bg-beige-200 text-xs font-semibold mb-2">{selectedProject.category}</span>
                                     <p className="text-espresso-800/80 text-sm md:text-base">{selectedProject.desc}</p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* CMS Management Modal with Password Protection */}
+                    {showCmsModal && (
+                        <div className="fixed inset-0 z-50 bg-espresso-900/80 backdrop-blur-md flex items-center justify-center p-4">
+                            <div className="bg-white rounded-3xl overflow-hidden max-w-2xl w-full shadow-2xl border border-beige-200 max-h-[90vh] flex flex-col">
+                                <div className="p-6 flex items-center justify-between border-b border-beige-200 bg-beige-50">
+                                    <div className="flex items-center gap-2">
+                                        <Icon name="settings" className="w-6 h-6 text-gold" />
+                                        <h3 className="font-bold text-xl">Quản Trị PageCMS</h3>
+                                    </div>
+                                    <button onClick={() => setShowCmsModal(false)} className="w-10 h-10 rounded-full bg-beige-200 flex items-center justify-center hover:bg-red-100 hover:text-red-600 transition-colors">
+                                        <Icon name="x" className="w-5 h-5" />
+                                    </button>
+                                </div>
+
+                                <div className="p-6 overflow-y-auto space-y-6">
+                                    {!isLoggedIn ? (
+                                        <form onSubmit={handleLogin} className="space-y-4 py-8 text-center max-w-sm mx-auto">
+                                            <div className="w-12 h-12 bg-beige-100 text-gold rounded-full flex items-center justify-center mx-auto mb-2">
+                                                <Icon name="lock" className="w-6 h-6" />
+                                            </div>
+                                            <h4 className="font-bold text-lg">Yêu Cầu Mật Khẩu Quản Trị</h4>
+                                            <div>
+                                                <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Nhập mật khẩu..." className="w-full px-4 py-3 rounded-xl border border-beige-300 text-sm text-center focus:outline-none focus:border-gold" required />
+                                            </div>
+                                            {loginError && <p className="text-xs text-red-500 font-medium">{loginError}</p>}
+                                            <button type="submit" className="w-full py-3 rounded-xl bg-espresso-900 text-beige-50 font-semibold hover:bg-gold transition-colors text-sm">Xác Nhận Đăng Nhập</button>
+                                            <p className="text-[11px] text-espresso-800/40">Mật khẩu mẫu: <span className="font-mono text-gold font-bold">quocvo2026</span></p>
+                                        </form>
+                                    ) : (
+                                        <div className="space-y-8">
+                                            <div className="flex justify-between items-center bg-beige-50 p-4 rounded-xl">
+                                                <span className="text-xs font-semibold text-gold">Đã đăng nhập thành công!</span>
+                                                <button onClick={() => setIsLoggedIn(false)} className="text-xs text-red-500 hover:underline">Đăng xuất</button>
+                                            </div>
+
+                                            {/* Form thêm dự án */}
+                                            <form onSubmit={handleAddProject} className="space-y-4 bg-beige-50 p-6 rounded-2xl border border-beige-200">
+                                                <h4 className="font-bold text-base flex items-center gap-2 text-gold"><Icon name="plus-circle" className="w-5 h-5" /> Thêm Dự Án Video Mới</h4>
+                                                <div>
+                                                    <label className="block text-xs font-semibold mb-1">Tên dự án *</label>
+                                                    <input type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder="TVC Mới..." className="w-full px-4 py-2 rounded-xl border border-beige-300 text-sm" required />
+                                                </div>
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <div>
+                                                        <label className="block text-xs font-semibold mb-1">Danh mục</label>
+                                                        <select value={category} onChange={e => setCategory(e.target.value)} className="w-full px-4 py-2 rounded-xl border border-beige-300 text-sm">
+                                                            <option value="TVC/MV">TVC/MV</option>
+                                                            <option value="Color Grading">Color Grading</option>
+                                                            <option value="Reels/TikTok">Reels/TikTok</option>
+                                                            <option value="ADS">ADS</option>
+                                                        </select>
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-xs font-semibold mb-1">Link Thumbnail *</label>
+                                                        <input type="url" value={thumb} onChange={e => setThumb(e.target.value)} placeholder="https://..." className="w-full px-4 py-2 rounded-xl border border-beige-300 text-sm" required />
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <label className="block text-xs font-semibold mb-1">Link Embed Video (YouTube Embed URL)</label>
+                                                    <input type="url" value={url} onChange={e => setUrl(e.target.value)} placeholder="https://www.youtube.com/embed/..." className="w-full px-4 py-2 rounded-xl border border-beige-300 text-sm" />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-xs font-semibold mb-1">Mô tả ngắn</label>
+                                                    <textarea value={desc} onChange={e => setDesc(e.target.value)} placeholder="Mô tả..." className="w-full px-4 py-2 rounded-xl border border-beige-300 text-sm h-16"></textarea>
+                                                </div>
+                                                <button type="submit" className="w-full py-3 rounded-xl bg-espresso-900 text-beige-50 font-semibold hover:bg-gold transition-colors text-sm">Đăng Dự Án Mới</button>
+                                            </form>
+
+                                            {/* Quản lý danh sách dự án */}
+                                            <div className="bg-beige-50 p-6 rounded-2xl border border-beige-200">
+                                                <h4 className="font-bold text-sm mb-3">Xóa Dự Án Đã Đăng ({projects.length})</h4>
+                                                <div className="space-y-2 max-h-40 overflow-y-auto">
+                                                    {projects.map(p => (
+                                                        <div key={p.id} className="flex items-center justify-between bg-white p-2.5 rounded-xl border border-beige-200">
+                                                            <span className="text-xs font-medium truncate pr-2">{p.title}</span>
+                                                            <button onClick={() => deleteProject(p.id)} className="text-red-500 hover:text-red-700 text-xs font-semibold">Xóa</button>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+
+                                            {/* Form thêm BTS */}
+                                            <form onSubmit={handleAddBts} className="space-y-4 bg-beige-50 p-6 rounded-2xl border border-beige-200">
+                                                <h4 className="font-bold text-base flex items-center gap-2 text-gold"><Icon name="image" className="w-5 h-5" /> Thêm Ảnh Hậu Trường (BTS)</h4>
+                                                <div>
+                                                    <label className="block text-xs font-semibold mb-1">Link Hình Ảnh *</label>
+                                                    <input type="url" value={btsUrl} onChange={e => setBtsUrl(e.target.value)} placeholder="https://..." className="w-full px-4 py-2 rounded-xl border border-beige-300 text-sm" required />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-xs font-semibold mb-1">Chú thích</label>
+                                                    <input type="text" value={btsCaption} onChange={e => setBtsCaption(e.target.value)} placeholder="Set up tại..." className="w-full px-4 py-2 rounded-xl border border-beige-300 text-sm" />
+                                                </div>
+                                                <button type="submit" className="w-full py-3 rounded-xl bg-espresso-900 text-beige-50 font-semibold hover:bg-gold transition-colors text-sm">Đăng Ảnh BTS</button>
+                                            </form>
+
+                                            {/* Quản lý ảnh BTS */}
+                                            <div className="bg-beige-50 p-6 rounded-2xl border border-beige-200">
+                                                <h4 className="font-bold text-sm mb-3">Xóa Ảnh BTS ({btsPhotos.length})</h4>
+                                                <div className="space-y-2 max-h-40 overflow-y-auto">
+                                                    {btsPhotos.map(b => (
+                                                        <div key={b.id} className="flex items-center justify-between bg-white p-2.5 rounded-xl border border-beige-200">
+                                                            <span className="text-xs font-medium truncate pr-2">{b.caption}</span>
+                                                            <button onClick={() => deleteBts(b.id)} className="text-red-500 hover:text-red-700 text-xs font-semibold">Xóa</button>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
