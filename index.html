@@ -1,160 +1,78 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta
-    name="description"
-    content="Portfolio của Quoc Vo - Editor & Videographer, sáng tạo video và hình ảnh cho thương hiệu, nội dung truyền thông và dự án cá nhân."
-  />
-  <title>Quoc Vo | Editor & Videographer</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f3efe5">
+  <meta name="description" content="Quoc Vo — Video Editor & Videographer. TVC, music video, social content, advertising and beauty color grading.">
+  <title>QUOCVO® — Video Editor & Videographer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
 </head>
 <body>
-  <header class="header">
-    <div class="container nav">
-      <a href="#" class="logo">Quoc Vo</a>
-
-      <nav class="nav-menu">
-        <a href="#about">Giới thiệu</a>
-        <a href="#portfolio">Portfolio</a>
-        <a href="#services">Dịch vụ</a>
-        <a href="#contact">Liên hệ</a>
-      </nav>
-
-      <a href="#contact" class="nav-btn">Hợp tác</a>
-    </div>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="QuocVo home">QUOCVO<span>®</span></a>
+    <button class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-label="Mở menu">☰</button>
+    <nav class="nav" id="nav">
+      <a href="#work">Selected work</a><a href="#bts">Behind the scenes</a><a href="#about">About</a><a class="nav-contact" href="#contact">Let's talk ↗</a>
+    </nav>
   </header>
 
-  <main>
-    <section class="hero">
-      <div class="container hero-inner">
-        <div class="hero-content">
-          <p class="eyebrow">Editor & Videographer</p>
-          <h1>Tôi dựng nên những câu chuyện bằng hình ảnh và video.</h1>
-          <p class="subtitle">
-            Tôi sáng tạo nội dung hình ảnh, chỉnh sửa video và xây dựng những sản phẩm truyền thông ấn tượng cho thương hiệu và cá nhân.
-          </p>
+  <main id="top">
+    <section class="hero wrap">
+      <div class="hero-topline"><span>INDEPENDENT CREATIVE · VIETNAM</span><span>VIDEO EDITOR / VIDEOGRAPHER</span></div>
+      <h1>IMAGES<br><em>IN MOTION.</em></h1>
+      <div class="hero-bottom">
+        <p class="hero-intro">Mình là Quốc — người kể chuyện bằng hình ảnh, chuyển động và màu sắc. Từ TVC, music video đến nội dung social, mình tạo ra những khung hình có chủ đích và cảm xúc.</p>
+        <a class="text-link" href="#work">KHÁM PHÁ DỰ ÁN <span>↓</span></a>
+      </div>
+      <button class="hero-reel" id="hero-reel" type="button" aria-label="Xem showreel">
+        <div class="hero-reel-image" id="hero-reel-image"><div class="reel-placeholder"><span>QV / SHOWREEL</span><b>Selected frames<br>moving stories.</b></div></div>
+        <span class="reel-play" id="hero-reel-play">↗</span><span class="reel-label" id="hero-reel-caption">SELECTED WORKS — 2022–2026</span>
+      </button>
+      <div class="hero-foot"><span>4 YEARS OF MAKING</span><span>EDIT · SHOOT · COLOR</span><span>SCROLL TO EXPLORE ↓</span></div>
+    </section>
 
-          <div class="hero-actions">
-            <a href="#portfolio" class="btn btn-primary">Xem portfolio</a>
-            <a href="#contact" class="btn btn-secondary">Liên hệ</a>
-          </div>
+    <section class="section wrap" id="work">
+      <div class="section-head"><div><p class="eyebrow">01 / THE PORTFOLIO</p><h2>Selected <em>works.</em></h2></div><p class="section-note">Một vài dự án đại diện cho góc nhìn, kỹ thuật và phong cách hình ảnh của mình.</p></div>
+      <div class="filters" id="filters" aria-label="Lọc dự án">
+        <button class="filter active" data-filter="All">All work</button><button class="filter" data-filter="MV/TVC">MV / TVC</button><button class="filter" data-filter="Ads">Ads</button><button class="filter" data-filter="Social">Social</button><button class="filter" data-filter="Reel/TikTok">Reel / TikTok</button>
+      </div>
+      <div class="project-count"><span id="project-count">0</span> PROJECTS</div>
+      <div class="project-grid" id="project-grid"><p class="loading">Đang tải dự án…</p></div>
+    </section>
 
-          <div class="stats">
-            <div>
-              <strong>3+</strong>
-              <span>Năm kinh nghiệm</span>
-            </div>
-            <div>
-              <strong>50+</strong>
-              <span>Dự án hoàn thành</span>
-            </div>
-            <div>
-              <strong>100%</strong>
-              <span>Đam mê sáng tạo</span>
-            </div>
-          </div>
-        </div>
+    <section class="bts-section" id="bts">
+      <div class="wrap section">
+        <div class="section-head"><div><p class="eyebrow">02 / OFF CAMERA</p><h2>Behind the <em>scenes.</em></h2></div><p class="section-note">Những khoảnh khắc phía sau khung hình — set quay, ánh sáng, ekip và hành trình tạo nên sản phẩm cuối cùng.</p></div>
+        <div class="bts-grid" id="bts-grid"><p class="loading">Đang tải hình hậu trường…</p></div>
+        <p class="bts-hint">Ảnh hậu trường được cập nhật qua Pages CMS.</p>
+      </div>
+    </section>
 
-        <div class="hero-visual">
-          <div class="photo-frame">
-            <img src="assets/profile.jpg" alt="Quoc Vo - Editor & Videographer" />
-          </div>
+    <section class="section wrap" id="about">
+      <div class="section-head"><div><p class="eyebrow">03 / A LITTLE ABOUT ME</p><h2>Craft first.<br><em>Feeling always.</em></h2></div></div>
+      <div class="about-layout">
+        <div class="about-statement">Mình tin rằng một video tốt không chỉ đẹp — mà còn khiến người xem cảm nhận được điều gì đó.</div>
+        <div class="about-details">
+          <p>Với 4 năm kinh nghiệm trong lĩnh vực hậu kỳ và quay dựng, mình làm việc xuyên suốt từ ghi hình đến hoàn thiện màu sắc, nhịp dựng và cảm xúc hình ảnh.</p>
+          <div class="specialty"><span>CORE STRENGTH</span><strong>Beauty color grading</strong><p>Tối ưu tông da, ánh sáng và sắc độ để tạo nên hình ảnh sạch, tinh tế, có chiều sâu.</p></div>
+          <div class="specialty"><span>TOOLS</span><p>Premiere Pro · After Effects · DaVinci Resolve · Photoshop · Lightroom · CapCut</p></div>
+          <div class="specialty"><span>WORKFLOW</span><p>Ứng dụng AI phù hợp vào quy trình sáng tạo và hậu kỳ, hỗ trợ tăng tốc công việc mà vẫn giữ kiểm soát thẩm mỹ.</p></div>
         </div>
       </div>
     </section>
 
-    <section id="about" class="section">
-      <div class="container">
-        <div class="section-heading">
-          <p class="eyebrow">Giới thiệu</p>
-          <h2>Về tôi</h2>
-        </div>
-
-        <div class="about-grid">
-          <div class="about-image">
-            <img src="assets/about.jpg" alt="About Quoc Vo" />
-          </div>
-
-          <div class="about-copy">
-            <p>
-              Xin chào, mình là Quoc Vo, một Editor và Videographer với niềm đam mê sáng tạo hình ảnh và dựng nên những câu chuyện bằng video.
-            </p>
-            <p>
-              Mình thích làm việc với các dự án có tính thẩm mỹ, truyền cảm xúc và phù hợp với mục tiêu truyền thông của thương hiệu hoặc cá nhân.
-            </p>
-            <p>
-              Mình chuyên về chỉnh sửa video, dựng hình, xử lý màu sắc, âm thanh và tạo ra các sản phẩm có chất lượng hình ảnh cao, thu hút người xem và tạo ấn tượng lâu dài.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="portfolio" class="section dark">
-      <div class="container">
-        <div class="section-heading">
-          <p class="eyebrow">Portfolio</p>
-          <h2>Các dự án gần đây</h2>
-        </div>
-
-        <div id="portfolioGrid" class="portfolio-grid"></div>
-      </div>
-    </section>
-
-    <section id="services" class="section">
-      <div class="container">
-        <div class="section-heading">
-          <p class="eyebrow">Dịch vụ</p>
-          <h2>Mình làm gì</h2>
-        </div>
-
-        <div class="services-grid">
-          <div class="service-card">
-            <h3>Video Editing</h3>
-            <p>Chỉnh sửa video sáng tạo, mượt mà và phù hợp với phong cách thương hiệu, campaign hoặc nội dung truyền thông.</p>
-          </div>
-
-          <div class="service-card">
-            <h3>Videography</h3>
-            <p>Quay phim, dựng hình, ghi lại khoảnh khắc và tạo cảm xúc thực sự trong từng khung hình.</p>
-          </div>
-
-          <div class="service-card">
-            <h3>Social Media Content</h3>
-            <p>Thiết kế nội dung video ngắn, thu hút người xem và tối ưu hiệu quả trên mạng xã hội.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="contact" class="section contact-section">
-      <div class="container">
-        <div class="section-heading">
-          <p class="eyebrow">Liên hệ</p>
-          <h2>Hợp tác cùng mình</h2>
-        </div>
-
-        <div class="contact-box">
-          <a href="mailto:quocvo209@gmail.com">quocvo209@gmail.com</a>
-          <a href="https://www.facebook.com/quocvo20.09/" target="_blank" rel="noreferrer">Facebook</a>
-          <a href="tel:+84707068508">Zalo: +84 707 068 508</a>
-          <a href="YOUR_CMS_LINK_HERE" target="_blank" rel="noreferrer">CMS / Quản lý nội dung</a>
-        </div>
-      </div>
-    </section>
+    <section class="contact-section" id="contact"><div class="wrap contact-inner"><p class="eyebrow">04 / HAVE A PROJECT?</p><h2>Let's make<br><em>something matter.</em></h2><a class="contact-email" href="mailto:quocvo209@gmail.com">quocvo209@gmail.com ↗</a><div class="contact-links"><a href="https://www.facebook.com/quocvo20.09/" target="_blank" rel="noreferrer">Facebook ↗</a><a href="tel:+84707068508">Zalo / Phone ↗</a><a href="https://app.pagescms.org/" target="_blank" rel="noreferrer">Manage content via Pages CMS ↗</a></div></div></section>
   </main>
+  <footer class="footer wrap"><a class="brand" href="#top">QUOCVO<span>®</span></a><span>INDEPENDENT VIDEO CREATIVE · <span id="year">2026</span></span><a href="#top">BACK TO TOP ↑</a></footer>
 
-  <footer class="footer">
-    <div class="container footer-inner">
-      <p>© 2026 Quoc Vo. All rights reserved.</p>
-    </div>
-  </footer>
-
-  <script src="app.js"></script>
+  <div class="video-modal" id="video-modal" aria-hidden="true" role="dialog" aria-label="Video player">
+    <button class="modal-close" id="modal-close" aria-label="Đóng video">×</button><div class="video-frame-wrap"><iframe id="video-frame" title="Project video player" src="" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>
+  </div>
+  <div class="lightbox" id="lightbox" aria-hidden="true"><button id="lightbox-close" aria-label="Đóng ảnh">×</button><img id="lightbox-image" alt=""></div>
 </body>
 </html>
