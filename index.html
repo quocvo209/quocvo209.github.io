@@ -51,7 +51,6 @@
             return <i data-lucide={name} className={className} {...props}></i>;
         };
 
-        // Hàm trích xuất ID YouTube chuẩn xác từ link thông thường
         const parseYoutubeUrl = (inputUrl) => {
             if (!inputUrl) return { embedUrl: '' };
             const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
@@ -66,22 +65,14 @@
         };
 
         const defaultProjects = [
-            { id: 1, title: 'TVC Định vị niềng răng', category: 'TVC/MV', url: 'https://www.youtube-nocookie.com/embed/O9uyMBMOFgU?rel=0', thumbnail: 'https://img.youtube.com/vi/O9uyMBMOFgU/hqdefault.jpg', desc: 'Sản phẩm TVC quảng cáo nha khoa chuyên nghiệp.' },
-            { id: 2, title: 'Beauty Lookbook - Glamourous Skin', category: 'Color Grading', url: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ', thumbnail: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=1200', desc: 'Thế mạnh chuyên sâu Color Grading beauty, giữ tone da mịn màng, trong trẻo.' },
-            { id: 3, title: 'TikTok Viral Reel - Fashion Brand', category: 'Reels/TikTok', url: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ', thumbnail: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=1200', desc: 'Video ngắn xu hướng, sound design bắt tai, giữ chân người xem cao.' }
-        ];
-
-        const defaultBts = [
-            { id: 1, url: 'https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?auto=format&fit=crop&q=80&w=800', caption: 'Set up góc máy quay MV tại studio' },
-            { id: 2, url: 'https://images.unsplash.com/photo-1574717025055-7e214d648439?auto=format&fit=crop&q=80&w=800', caption: 'Hậu trường cân chỉnh màu sắc DaVinci Resolve' }
+            { id: 1, title: 'TVC Định vị niềng răng', category: 'TVC/MV', url: 'https://www.youtube-nocookie.com/embed/O9uyMBMOFgU?rel=0', rawVideoInput: 'https://www.youtube.com/watch?v=O9uyMBMOFgU', thumbnail: 'https://img.youtube.com/vi/O9uyMBMOFgU/hqdefault.jpg', desc: 'Sản phẩm TVC quảng cáo nha khoa chuyên nghiệp.' },
+            { id: 2, title: 'Beauty Lookbook - Glamourous Skin', category: 'Color Grading', url: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ', rawVideoInput: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', thumbnail: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=1200', desc: 'Thế mạnh chuyên sâu Color Grading beauty, giữ tone da mịn màng, trong trẻo.' }
         ];
 
         function App() {
             const [projects, setProjects] = useState([]);
-            const [btsPhotos, setBtsPhotos] = useState([]);
             const [activeCategory, setActiveCategory] = useState('All');
             const [selectedProject, setSelectedProject] = useState(null);
-            const [sliderPos, setSliderPos] = useState(50);
             
             // CMS States & Auth
             const [showCmsModal, setShowCmsModal] = useState(false);
@@ -89,27 +80,20 @@
             const [password, setPassword] = useState('');
             const [loginError, setLoginError] = useState('');
 
-            // CMS Form states
+            // CMS Form States
+            const [editingId, setEditingId] = useState(null);
             const [title, setTitle] = useState('');
             const [category, setCategory] = useState('TVC/MV');
             const [videoInput, setVideoInput] = useState('');
             const [thumbnailBase64, setThumbnailBase64] = useState('');
             const [desc, setDesc] = useState('');
 
-            const [btsUrl, setBtsUrl] = useState('');
-            const [btsCaption, setBtsCaption] = useState('');
-
             const ADMIN_PASSWORD = 'uyendan2026';
 
             useEffect(() => {
                 const savedProjects = localStorage.getItem('qv_projects');
-                const savedBts = localStorage.getItem('qv_bts');
-
                 if (savedProjects) setProjects(JSON.parse(savedProjects));
                 else { setProjects(defaultProjects); localStorage.setItem('qv_projects', JSON.stringify(defaultProjects)); }
-
-                if (savedBts) setBtsPhotos(JSON.parse(savedBts));
-                else { setBtsPhotos(defaultBts); localStorage.setItem('qv_bts', JSON.stringify(defaultBts)); }
             }, []);
 
             useEffect(() => {
@@ -129,7 +113,6 @@
                 }
             };
 
-            // Xử lý chọn file ảnh từ máy tính cho Thumbnail
             const handleThumbFileChange = (e) => {
                 const file = e.target.files[0];
                 if (file) {
@@ -141,40 +124,70 @@
                 }
             };
 
-            const handleAddProject = (e) => {
+            const resetForm = () => {
+                setEditingId(null);
+                setTitle('');
+                setCategory('TVC/MV');
+                setVideoInput('');
+                setThumbnailBase64('');
+                setDesc('');
+            };
+
+            const handleEditClick = (project) => {
+                setEditingId(project.id);
+                setTitle(project.title);
+                setCategory(project.category);
+                setVideoInput(project.rawVideoInput || project.url);
+                setThumbnailBase64(project.thumbnail);
+                setDesc(project.desc || '');
+            };
+
+            const handleSaveProject = (e) => {
                 e.preventDefault();
                 if (!title || !videoInput || !thumbnailBase64) {
-                    alert('Vui lòng điền đủ tên, link YouTube và tải lên ảnh Thumbnail từ máy tính!');
+                    alert('Vui lòng điền đủ tên, link YouTube và chọn ảnh Thumbnail!');
                     return;
                 }
 
                 const { embedUrl } = parseYoutubeUrl(videoInput);
 
-                const newItem = {
-                    id: Date.now(),
-                    title,
-                    category,
-                    url: embedUrl || videoInput,
-                    thumbnail: thumbnailBase64,
-                    desc
-                };
+                if (editingId) {
+                    // Cập nhật dự án cũ
+                    const updated = projects.map(p => {
+                        if (p.id === editingId) {
+                            return {
+                                ...p,
+                                title,
+                                category,
+                                url: embedUrl || videoInput,
+                                rawVideoInput: videoInput,
+                                thumbnail: thumbnailBase64,
+                                desc
+                            };
+                        }
+                        return p;
+                    });
+                    setProjects(updated);
+                    localStorage.setItem('qv_projects', JSON.stringify(updated));
+                    alert('Đã cập nhật dự án thành công!');
+                } else {
+                    // Thêm dự án mới
+                    const newItem = {
+                        id: Date.now(),
+                        title,
+                        category,
+                        url: embedUrl || videoInput,
+                        rawVideoInput: videoInput,
+                        thumbnail: thumbnailBase64,
+                        desc
+                    };
+                    const updated = [newItem, ...projects];
+                    setProjects(updated);
+                    localStorage.setItem('qv_projects', JSON.stringify(updated));
+                    alert('Đã thêm dự án mới thành công!');
+                }
 
-                const updated = [newItem, ...projects];
-                setProjects(updated);
-                localStorage.setItem('qv_projects', JSON.stringify(updated));
-                setTitle(''); setVideoInput(''); setThumbnailBase64(''); setDesc('');
-                alert('Đã thêm dự án mới thành công!');
-            };
-
-            const handleAddBts = (e) => {
-                e.preventDefault();
-                if (!btsUrl) return;
-                const newItem = { id: Date.now(), url: btsUrl, caption: btsCaption || 'Hậu trường quay phim' };
-                const updated = [newItem, ...btsPhotos];
-                setBtsPhotos(updated);
-                localStorage.setItem('qv_bts', JSON.stringify(updated));
-                setBtsUrl(''); setBtsCaption('');
-                alert('Đã thêm ảnh hậu trường thành công!');
+                resetForm();
             };
 
             const deleteProject = (id) => {
@@ -182,14 +195,7 @@
                     const updated = projects.filter(p => p.id !== id);
                     setProjects(updated);
                     localStorage.setItem('qv_projects', JSON.stringify(updated));
-                }
-            };
-
-            const deleteBts = (id) => {
-                if (confirm('Bạn có chắc muốn xóa ảnh này?')) {
-                    const updated = btsPhotos.filter(b => b.id !== id);
-                    setBtsPhotos(updated);
-                    localStorage.setItem('qv_bts', JSON.stringify(updated));
+                    if (editingId === id) resetForm();
                 }
             };
 
@@ -223,11 +229,6 @@
                         <p className="text-base md:text-xl text-espresso-800/80 max-w-2xl mx-auto mb-10 leading-relaxed">
                             Chuyên gia Dựng phim & Color Grading Beauty chuyên nghiệp. Ứng dụng kỹ thuật dựng hiện đại kết hợp công nghệ AI tối ưu quy trình sản xuất hình ảnh.
                         </p>
-                        <div className="flex flex-wrap justify-center gap-3 max-w-3xl mx-auto">
-                            {['Premiere Pro', 'After Effects', 'DaVinci Resolve', 'Photoshop', 'Lightroom', 'CapCut', 'AI Video Tools'].map((tool, idx) => (
-                                <span key={idx} className="px-4 py-2 rounded-xl bg-beige-100 border border-beige-200 text-xs md:text-sm font-medium text-espresso-900 shadow-sm">{tool}</span>
-                            ))}
-                        </div>
                     </section>
 
                     {/* Projects Gallery */}
@@ -275,7 +276,6 @@
                     {/* Contact */}
                     <section id="contact" className="py-20 px-6 max-w-4xl mx-auto text-center">
                         <h2 className="text-3xl md:text-4xl font-bold mb-4">Kết Nối Hợp Tác</h2>
-                        <p className="text-espresso-800/70 mb-10 max-w-lg mx-auto">Liên hệ trực tiếp qua Zalo hoặc Facebook.</p>
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                             <a href="https://zalo.me/84707068508" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-espresso-900 text-beige-50 font-semibold hover:bg-gold transition-all shadow-lg">
                                 <Icon name="message-circle" className="w-5 h-5 text-gold" /> Zalo: +84 707068508
@@ -332,8 +332,17 @@
                                         </form>
                                     ) : (
                                         <div className="space-y-6">
-                                            <form onSubmit={handleAddProject} className="space-y-4 bg-beige-50 p-6 rounded-2xl border border-beige-200">
-                                                <h4 className="font-bold text-base text-gold">Thêm Dự Án Video Mới</h4>
+                                            {/* Form Thêm/Chỉnh Sửa */}
+                                            <form onSubmit={handleSaveProject} className="space-y-4 bg-beige-50 p-6 rounded-2xl border border-beige-200">
+                                                <div className="flex justify-between items-center">
+                                                    <h4 className="font-bold text-base text-gold">
+                                                        {editingId ? 'Chỉnh Sửa Dự Án' : 'Thêm Dự Án Video Mới'}
+                                                    </h4>
+                                                    {editingId && (
+                                                        <button type="button" onClick={resetForm} className="text-xs text-gray-500 hover:underline">Hủy sửa (Thêm mới)</button>
+                                                    )}
+                                                </div>
+
                                                 <div>
                                                     <label className="block text-xs font-semibold mb-1">Tên dự án *</label>
                                                     <input type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder="TVC Định vị..." className="w-full px-4 py-2 rounded-xl border text-sm" required />
@@ -353,30 +362,38 @@
                                                         </select>
                                                     </div>
                                                     <div>
-                                                        <label className="block text-xs font-semibold mb-1">Ảnh Thumbnail từ máy tính *</label>
-                                                        <input type="file" accept="image/*" onChange={handleThumbFileChange} className="w-full px-2 py-1.5 rounded-xl border text-xs bg-white file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:bg-beige-200 file:font-semibold" required />
+                                                        <label className="block text-xs font-semibold mb-1">
+                                                            {editingId ? 'Thay ảnh Thumbnail mới (Nếu cần)' : 'Ảnh Thumbnail từ máy tính *'}
+                                                        </label>
+                                                        <input type="file" accept="image/*" onChange={handleThumbFileChange} className="w-full px-2 py-1.5 rounded-xl border text-xs bg-white file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:bg-beige-200 file:font-semibold" required={!editingId && !thumbnailBase64} />
                                                     </div>
                                                 </div>
                                                 <div>
                                                     <label className="block text-xs font-semibold mb-1">Mô tả</label>
                                                     <textarea value={desc} onChange={e => setDesc(e.target.value)} placeholder="Mô tả..." className="w-full px-4 py-2 rounded-xl border text-sm h-16"></textarea>
                                                 </div>
-                                                <button type="submit" className="w-full py-3 rounded-xl bg-espresso-900 text-beige-50 font-semibold hover:bg-gold text-sm">Đăng Dự Án</button>
+                                                <button type="submit" className="w-full py-3 rounded-xl bg-espresso-900 text-beige-50 font-semibold hover:bg-gold text-sm transition-colors">
+                                                    {editingId ? 'Lưu Thay Đổi' : 'Đăng Dự Án'}
+                                                </button>
                                             </form>
 
+                                            {/* Danh sách dự án */}
                                             <div className="bg-beige-50 p-6 rounded-2xl border">
                                                 <div className="flex justify-between items-center mb-3">
                                                     <h4 className="font-bold text-sm">Danh Sách Dự Án ({projects.length})</h4>
-                                                    <button onClick={() => { if(confirm('Reset về mặc định?')) { localStorage.removeItem('qv_projects'); location.reload(); } }} className="text-xs text-red-500 hover:underline">Reset dữ liệu cũ</button>
+                                                    <button onClick={() => { if(confirm('Reset dữ liệu về mặc định?')) { localStorage.removeItem('qv_projects'); location.reload(); } }} className="text-xs text-red-500 hover:underline">Reset dữ liệu cũ</button>
                                                 </div>
-                                                <div className="space-y-2 max-h-40 overflow-y-auto">
+                                                <div className="space-y-2 max-h-48 overflow-y-auto">
                                                     {projects.map(p => (
-                                                        <div key={p.id} className="flex items-center justify-between bg-white p-2.5 rounded-xl border">
+                                                        <div key={p.id} className={`flex items-center justify-between p-2.5 rounded-xl border transition-colors ${editingId === p.id ? 'bg-amber-50 border-gold' : 'bg-white border-beige-200'}`}>
                                                             <div className="flex items-center gap-2 min-w-0">
                                                                 <img src={p.thumbnail} className="w-8 h-8 rounded object-cover" />
                                                                 <span className="text-xs font-medium truncate">{p.title}</span>
                                                             </div>
-                                                            <button onClick={() => deleteProject(p.id)} className="text-red-500 hover:text-red-700 text-xs font-semibold">Xóa</button>
+                                                            <div className="flex items-center gap-3">
+                                                                <button onClick={() => handleEditClick(p)} className="text-gold hover:underline text-xs font-semibold">Sửa</button>
+                                                                <button onClick={() => deleteProject(p.id)} className="text-red-500 hover:text-red-700 text-xs font-semibold">Xóa</button>
+                                                            </div>
                                                         </div>
                                                     ))}
                                                 </div>
