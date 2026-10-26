@@ -99,7 +99,7 @@
             const [btsUrl, setBtsUrl] = useState('');
             const [btsCaption, setBtsCaption] = useState('');
 
-            const ADMIN_PASSWORD = 'quocvo2026';
+            const ADMIN_PASSWORD = 'uyendan2026';
 
             useEffect(() => {
                 const savedProjects = localStorage.getItem('qv_projects');
@@ -326,7 +326,7 @@
                                     {!isLoggedIn ? (
                                         <form onSubmit={handleLogin} className="space-y-4 py-8 text-center max-w-sm mx-auto">
                                             <h4 className="font-bold text-lg">Mật Khẩu Quản Trị</h4>
-                                            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Mật khẩu..." className="w-full px-4 py-3 rounded-xl border border-beige-300 text-sm text-center" required />
+                                            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Nhập mật khẩu truy cập..." className="w-full px-4 py-3 rounded-xl border border-beige-300 text-sm text-center" required />
                                             {loginError && <p className="text-xs text-red-500 font-medium">{loginError}</p>}
                                             <button type="submit" className="w-full py-3 rounded-xl bg-espresso-900 text-beige-50 font-semibold hover:bg-gold text-sm">Đăng Nhập</button>
                                         </form>
