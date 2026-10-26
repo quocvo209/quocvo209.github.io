@@ -1,78 +1,452 @@
-<!doctype html>
-<html lang="vi">
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f3efe5">
-  <meta name="description" content="Quoc Vo — Video Editor & Videographer. TVC, music video, social content, advertising and beauty color grading.">
-  <title>QUOCVO® — Video Editor & Videographer</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  <script src="script.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quốc Võ Production | Portfolio & Videographer</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React & Babel for Local Single File Component -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts: Be Vietnam Pro & Inter (Tiếng Việt 100% không lỗi font) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        beige: {
+                            50: '#FAF7F2',
+                            100: '#F3EFE6',
+                            200: '#E8E1D3',
+                            300: '#D6CBBA',
+                        },
+                        espresso: {
+                            800: '#2A2421',
+                            900: '#1F1A17',
+                        },
+                        gold: {
+                            DEFAULT: '#A37832',
+                            light: '#C49747'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Be Vietnam Pro', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FAF7F2;
+            color: #1F1A17;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+    </style>
 </head>
-<body>
-  <header class="site-header">
-    <a class="brand" href="#top" aria-label="QuocVo home">QUOCVO<span>®</span></a>
-    <button class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-label="Mở menu">☰</button>
-    <nav class="nav" id="nav">
-      <a href="#work">Selected work</a><a href="#bts">Behind the scenes</a><a href="#about">About</a><a class="nav-contact" href="#contact">Let's talk ↗</a>
-    </nav>
-  </header>
+<body class="bg-beige-50 text-espresso-900 antialiased selection:bg-gold selection:text-white">
+    <div id="root"></div>
 
-  <main id="top">
-    <section class="hero wrap">
-      <div class="hero-topline"><span>INDEPENDENT CREATIVE · VIETNAM</span><span>VIDEO EDITOR / VIDEOGRAPHER</span></div>
-      <h1>IMAGES<br><em>IN MOTION.</em></h1>
-      <div class="hero-bottom">
-        <p class="hero-intro">Mình là Quốc — người kể chuyện bằng hình ảnh, chuyển động và màu sắc. Từ TVC, music video đến nội dung social, mình tạo ra những khung hình có chủ đích và cảm xúc.</p>
-        <a class="text-link" href="#work">KHÁM PHÁ DỰ ÁN <span>↓</span></a>
-      </div>
-      <button class="hero-reel" id="hero-reel" type="button" aria-label="Xem showreel">
-        <div class="hero-reel-image" id="hero-reel-image"><div class="reel-placeholder"><span>QV / SHOWREEL</span><b>Selected frames<br>moving stories.</b></div></div>
-        <span class="reel-play" id="hero-reel-play">↗</span><span class="reel-label" id="hero-reel-caption">SELECTED WORKS — 2022–2026</span>
-      </button>
-      <div class="hero-foot"><span>4 YEARS OF MAKING</span><span>EDIT · SHOOT · COLOR</span><span>SCROLL TO EXPLORE ↓</span></div>
-    </section>
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
 
-    <section class="section wrap" id="work">
-      <div class="section-head"><div><p class="eyebrow">01 / THE PORTFOLIO</p><h2>Selected <em>works.</em></h2></div><p class="section-note">Một vài dự án đại diện cho góc nhìn, kỹ thuật và phong cách hình ảnh của mình.</p></div>
-      <div class="filters" id="filters" aria-label="Lọc dự án">
-        <button class="filter active" data-filter="All">All work</button><button class="filter" data-filter="MV/TVC">MV / TVC</button><button class="filter" data-filter="Ads">Ads</button><button class="filter" data-filter="Social">Social</button><button class="filter" data-filter="Reel/TikTok">Reel / TikTok</button>
-      </div>
-      <div class="project-count"><span id="project-count">0</span> PROJECTS</div>
-      <div class="project-grid" id="project-grid"><p class="loading">Đang tải dự án…</p></div>
-    </section>
+        // Icons helper component
+        const Icon = ({ name, className = "w-5 h-5", ...props }) => {
+            useEffect(() => {
+                if (window.lucide) {
+                    window.lucide.createIcons();
+                }
+            }, [name]);
+            return <i data-lucide={name} className={className} {...props}></i>;
+        };
 
-    <section class="bts-section" id="bts">
-      <div class="wrap section">
-        <div class="section-head"><div><p class="eyebrow">02 / OFF CAMERA</p><h2>Behind the <em>scenes.</em></h2></div><p class="section-note">Những khoảnh khắc phía sau khung hình — set quay, ánh sáng, ekip và hành trình tạo nên sản phẩm cuối cùng.</p></div>
-        <div class="bts-grid" id="bts-grid"><p class="loading">Đang tải hình hậu trường…</p></div>
-        <p class="bts-hint">Ảnh hậu trường được cập nhật qua Pages CMS.</p>
-      </div>
-    </section>
+        function App() {
+            // Dữ liệu mẫu ban đầu
+            const [projects, setProjects] = useState([
+                { id: 1, title: 'TVC Mùa Hè Rực Rỡ 2026', category: 'TVC/MV', type: 'video', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ', thumbnail: 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&q=80&w=1200', desc: 'Dựng phim nhịp độ nhanh, xử lý color grading tone màu cam ấm điện ảnh.' },
+                { id: 2, title: 'Beauty Lookbook - Glamourous Skin', category: 'Color Grading', type: 'video', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ', thumbnail: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=1200', desc: 'Thế mạnh chuyên sâu Color Grading beauty, giữ tone da mịn màng, trong trẻo.' },
+                { id: 3, title: 'TikTok Viral Reel - Fashion Brand', category: 'Reels/TikTok', type: 'video', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ', thumbnail: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=1200', desc: 'Video ngắn xu hướng, sound design bắt tai, giữ chân người xem cao.' },
+                { id: 4, title: 'Quảng cáo xe hơi điện thông minh', category: 'ADS', type: 'video', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ', thumbnail: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=1200', desc: 'Cắt dựng chuyên nghiệp, phối hợp kỹ xảo After Effects mượt mà.' }
+            ]);
 
-    <section class="section wrap" id="about">
-      <div class="section-head"><div><p class="eyebrow">03 / A LITTLE ABOUT ME</p><h2>Craft first.<br><em>Feeling always.</em></h2></div></div>
-      <div class="about-layout">
-        <div class="about-statement">Mình tin rằng một video tốt không chỉ đẹp — mà còn khiến người xem cảm nhận được điều gì đó.</div>
-        <div class="about-details">
-          <p>Với 4 năm kinh nghiệm trong lĩnh vực hậu kỳ và quay dựng, mình làm việc xuyên suốt từ ghi hình đến hoàn thiện màu sắc, nhịp dựng và cảm xúc hình ảnh.</p>
-          <div class="specialty"><span>CORE STRENGTH</span><strong>Beauty color grading</strong><p>Tối ưu tông da, ánh sáng và sắc độ để tạo nên hình ảnh sạch, tinh tế, có chiều sâu.</p></div>
-          <div class="specialty"><span>TOOLS</span><p>Premiere Pro · After Effects · DaVinci Resolve · Photoshop · Lightroom · CapCut</p></div>
-          <div class="specialty"><span>WORKFLOW</span><p>Ứng dụng AI phù hợp vào quy trình sáng tạo và hậu kỳ, hỗ trợ tăng tốc công việc mà vẫn giữ kiểm soát thẩm mỹ.</p></div>
-        </div>
-      </div>
-    </section>
+            const [btsPhotos, setBtsPhotos] = useState([
+                { id: 1, url: 'https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?auto=format&fit=crop&q=80&w=800', caption: 'Set up góc máy quay MV tại studio Quận 2' },
+                { id: 2, url: 'https://images.unsplash.com/photo-1574717025055-7e214d648439?auto=format&fit=crop&q=80&w=800', caption: 'Hậu trường cân chỉnh màu sắc DaVinci Resolve on-set' },
+                { id: 3, url: 'https://images.unsplash.com/photo-1512758017271-d7b84c2113f1?auto=format&fit=crop&q=80&w=800', caption: 'Cầm máy quay chống rung trong phân cảnh hành động' }
+            ]);
 
-    <section class="contact-section" id="contact"><div class="wrap contact-inner"><p class="eyebrow">04 / HAVE A PROJECT?</p><h2>Let's make<br><em>something matter.</em></h2><a class="contact-email" href="mailto:quocvo209@gmail.com">quocvo209@gmail.com ↗</a><div class="contact-links"><a href="https://www.facebook.com/quocvo20.09/" target="_blank" rel="noreferrer">Facebook ↗</a><a href="tel:+84707068508">Zalo / Phone ↗</a><a href="https://app.pagescms.org/" target="_blank" rel="noreferrer">Manage content via Pages CMS ↗</a></div></div></section>
-  </main>
-  <footer class="footer wrap"><a class="brand" href="#top">QUOCVO<span>®</span></a><span>INDEPENDENT VIDEO CREATIVE · <span id="year">2026</span></span><a href="#top">BACK TO TOP ↑</a></footer>
+            const [activeCategory, setActiveCategory] = useState('All');
+            const [selectedProject, setSelectedProject] = useState(null);
+            const [sliderPos, setSliderPos] = useState(50);
+            const [showCmsModal, setShowCmsModal] = useState(false);
 
-  <div class="video-modal" id="video-modal" aria-hidden="true" role="dialog" aria-label="Video player">
-    <button class="modal-close" id="modal-close" aria-label="Đóng video">×</button><div class="video-frame-wrap"><iframe id="video-frame" title="Project video player" src="" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>
-  </div>
-  <div class="lightbox" id="lightbox" aria-hidden="true"><button id="lightbox-close" aria-label="Đóng ảnh">×</button><img id="lightbox-image" alt=""></div>
+            // Form state CMS
+            const [newTitle, setNewTitle] = useState('');
+            const [newCategory, setNewCategory] = useState('TVC/MV');
+            const [newUrl, setNewUrl] = useState('');
+            const [newThumb, setNewThumb] = useState('');
+            const [newDesc, setNewDesc] = useState('');
+
+            // BTS Form
+            const [btsUrl, setBtsUrl] = useState('');
+            const [btsCaption, setBtsCaption] = useState('');
+
+            useEffect(() => {
+                if (window.lucide) window.lucide.createIcons();
+            });
+
+            const categories = ['All', 'TVC/MV', 'Color Grading', 'Reels/TikTok', 'ADS'];
+            const filteredProjects = activeCategory === 'All' 
+                ? projects 
+                : projects.filter(p => p.category === activeCategory);
+
+            const handleAddProject = (e) => {
+                e.preventDefault();
+                if (!newTitle || !newThumb) return;
+                const newItem = {
+                    id: Date.now(),
+                    title: newTitle,
+                    category: newCategory,
+                    type: 'video',
+                    url: newUrl || 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+                    thumbnail: newThumb,
+                    desc: newDesc
+                };
+                setProjects([newItem, ...projects]);
+                setNewTitle(''); setNewUrl(''); setNewThumb(''); setNewDesc('');
+                alert('Đã thêm dự án mới thành công!');
+            };
+
+            const handleAddBts = (e) => {
+                e.preventDefault();
+                if (!btsUrl) return;
+                const newBtsItem = {
+                    id: Date.now(),
+                    url: btsUrl,
+                    caption: btsCaption || 'Hậu trường quay phim'
+                };
+                setBtsPhotos([newBtsItem, ...btsPhotos]);
+                setBtsUrl(''); setBtsCaption('');
+                alert('Đã thêm ảnh hậu trường thành công!');
+            };
+
+            const deleteProject = (id) => {
+                if(confirm('Bạn có chắc muốn xóa dự án này?')) {
+                    setProjects(projects.filter(p => p.id !== id));
+                }
+            };
+
+            const deleteBts = (id) => {
+                if(confirm('Bạn có chắc muốn xóa ảnh này?')) {
+                    setBtsPhotos(btsPhotos.filter(b => b.id !== id));
+                }
+            };
+
+            return (
+                <div className="min-h-screen bg-beige-50 text-espresso-900 selection:bg-gold selection:text-white">
+                    {/* Header / Navbar */}
+                    <header className="sticky top-0 z-40 bg-beige-50/80 backdrop-blur-md border-b border-beige-200">
+                        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+                            <a href="#" className="text-xl md:text-2xl font-bold tracking-tight uppercase">
+                                QUỐC VÕ <span className="text-gold font-normal">PRODUCTION</span>
+                            </a>
+                            <div className="flex items-center gap-4">
+                                <a href="#contact" className="hidden sm:inline-flex items-center gap-2 text-sm font-semibold px-5 py-2.5 rounded-full bg-espresso-900 text-beige-50 hover:bg-gold transition-colors">
+                                    <Icon name="phone" className="w-4 h-4" /> Liên hệ ngay
+                                </a>
+                                <button 
+                                    onClick={() => setShowCmsModal(true)}
+                                    className="flex items-center gap-2 text-sm font-medium px-4 py-2.5 rounded-full bg-beige-200 hover:bg-gold hover:text-white transition-all shadow-sm">
+                                    <Icon name="settings" className="w-4 h-4" /> PageCMS
+                                </button>
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* Hero Section */}
+                    <section className="pt-24 pb-16 px-6 max-w-7xl mx-auto text-center">
+                        <div className="inline-block mb-4 px-4 py-1.5 rounded-full bg-beige-200/60 text-gold text-xs md:text-sm font-semibold tracking-widest uppercase">
+                            Video Editor & Videographer • 4 Năm Kinh Nghiệm
+                        </div>
+                        <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight max-w-4xl mx-auto leading-[1.15] mb-6">
+                            Nghệ thuật kể chuyện qua <span className="text-gold italic font-serif">khung hình & sắc màu</span>.
+                        </h1>
+                        <p className="text-base md:text-xl text-espresso-800/80 max-w-2xl mx-auto mb-10 leading-relaxed">
+                            Chuyên gia Dựng phim & Color Grading Beauty chuyên nghiệp. Kết hợp kỹ thuật dựng phim điện ảnh cùng sức mạnh AI tối ưu quy trình sáng tạo.
+                        </p>
+                        
+                        {/* Software Badges */}
+                        <div className="flex flex-wrap justify-center gap-3 max-w-3xl mx-auto">
+                            {['Premiere Pro', 'After Effects', 'DaVinci Resolve', 'Photoshop', 'Lightroom', 'CapCut', 'AI Video Tools'].map((tool, idx) => (
+                                <span key={idx} className="px-4 py-2 rounded-xl bg-beige-100 border border-beige-200 text-xs md:text-sm font-medium text-espresso-900 shadow-sm">
+                                    {tool}
+                                </span>
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* Color Grading Before / After Demo Section */}
+                    <section className="py-16 px-6 max-w-5xl mx-auto">
+                        <div className="text-center mb-10">
+                            <h2 className="text-2xl md:text-3xl font-bold mb-3">Thế Mạnh Color Grading Beauty</h2>
+                            <p className="text-sm md:text-base text-espresso-800/70">Kéo thanh trượt để so sánh chất lượng hình ảnh trước và sau khi xử lý màu sắc chuyên sâu.</p>
+                        </div>
+
+                        <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-2xl select-none border-2 border-beige-200"
+                             onMouseMove={(e) => {
+                                 const rect = e.currentTarget.getBoundingClientRect();
+                                 const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
+                                 setSliderPos((x / rect.width) * 100);
+                             }}
+                             onTouchMove={(e) => {
+                                 const rect = e.currentTarget.getBoundingClientRect();
+                                 const touch = e.touches[0];
+                                 const x = Math.max(0, Math.min(touch.clientX - rect.left, rect.width));
+                                 setSliderPos((x / rect.width) * 100);
+                             }}
+                        >
+                            {/* After Image (Full background) */}
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=1400" 
+                                 alt="After Color Grading" 
+                                 className="absolute inset-0 w-full h-full object-cover filter contrast-125 saturate-110" />
+                            <div className="absolute bottom-4 right-4 bg-espresso-900/80 text-beige-50 px-3 py-1 rounded-md text-xs font-semibold backdrop-blur-sm">
+                                SAU KHI COLOR GRADING
+                            </div>
+
+                            {/* Before Image (Clipped) */}
+                            <div className="absolute inset-0 overflow-hidden" style={{ width: `${sliderPos}%` }}>
+                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=1400" 
+                                     alt="Before Color Grading" 
+                                     className="absolute inset-0 w-full h-full object-cover max-w-none filter grayscale brightness-90 contrast-90" 
+                                     style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                <div className="absolute bottom-4 left-4 bg-espresso-900/80 text-beige-50 px-3 py-1 rounded-md text-xs font-semibold backdrop-blur-sm">
+                                    GỐC (BEFORE)
+                                </div>
+                            </div>
+
+                            {/* Divider Line */}
+                            <div className="absolute top-0 bottom-0 w-1 bg-gold shadow-[0_0_10px_rgba(163,120,50,0.8)]" style={{ left: `${sliderPos}%` }}>
+                                <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-gold text-white flex items-center justify-center shadow-lg">
+                                    <Icon name="chevrons-left-right" className="w-4 h-4" />
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Projects Gallery Section */}
+                    <section id="portfolio" className="py-16 px-6 max-w-7xl mx-auto">
+                        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
+                            <div>
+                                <h2 className="text-3xl font-bold tracking-tight mb-2">Dự Án Tiêu Biểu</h2>
+                                <p className="text-espresso-800/70 text-sm md:text-base">Tuyển tập các sản phẩm TVC, MV, Quảng cáo và Reels/TikTok.</p>
+                            </div>
+
+                            {/* Filter Tabs */}
+                            <div className="flex flex-wrap gap-2 bg-beige-200/60 p-1.5 rounded-2xl">
+                                {categories.map((cat, idx) => (
+                                    <button
+                                        key={idx}
+                                        onClick={() => setActiveCategory(cat)}
+                                        className={`px-4 py-2 rounded-xl text-xs md:text-sm font-medium transition-all ${activeCategory === cat ? 'bg-espresso-900 text-beige-50 shadow-md' : 'text-espresso-900 hover:bg-beige-100'}`}
+                                    >
+                                        {cat}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Project Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+                            {filteredProjects.map((project) => (
+                                <div key={project.id} className="group bg-white rounded-2xl overflow-hidden border border-beige-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
+                                    <div className="relative aspect-[16/9] overflow-hidden bg-beige-100 cursor-pointer" onClick={() => setSelectedProject(project)}>
+                                        <img src={project.thumbnail} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                        <div className="absolute inset-0 bg-espresso-900/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <div className="w-14 h-14 rounded-full bg-gold text-white flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-transform">
+                                                <Icon name="play" className="w-6 h-6 fill-current" />
+                                            </div>
+                                        </div>
+                                        <span className="absolute top-4 left-4 bg-espresso-900/80 text-beige-50 text-xs font-semibold px-3 py-1 rounded-full backdrop-blur-sm">
+                                            {project.category}
+                                        </span>
+                                    </div>
+                                    <div className="p-6 flex flex-col flex-grow justify-between">
+                                        <div>
+                                            <h3 className="text-xl font-bold mb-2 group-hover:text-gold transition-colors">{project.title}</h3>
+                                            <p className="text-espresso-800/70 text-sm mb-4 leading-relaxed">{project.desc}</p>
+                                        </div>
+                                        <div className="flex items-center justify-between pt-4 border-t border-beige-100">
+                                            <button onClick={() => setSelectedProject(project)} className="text-sm font-semibold text-gold flex items-center gap-1.5 hover:underline">
+                                                Xem video chi tiết <Icon name="arrow-right" className="w-4 h-4" />
+                                            </button>
+                                            <button onClick={() => deleteProject(project.id)} className="text-red-500 hover:text-red-700 p-1 text-xs" title="Xóa dự án">
+                                                <Icon name="trash-2" className="w-4 h-4" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* Behind The Scenes (BTS) Gallery */}
+                    <section className="py-16 px-6 max-w-7xl mx-auto bg-beige-100/50 rounded-3xl my-12 border border-beige-200">
+                        <div className="text-center max-w-2xl mx-auto mb-10">
+                            <h2 className="text-3xl font-bold mb-3">Hậu Trường (Behind The Scenes)</h2>
+                            <p className="text-espresso-800/70 text-sm md:text-base">Những khoảnh khắc tác nghiệp thực tế trên các set quay chuyên nghiệp.</p>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                            {btsPhotos.map((photo) => (
+                                <div key={photo.id} className="group relative bg-white rounded-2xl overflow-hidden shadow-sm border border-beige-200">
+                                    <div className="aspect-[4/3] overflow-hidden">
+                                        <img src={photo.url} alt="BTS" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                    </div>
+                                    <div className="p-4 flex items-center justify-between bg-white">
+                                        <p className="text-xs md:text-sm font-medium text-espresso-900 truncate pr-2">{photo.caption}</p>
+                                        <button onClick={() => deleteBts(photo.id)} className="text-red-400 hover:text-red-600">
+                                            <Icon name="trash-2" className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* Minimalist Contact Section */}
+                    <section id="contact" className="py-20 px-6 max-w-4xl mx-auto text-center">
+                        <h2 className="text-3xl md:text-4xl font-bold mb-4">Kết Nối Hợp Tác</h2>
+                        <p className="text-espresso-800/70 mb-10 max-w-lg mx-auto">Hãy liên hệ trực tiếp qua Zalo hoặc Facebook để trao đổi nhanh chóng về dự án của bạn.</p>
+
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                            <a href="https://zalo.me/84707068508" target="_blank" rel="noopener noreferrer" 
+                               className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-espresso-900 text-beige-50 font-semibold hover:bg-gold transition-all shadow-lg hover:-translate-y-0.5">
+                                <Icon name="message-circle" className="w-5 h-5 text-gold group-hover:text-white" />
+                                Zalo: +84 707068508
+                            </a>
+                            <a href="https://www.facebook.com/quocvo20.09/" target="_blank" rel="noopener noreferrer" 
+                               className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-white border-2 border-beige-200 text-espresso-900 font-semibold hover:border-gold hover:text-gold transition-all shadow-sm hover:-translate-y-0.5">
+                                <Icon name="facebook" className="w-5 h-5 text-blue-600" />
+                                Facebook Quốc Võ
+                            </a>
+                        </div>
+                    </section>
+
+                    {/* Footer */}
+                    <footer className="py-8 border-t border-beige-200 text-center text-xs text-espresso-800/60">
+                        <p>© 2026 Quốc Võ Production. All rights reserved.</p>
+                    </footer>
+
+                    {/* Video Modal Player */}
+                    {selectedProject && (
+                        <div className="fixed inset-0 z-50 bg-espresso-900/80 backdrop-blur-md flex items-center justify-center p-4">
+                            <div className="bg-white rounded-3xl overflow-hidden max-w-4xl w-full shadow-2xl border border-beige-200">
+                                <div className="p-4 flex items-center justify-between border-b border-beige-200">
+                                    <h3 className="font-bold text-lg">{selectedProject.title}</h3>
+                                    <button onClick={() => setSelectedProject(null)} className="w-10 h-10 rounded-full bg-beige-100 flex items-center justify-center hover:bg-red-100 hover:text-red-600 transition-colors">
+                                        <Icon name="x" className="w-5 h-5" />
+                                    </button>
+                                </div>
+                                <div className="aspect-[16/9] w-full bg-black">
+                                    <iframe src={selectedProject.url} title={selectedProject.title} className="w-full h-full border-0" allowFullScreen></iframe>
+                                </div>
+                                <div className="p-6">
+                                    <span className="inline-block px-3 py-1 rounded-full bg-beige-200 text-xs font-semibold mb-2">{selectedProject.category}</span>
+                                    <p className="text-espresso-800/80 text-sm md:text-base">{selectedProject.desc}</p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* PageCMS Management Modal */}
+                    {showCmsModal && (
+                        <div className="fixed inset-0 z-50 bg-espresso-900/80 backdrop-blur-md flex items-center justify-center p-4">
+                            <div className="bg-white rounded-3xl overflow-hidden max-w-2xl w-full shadow-2xl border border-beige-200 max-h-[90vh] flex flex-col">
+                                <div className="p-6 flex items-center justify-between border-b border-beige-200 bg-beige-50">
+                                    <div className="flex items-center gap-2">
+                                        <Icon name="settings" className="w-6 h-6 text-gold" />
+                                        <h3 className="font-bold text-xl">Hệ Thống Quản Trị PageCMS</h3>
+                                    </div>
+                                    <button onClick={() => setShowCmsModal(false)} className="w-10 h-10 rounded-full bg-beige-200 flex items-center justify-center hover:bg-red-100 hover:text-red-600 transition-colors">
+                                        <Icon name="x" className="w-5 h-5" />
+                                    </button>
+                                </div>
+                                
+                                <div className="p-6 overflow-y-auto space-y-8">
+                                    {/* Add Project Form */}
+                                    <form onSubmit={handleAddProject} className="space-y-4 bg-beige-50 p-6 rounded-2xl border border-beige-200">
+                                        <h4 className="font-bold text-base flex items-center gap-2 text-gold">
+                                            <Icon name="plus-circle" className="w-5 h-5" /> Thêm Dự Án Mới
+                                        </h4>
+                                        <div>
+                                            <label className="block text-xs font-semibold mb-1">Tên dự án</label>
+                                            <input type="text" value={newTitle} onChange={e => setNewTitle(e.target.value)} placeholder="Ví dụ: TVC Quảng cáo xe điện..." className="w-full px-4 py-2.5 rounded-xl border border-beige-300 text-sm focus:outline-none focus:border-gold" required />
+                                        </div>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                            <div>
+                                                <label className="block text-xs font-semibold mb-1">Danh mục</label>
+                                                <select value={newCategory} onChange={e => setNewCategory(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-beige-300 text-sm focus:outline-none focus:border-gold">
+                                                    <option value="TVC/MV">TVC/MV</option>
+                                                    <option value="Color Grading">Color Grading</option>
+                                                    <option value="Reels/TikTok">Reels/TikTok</option>
+                                                    <option value="ADS">ADS</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs font-semibold mb-1">Link Ảnh Thumbnail (URL)</label>
+                                                <input type="url" value={newThumb} onChange={e => setNewThumb(e.target.value)} placeholder="https://images.unsplash.com/..." className="w-full px-4 py-2.5 rounded-xl border border-beige-300 text-sm focus:outline-none focus:border-gold" required />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-semibold mb-1">Link Video Nhúng (YouTube/MP4 Embed URL)</label>
+                                            <input type="url" value={newUrl} onChange={e => setNewUrl(e.target.value)} placeholder="https://www.youtube.com/embed/..." className="w-full px-4 py-2.5 rounded-xl border border-beige-300 text-sm focus:outline-none focus:border-gold" />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-semibold mb-1">Mô tả ngắn</label>
+                                            <textarea value={newDesc} onChange={e => setNewDesc(e.target.value)} placeholder="Mô tả kỹ thuật dựng, phần mềm sử dụng..." className="w-full px-4 py-2.5 rounded-xl border border-beige-300 text-sm focus:outline-none focus:border-gold h-20"></textarea>
+                                        </div>
+                                        <button type="submit" className="w-full py-3 rounded-xl bg-espresso-900 text-beige-50 font-semibold hover:bg-gold transition-colors text-sm">
+                                            Đăng Dự Án Lên Web
+                                        </button>
+                                    </form>
+
+                                    {/* Add BTS Form */}
+                                    <form onSubmit={handleAddBts} className="space-y-4 bg-beige-50 p-6 rounded-2xl border border-beige-200">
+                                        <h4 className="font-bold text-base flex items-center gap-2 text-gold">
+                                            <Icon name="image" className="w-5 h-5" /> Thêm Ảnh Hậu Trường (BTS)
+                                        </h4>
+                                        <div>
+                                            <label className="block text-xs font-semibold mb-1">Link Hình Ảnh Hậu Trường (URL)</label>
+                                            <input type="url" value={btsUrl} onChange={e => setBtsUrl(e.target.value)} placeholder="https://images.unsplash.com/..." className="w-full px-4 py-2.5 rounded-xl border border-beige-300 text-sm focus:outline-none focus:border-gold" required />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-semibold mb-1">Chú thích hậu trường</label>
+                                            <input type="text" value={btsCaption} onChange={e => setBtsCaption(e.target.value)} placeholder="Ví dụ: Set up ánh sáng tại phim trường..." className="w-full px-4 py-2.5 rounded-xl border border-beige-300 text-sm focus:outline-none focus:border-gold" />
+                                        </div>
+                                        <button type="submit" className="w-full py-3 rounded-xl bg-espresso-900 text-beige-50 font-semibold hover:bg-gold transition-colors text-sm">
+                                            Đăng Ảnh Hậu Trường
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
 </body>
 </html>
