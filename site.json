@@ -1,0 +1,28 @@
+{
+  "hero": {
+    "badge": "Video Editor & Videographer • 4 Năm Kinh Nghiệm",
+    "title": "QUỐC VÕ PRODUCTION",
+    "description": "Chuyên viên Quay - Dựng phim & Color Grading. Ứng dụng kỹ thuật dựng hiện đại kết hợp công nghệ AI tối ưu quy trình sản xuất hình ảnh.",
+    "image": ""
+  },
+  "about": {
+    "badge": "Giới thiệu bản thân",
+    "heading": "Kể Chuyện Bằng Hình Ảnh & Góc Máy Tinh Tế",
+    "paragraph": "Chào bạn, mình là **Quốc Võ** — Videographer & Editor tại TP.HCM. Với hơn 4 năm làm việc trong lĩnh vực sản xuất nội dung video, mình tập trung vào việc biến ý tưởng thương hiệu thành những khung hình giàu cảm xúc và thu hút thị giác.",
+    "stat1_number": "04+",
+    "stat1_label": "Năm kinh nghiệm",
+    "stat2_number": "100+",
+    "stat2_label": "Dự án hoàn thành",
+    "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=1200",
+    "image_name": "Quốc Võ",
+    "image_role": "Videographer & Colorist",
+    "image_location": "TP. Hồ Chí Minh"
+  },
+  "contact": {
+    "description": "Bạn có dự án mới cần tư vấn quay dựng hoặc chỉnh màu chuyên nghiệp? Hãy liên hệ trực tiếp với mình qua Zalo hoặc Facebook nhé.",
+    "zalo_label": "Zalo: +84 707068508",
+    "zalo_url": "https://zalo.me/84707068508",
+    "facebook_label": "Facebook: Quốc Võ",
+    "facebook_url": "https://www.facebook.com/quocvo20.09/"
+  }
+}

@@ -1,0 +1,121 @@
+# Cấu hình Pages CMS cho Quốc Võ Production
+# Đặt file này ở thư mục gốc của repo, tên chính xác là ".pages.yml"
+
+media:
+  input: assets/uploads        # nơi ảnh tải lên được lưu trong repo
+  output: /assets/uploads      # đường dẫn ảnh khi hiển thị trên web
+
+content:
+  # ---------- THÔNG TIN WEBSITE (Hero, Giới thiệu, Liên hệ) ----------
+  - name: site
+    label: Thông tin website
+    type: file
+    path: data/site.json
+    format: json
+    fields:
+      - name: hero
+        label: Hero (đầu trang)
+        type: object
+        fields:
+          - { name: badge, label: Dòng nhãn nhỏ phía trên, type: string }
+          - { name: title, label: Tiêu đề lớn, type: string }
+          - { name: description, label: Mô tả ngắn, type: text }
+          - name: image
+            label: Ảnh Hero (tùy chọn)
+            type: image
+            description: Để trống thì Hero chỉ hiển thị chữ như hiện tại
+      - name: about
+        label: Giới thiệu bản thân (About me)
+        type: object
+        fields:
+          - { name: badge, label: Dòng nhãn nhỏ, type: string }
+          - { name: heading, label: Tiêu đề, type: string }
+          - name: paragraph
+            label: Nội dung giới thiệu
+            type: text
+            description: Muốn in đậm thì đặt chữ giữa hai dấu **, ví dụ **Quốc Võ**
+          - { name: stat1_number, label: Thống kê 1 - Con số, type: string }
+          - { name: stat1_label, label: Thống kê 1 - Nhãn, type: string }
+          - { name: stat2_number, label: Thống kê 2 - Con số, type: string }
+          - { name: stat2_label, label: Thống kê 2 - Nhãn, type: string }
+          - { name: image, label: Ảnh giới thiệu, type: image }
+          - { name: image_name, label: Tên trên ảnh, type: string }
+          - { name: image_role, label: Chức danh trên ảnh, type: string }
+          - { name: image_location, label: Địa điểm trên ảnh, type: string }
+      - name: contact
+        label: Liên hệ
+        type: object
+        fields:
+          - { name: description, label: Lời mời hợp tác, type: text }
+          - { name: zalo_label, label: Chữ trên nút Zalo, type: string }
+          - { name: zalo_url, label: Link Zalo, type: string }
+          - { name: facebook_label, label: Chữ trên nút Facebook, type: string }
+          - { name: facebook_url, label: Link Facebook, type: string }
+
+  # ---------- VIDEO DỰ ÁN ----------
+  - name: projects
+    label: Video dự án
+    type: file
+    path: data/projects.json
+    format: json
+    fields:
+      - name: projects
+        label: Danh sách video
+        type: object
+        list: true
+        fields:
+          - name: title
+            label: Tên dự án
+            type: string
+            required: true
+          - name: url
+            label: Link YouTube
+            type: string
+            required: true
+            description: Dán link dạng youtube.com/watch?v=... hoặc youtu.be/...
+          - name: category
+            label: Danh mục
+            type: select
+            required: true
+            options:
+              values:
+                - TVC/MV
+                - Color Grading
+                - Reels/TikTok
+                - ADS
+            description: Muốn thêm danh mục mới thì thêm vào danh sách "values" trong file .pages.yml
+          - name: thumbnail
+            label: Ảnh thumbnail
+            type: image
+            description: Có thể để trống, web sẽ tự lấy ảnh bìa từ YouTube
+          - name: desc
+            label: Mô tả
+            type: text
+
+  # ---------- HẬU TRƯỜNG (BTS) ----------
+  - name: bts
+    label: Hậu trường (BTS)
+    type: file
+    path: data/bts.json
+    format: json
+    fields:
+      - name: bts
+        label: Danh sách ảnh hậu trường
+        type: object
+        list: true
+        fields:
+          - name: title
+            label: Tiêu đề
+            type: string
+            required: true
+          - name: category
+            label: Nhãn / phân loại
+            type: string
+            description: Ví dụ Lighting & Setup, Color Grading
+          - name: image
+            label: Hình ảnh
+            type: image
+            required: true
+          - name: desc
+            label: Mô tả
+            type: text
