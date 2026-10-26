@@ -12,7 +12,7 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Google Fonts: Be Vietnam Pro & Inter -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -21,20 +21,9 @@
             theme: {
                 extend: {
                     colors: {
-                        beige: {
-                            50: '#FAF7F2',
-                            100: '#F3EFE6',
-                            200: '#E8E1D3',
-                            300: '#D6CBBA',
-                        },
-                        espresso: {
-                            800: '#2A2421',
-                            900: '#1F1A17',
-                        },
-                        gold: {
-                            DEFAULT: '#A37832',
-                            light: '#C49747'
-                        }
+                        beige: { 50: '#FAF7F2', 100: '#F3EFE6', 200: '#E8E1D3', 300: '#D6CBBA' },
+                        espresso: { 800: '#2A2421', 900: '#1F1A17' },
+                        gold: { DEFAULT: '#A37832', light: '#C49747' }
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
@@ -45,14 +34,8 @@
         }
     </script>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #FAF7F2;
-            color: #1F1A17;
-        }
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Be Vietnam Pro', sans-serif;
-        }
+        body { font-family: 'Inter', sans-serif; background-color: #FAF7F2; color: #1F1A17; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Be Vietnam Pro', sans-serif; }
     </style>
 </head>
 <body class="bg-beige-50 text-espresso-900 antialiased selection:bg-gold selection:text-white">
@@ -63,9 +46,7 @@
 
         const Icon = ({ name, className = "w-5 h-5", ...props }) => {
             useEffect(() => {
-                if (window.lucide) {
-                    window.lucide.createIcons();
-                }
+                if (window.lucide) window.lucide.createIcons();
             }, [name]);
             return <i data-lucide={name} className={className} {...props}></i>;
         };
@@ -94,19 +75,11 @@
                 const savedProjects = localStorage.getItem('qv_projects');
                 const savedBts = localStorage.getItem('qv_bts');
 
-                if (savedProjects) {
-                    setProjects(JSON.parse(savedProjects));
-                } else {
-                    setProjects(defaultProjects);
-                    localStorage.setItem('qv_projects', JSON.stringify(defaultProjects));
-                }
+                if (savedProjects) setProjects(JSON.parse(savedProjects));
+                else { setProjects(defaultProjects); localStorage.setItem('qv_projects', JSON.stringify(defaultProjects)); }
 
-                if (savedBts) {
-                    setBtsPhotos(JSON.parse(savedBts));
-                } else {
-                    setBtsPhotos(defaultBts);
-                    localStorage.setItem('qv_bts', JSON.stringify(defaultBts));
-                }
+                if (savedBts) setBtsPhotos(JSON.parse(savedBts));
+                else { setBtsPhotos(defaultBts); localStorage.setItem('qv_bts', JSON.stringify(defaultBts)); }
             }, []);
 
             useEffect(() => {
@@ -114,13 +87,10 @@
             });
 
             const categories = ['All', 'TVC/MV', 'Color Grading', 'Reels/TikTok', 'ADS'];
-            const filteredProjects = activeCategory === 'All' 
-                ? projects 
-                : projects.filter(p => p.category === activeCategory);
+            const filteredProjects = activeCategory === 'All' ? projects : projects.filter(p => p.category === activeCategory);
 
             return (
                 <div className="min-h-screen bg-beige-50 text-espresso-900 selection:bg-gold selection:text-white">
-                    {/* Header */}
                     <header className="sticky top-0 z-40 bg-beige-50/80 backdrop-blur-md border-b border-beige-200">
                         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
                             <a href="#" className="text-xl md:text-2xl font-bold tracking-tight uppercase">
@@ -132,7 +102,6 @@
                         </div>
                     </header>
 
-                    {/* Hero Section */}
                     <section className="pt-24 pb-16 px-6 max-w-7xl mx-auto text-center">
                         <div className="inline-block mb-4 px-4 py-1.5 rounded-full bg-beige-200/60 text-gold text-xs md:text-sm font-semibold tracking-widest uppercase">
                             Video Editor & Videographer • 4 Năm Kinh Nghiệm
@@ -143,24 +112,19 @@
                         <p className="text-base md:text-xl text-espresso-800/80 max-w-2xl mx-auto mb-10 leading-relaxed">
                             Chuyên gia Dựng phim & Color Grading Beauty chuyên nghiệp. Ứng dụng kỹ thuật dựng hiện đại kết hợp công nghệ AI tối ưu quy trình sản xuất hình ảnh.
                         </p>
-
-                        {/* Software Badges */}
                         <div className="flex flex-wrap justify-center gap-3 max-w-3xl mx-auto">
                             {['Premiere Pro', 'After Effects', 'DaVinci Resolve', 'Photoshop', 'Lightroom', 'CapCut', 'AI Video Tools'].map((tool, idx) => (
-                                <span key={idx} className="px-4 py-2 rounded-xl bg-beige-100 border border-beige-200 text-xs md:text-sm font-medium text-espresso-900 shadow-sm">
-                                    {tool}
-                                </span>
+                                <span key={idx} className="px-4 py-2 rounded-xl bg-beige-100 border border-beige-200 text-xs md:text-sm font-medium text-espresso-900 shadow-sm">{tool}</span>
                             ))}
                         </div>
                     </section>
 
-                    {/* Color Grading Before / After Demo */}
+                    {/* Color Grading Before / After */}
                     <section className="py-16 px-6 max-w-5xl mx-auto">
                         <div className="text-center mb-10">
                             <h2 className="text-2xl md:text-3xl font-bold mb-3">Thế Mạnh Color Grading Beauty</h2>
                             <p className="text-sm md:text-base text-espresso-800/70">Kéo thanh trượt để so sánh chất lượng hình ảnh trước và sau khi xử lý màu sắc chuyên sâu.</p>
                         </div>
-
                         <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-2xl select-none border-2 border-beige-200"
                              onMouseMove={(e) => {
                                  const rect = e.currentTarget.getBoundingClientRect();
@@ -174,26 +138,12 @@
                                  setSliderPos((x / rect.width) * 100);
                              }}
                         >
-                            {/* After Image */}
-                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=1400" 
-                                 alt="After Color Grading" 
-                                 className="absolute inset-0 w-full h-full object-cover filter contrast-125 saturate-110" />
-                            <div className="absolute bottom-4 right-4 bg-espresso-900/80 text-beige-50 px-3 py-1 rounded-md text-xs font-semibold backdrop-blur-sm">
-                                SAU KHI COLOR GRADING
-                            </div>
-
-                            {/* Before Image */}
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=1400" alt="After" className="absolute inset-0 w-full h-full object-cover filter contrast-125 saturate-110" />
+                            <div className="absolute bottom-4 right-4 bg-espresso-900/80 text-beige-50 px-3 py-1 rounded-md text-xs font-semibold backdrop-blur-sm">SAU KHI COLOR GRADING</div>
                             <div className="absolute inset-0 overflow-hidden" style={{ width: `${sliderPos}%` }}>
-                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=1400" 
-                                     alt="Before Color Grading" 
-                                     className="absolute inset-0 w-full h-full object-cover max-w-none filter grayscale brightness-90 contrast-90" 
-                                     style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                <div className="absolute bottom-4 left-4 bg-espresso-900/80 text-beige-50 px-3 py-1 rounded-md text-xs font-semibold backdrop-blur-sm">
-                                    GỐC (BEFORE)
-                                </div>
+                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=1400" alt="Before" className="absolute inset-0 w-full h-full object-cover max-w-none filter grayscale brightness-90 contrast-90" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                <div className="absolute bottom-4 left-4 bg-espresso-900/80 text-beige-50 px-3 py-1 rounded-md text-xs font-semibold backdrop-blur-sm">GỐC (BEFORE)</div>
                             </div>
-
-                            {/* Divider Line */}
                             <div className="absolute top-0 bottom-0 w-1 bg-gold shadow-[0_0_10px_rgba(163,120,50,0.8)]" style={{ left: `${sliderPos}%` }}>
                                 <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-gold text-white flex items-center justify-center shadow-lg">
                                     <Icon name="chevrons-left-right" className="w-4 h-4" />
@@ -209,22 +159,13 @@
                                 <h2 className="text-3xl font-bold tracking-tight mb-2">Dự Án Tiêu Biểu</h2>
                                 <p className="text-espresso-800/70 text-sm md:text-base">Tuyển tập các sản phẩm TVC, MV, Quảng cáo và Reels/TikTok.</p>
                             </div>
-
-                            {/* Filter Tabs */}
                             <div className="flex flex-wrap gap-2 bg-beige-200/60 p-1.5 rounded-2xl">
                                 {categories.map((cat, idx) => (
-                                    <button
-                                        key={idx}
-                                        onClick={() => setActiveCategory(cat)}
-                                        className={`px-4 py-2 rounded-xl text-xs md:text-sm font-medium transition-all ${activeCategory === cat ? 'bg-espresso-900 text-beige-50 shadow-md' : 'text-espresso-900 hover:bg-beige-100'}`}
-                                    >
-                                        {cat}
-                                    </button>
+                                    <button key={idx} onClick={() => setActiveCategory(cat)} className={`px-4 py-2 rounded-xl text-xs md:text-sm font-medium transition-all ${activeCategory === cat ? 'bg-espresso-900 text-beige-50 shadow-md' : 'text-espresso-900 hover:bg-beige-100'}`}>{cat}</button>
                                 ))}
                             </div>
                         </div>
 
-                        {/* Project Grid */}
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
                             {filteredProjects.map((project) => (
                                 <div key={project.id} className="group bg-white rounded-2xl overflow-hidden border border-beige-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
@@ -235,9 +176,7 @@
                                                 <Icon name="play" className="w-6 h-6 fill-current" />
                                             </div>
                                         </div>
-                                        <span className="absolute top-4 left-4 bg-espresso-900/80 text-beige-50 text-xs font-semibold px-3 py-1 rounded-full backdrop-blur-sm">
-                                            {project.category}
-                                        </span>
+                                        <span className="absolute top-4 left-4 bg-espresso-900/80 text-beige-50 text-xs font-semibold px-3 py-1 rounded-full backdrop-blur-sm">{project.category}</span>
                                     </div>
                                     <div className="p-6 flex flex-col flex-grow justify-between">
                                         <div>
@@ -261,7 +200,6 @@
                             <h2 className="text-3xl font-bold mb-3">Hậu Trường (Behind The Scenes)</h2>
                             <p className="text-espresso-800/70 text-sm md:text-base">Những khoảnh khắc tác nghiệp thực tế trên các set quay chuyên nghiệp.</p>
                         </div>
-
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                             {btsPhotos.map((photo) => (
                                 <div key={photo.id} className="group relative bg-white rounded-2xl overflow-hidden shadow-sm border border-beige-200">
@@ -280,17 +218,12 @@
                     <section id="contact" className="py-20 px-6 max-w-4xl mx-auto text-center">
                         <h2 className="text-3xl md:text-4xl font-bold mb-4">Kết Nối Hợp Tác</h2>
                         <p className="text-espresso-800/70 mb-10 max-w-lg mx-auto">Hãy liên hệ trực tiếp qua Zalo hoặc Facebook để trao đổi nhanh chóng về dự án của bạn.</p>
-
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                            <a href="https://zalo.me/84707068508" target="_blank" rel="noopener noreferrer" 
-                               className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-espresso-900 text-beige-50 font-semibold hover:bg-gold transition-all shadow-lg hover:-translate-y-0.5">
-                                <Icon name="message-circle" className="w-5 h-5 text-gold" />
-                                Zalo: +84 707068508
+                            <a href="https://zalo.me/84707068508" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-espresso-900 text-beige-50 font-semibold hover:bg-gold transition-all shadow-lg hover:-translate-y-0.5">
+                                <Icon name="message-circle" className="w-5 h-5 text-gold" /> Zalo: +84 707068508
                             </a>
-                            <a href="https://www.facebook.com/quocvo20.09/" target="_blank" rel="noopener noreferrer" 
-                               className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-white border-2 border-beige-200 text-espresso-900 font-semibold hover:border-gold hover:text-gold transition-all shadow-sm hover:-translate-y-0.5">
-                                <Icon name="facebook" className="w-5 h-5 text-blue-600" />
-                                Facebook Quốc Võ
+                            <a href="https://www.facebook.com/quocvo20.09/" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-white border-2 border-beige-200 text-espresso-900 font-semibold hover:border-gold hover:text-gold transition-all shadow-sm hover:-translate-y-0.5">
+                                <Icon name="facebook" className="w-5 h-5 text-blue-600" /> Facebook Quốc Võ
                             </a>
                         </div>
                     </section>
@@ -299,7 +232,6 @@
                         <p>© 2026 Quốc Võ Production. All rights reserved.</p>
                     </footer>
 
-                    {/* Video Player Modal */}
                     {selectedProject && (
                         <div className="fixed inset-0 z-50 bg-espresso-900/80 backdrop-blur-md flex items-center justify-center p-4">
                             <div className="bg-white rounded-3xl overflow-hidden max-w-4xl w-full shadow-2xl border border-beige-200">
