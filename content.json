@@ -1,0 +1,19 @@
+{
+  "projects": [
+    {
+      "title": "Video quảng cáo sản phẩm",
+      "description": "Chỉnh sửa video quảng cáo với phong cách hiện đại, tập trung vào hình ảnh, nhịp điệu và cảm xúc.",
+      "image": "assets/project-1.jpg"
+    },
+    {
+      "title": "Brand Story Video",
+      "description": "Dựng câu chuyện thương hiệu bằng hình ảnh, âm thanh và bố cục video phù hợp với mục tiêu truyền thông.",
+      "image": "assets/project-2.jpg"
+    },
+    {
+      "title": "Social Media Content",
+      "description": "Tạo nội dung ngắn, thu hút người xem và tối ưu trải nghiệm trên các nền tảng mạng xã hội.",
+      "image": "assets/project-3.jpg"
+    }
+  ]
+}
