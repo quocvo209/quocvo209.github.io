@@ -53,14 +53,40 @@ content:
           - { name: facebook_url, label: Link Facebook, type: string }
 
   # ---------- VIDEO DỰ ÁN ----------
+  # Cách thêm nhanh: dán nhiều link YouTube vào ô "Thêm NHIỀU video" (mỗi dòng 1 link).
+  # Cần tên / mô tả / ảnh bìa riêng cho 1 video thì thêm vào "Danh sách video chi tiết".
   - name: projects
     label: Video dự án
     type: file
     path: data/projects.json
     format: json
     fields:
+      - name: bulk_category
+        label: "⚡ Thêm NHIỀU video - Danh mục chung"
+        type: select
+        options:
+          values:
+            - TVC/MV
+            - Color Grading
+            - Reels/TikTok
+            - ADS
+            - Bạch Ngọc Liên Socials
+        description: Áp dụng cho mọi dòng bên dưới (dòng nào ghi danh mục riêng thì dùng danh mục đó).
+      - name: bulk_links
+        label: "⚡ Thêm NHIỀU video - Dán link YouTube (mỗi dòng 1 video)"
+        type: text
+        description: |
+          Mỗi dòng 1 video. Có 3 cách viết:
+          1) Chỉ link:  https://youtu.be/abc...  (web tự lấy tên và ảnh bìa từ YouTube)
+          2) Tên | link:  MV Men nước mắt | https://youtu.be/abc...
+          3) Tên | link | Danh mục:  Reels 01 | https://youtu.be/abc... | Reels/TikTok
+          Muốn xoá video thì xoá dòng đó.
+      - name: newest_first
+        label: Video thêm sau cùng hiện lên ĐẦU trang
+        type: boolean
+        description: Bật lên thì video mới thêm (nằm cuối danh sách) sẽ hiện đầu tiên trên web. Tắt thì hiện đúng thứ tự trong CMS.
       - name: projects
-        label: Danh sách video (thêm nhiều dòng liên tiếp để nhập hàng loạt)
+        label: Danh sách video chi tiết (có tên, mô tả, ảnh bìa riêng)
         type: object
         list: true
         fields:
@@ -72,7 +98,7 @@ content:
             label: Link YouTube
             type: string
             required: true
-            description: Dán link dạng youtube.com/watch?v=... hoặc youtu.be/...
+            description: Dán link dạng youtube.com/watch?v=... , youtu.be/... hoặc youtube.com/shorts/...
           - name: category
             label: Danh mục
             type: select
@@ -86,7 +112,7 @@ content:
                 - Bạch Ngọc Liên Socials
             description: Muốn thêm danh mục mới thì thêm vào danh sách "values" trong file .pages.yml
           - name: thumbnail
-            label: Ảnh thumbnail (JPG/PNG/WebP)
+            label: Ảnh thumbnail (JPG/PNG)
             type: image
             description: Có thể để trống, web sẽ tự lấy ảnh bìa từ YouTube
           - name: desc
@@ -94,44 +120,40 @@ content:
             type: text
 
   # ---------- HẬU TRƯỜNG (BTS) ----------
+  # Mỗi ALBUM = 1 dự án / 1 buổi quay. Web chỉ hiện 1 ảnh đại diện; bấm vào mới xem các ảnh bên trong.
   - name: bts
     label: Hậu trường (BTS)
     type: file
     path: data/bts.json
     format: json
     fields:
-      - name: bulk_category
-        label: Nhãn chung cho các ảnh tải hàng loạt (tùy chọn)
-        type: string
-        description: Ví dụ Lighting & Setup. Để trống nếu không cần nhãn.
-      - name: bulk_images
-        label: Tải NHIỀU ảnh cùng lúc
-        type: image
-        options:
-          multiple: true
-        description: Bấm vào đây, chọn hoặc kéo thả nhiều ảnh một lần. Ảnh nào cũng hiện ngay trong mục Hậu trường.
-      - name: bts
-        label: Ảnh hậu trường có tiêu đề / mô tả riêng (tùy chọn)
+      - name: albums
+        label: Các album hậu trường (mỗi album = 1 dự án)
         type: object
         list: true
         fields:
           - name: title
-            label: Tiêu đề
+            label: Tên album
             type: string
-          - name: folder
-            label: Tên folder / album BTS
-            type: string
-            description: Các ảnh có cùng tên folder sẽ gom thành một album (ví dụ: MV Men nước mắt). Ảnh đầu tiên làm ảnh đại diện.
-          - name: category
-            label: Nhãn / phân loại
-            type: string
-            description: Nhãn phụ tùy chọn
-          - name: image
-            label: Hình ảnh
+            required: true
+            description: Ví dụ MV Men nước mắt
+          - name: cover
+            label: Ảnh đại diện (tùy chọn)
+            type: image
+            description: Để trống thì web tự dùng ảnh đầu tiên trong album.
+          - name: images
+            label: Ảnh trong album (chọn / kéo thả NHIỀU file JPG cùng lúc)
             type: image
             required: true
+            options:
+              multiple: true
+            description: Bấm vào đây rồi chọn nhiều ảnh một lần (JPG, PNG, WEBP). Ảnh hiện theo thứ tự này; kéo để sắp xếp lại, bấm dấu x để xoá từng ảnh.
+          - name: category
+            label: Nhãn nhỏ phía trên tên (tùy chọn)
+            type: string
+            description: Ví dụ MV, TVC, Chụp ảnh
           - name: desc
-            label: Mô tả
+            label: Mô tả ngắn (tùy chọn)
             type: text
 
   # ---------- ẢNH NỀN TRANG TRÍ ----------
