@@ -1,5 +1,14 @@
 {
-  "bulk_category": "",
-  "bulk_images": [],
-  "bts": []
+  "bulk_category": "MV Men Nước Mắt - Ôn Vĩnh Quang",
+  "bulk_images": [
+    "/assets/uploads/0B97D680-3A79-440D-AD8C-4C0091BDB809-12779-000006187639EF15.jpg",
+    "/assets/uploads/3E0A274D-EA23-4E48-A02E-21598B769CE4-12779-00000617FFF32665.jpg",
+    "/assets/uploads/966E84A2-9965-4C9C-A19C-1B4CB1D6BB05-12779-00000618F4D4F049.jpg",
+    "/assets/uploads/C175EA9F-B5A4-481E-AE0F-AEAB83D191D4-12779-0000061817395F50.jpg",
+    "/assets/uploads/AC894913-3EA4-42DF-B486-BC24288119A9-12779-00000617AF0C5295.jpg",
+    "/assets/uploads/CB2ACD0E-2F06-4A41-B1A9-5C985DB85D94-12779-000006182B0A2508.jpg"
+  ],
+  "bts": [
+    {}
+  ]
 }
