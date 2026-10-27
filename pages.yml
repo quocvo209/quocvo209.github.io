@@ -60,7 +60,7 @@ content:
     format: json
     fields:
       - name: projects
-        label: Danh sách video
+        label: Danh sách video (thêm nhiều dòng liên tiếp để nhập hàng loạt)
         type: object
         list: true
         fields:
@@ -86,7 +86,7 @@ content:
                 - Bạch Ngọc Liên Socials
             description: Muốn thêm danh mục mới thì thêm vào danh sách "values" trong file .pages.yml
           - name: thumbnail
-            label: Ảnh thumbnail
+            label: Ảnh thumbnail (JPG/PNG/WebP)
             type: image
             description: Có thể để trống, web sẽ tự lấy ảnh bìa từ YouTube
           - name: desc
@@ -118,10 +118,14 @@ content:
           - name: title
             label: Tiêu đề
             type: string
+          - name: folder
+            label: Tên folder / album BTS
+            type: string
+            description: Các ảnh có cùng tên folder sẽ gom thành một album (ví dụ: MV Men nước mắt). Ảnh đầu tiên làm ảnh đại diện.
           - name: category
             label: Nhãn / phân loại
             type: string
-            description: Ví dụ Lighting & Setup, Color Grading
+            description: Nhãn phụ tùy chọn
           - name: image
             label: Hình ảnh
             type: image

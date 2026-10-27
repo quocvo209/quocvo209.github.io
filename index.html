@@ -82,6 +82,7 @@
         const normalizeBts = (b, i) => ({
             id: i,
             title: b.title || '',
+            folder: b.folder || b.category || b.title || 'Behind The Scenes',
             category: b.category || 'Behind The Scenes',
             desc: b.desc || '',
             image: asset(b.image)
@@ -606,6 +607,7 @@
             const [btsGalleries, setBtsGalleries] = useState([]);
             const [bgItems, setBgItems] = useState([]);
             const [activeCategory, setActiveCategory] = useState('All');
+            const [showAllProjects, setShowAllProjects] = useState(false);
             const [selectedProject, setSelectedProject] = useState(null);
             const [selectedImage, setSelectedImage] = useState(null);
             const [site, setSite] = useState(defaultSite);
@@ -698,6 +700,8 @@
             const filteredProjects = activeCategory === 'All'
                 ? projects
                 : projects.filter(p => p.category === activeCategory);
+            const displayedProjects = showAllProjects ? filteredProjects : filteredProjects.slice(0, 5);
+            const btsFolders = [...new Map(btsGalleries.map(item => [item.folder || item.category || item.title || 'Behind The Scenes', []])).keys()].map(name => ({ name, items: btsGalleries.filter(item => (item.folder || item.category || item.title || 'Behind The Scenes') === name) }));
 
             return (
                 <EditCtx.Provider value={ctx}>
@@ -793,7 +797,7 @@
                             </div>
                             <div className="flex flex-wrap gap-2 bg-beige-200/60 p-1.5 rounded-2xl">
                                 <button 
-                                    onClick={() => setActiveCategory('All')} 
+                                    onClick={() => { setActiveCategory('All'); setShowAllProjects(false); }} 
                                     className={`px-4 py-2 rounded-xl text-xs md:text-sm font-medium transition-all ${activeCategory === 'All' ? 'bg-espresso-900 text-beige-50 shadow-md' : 'text-espresso-900 hover:bg-beige-100'}`}
                                 >
                                     Tất cả ({projects.length})
@@ -803,7 +807,7 @@
                                     return (
                                         <button 
                                             key={idx} 
-                                            onClick={() => setActiveCategory(cat)} 
+                                            onClick={() => { setActiveCategory(cat); setShowAllProjects(false); }} 
                                             className={`px-4 py-2 rounded-xl text-xs md:text-sm font-medium transition-all ${activeCategory === cat ? 'bg-espresso-900 text-beige-50 shadow-md' : 'text-espresso-900 hover:bg-beige-100'}`}
                                         >
                                             {cat} ({count})
@@ -819,7 +823,7 @@
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-                                {filteredProjects.map((project) => (
+                                {displayedProjects.map((project) => (
                                     <div key={project.id} className="group bg-white rounded-2xl overflow-hidden border border-beige-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
                                         <div className={editing ? '' : 'cursor-pointer'} onClick={() => { if (!editing) setSelectedProject(project); }}>
                                             <EditableImage id={'project:' + project.key} src={project.thumbnail} alt={project.title}
@@ -849,6 +853,13 @@
                                     </div>
                                 ))}
                             </div>
+                            {filteredProjects.length > 5 && (
+                                <div className="text-center mt-8">
+                                    <button onClick={() => setShowAllProjects(v => !v)} className="px-6 py-3 rounded-full bg-espresso-900 text-white text-sm font-semibold hover:bg-gold transition-colors">
+                                        {showAllProjects ? 'Thu gọn' : `Xem thêm ${filteredProjects.length - 5} video`}
+                                    </button>
+                                </div>
+                            )}
                         )}
                     </section>
 
@@ -1000,8 +1011,10 @@
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-                                {btsGalleries.map((item) => (
-                                    <div key={item.id} className="bg-white rounded-2xl border border-beige-200 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group cursor-pointer" onClick={() => { if (!editing) setSelectedImage(item); }}>
+                                {btsFolders.map((folder) => {
+                                    const item = folder.items[0];
+                                    return (
+                                    <div key={folder.name} className="bg-white rounded-2xl border border-beige-200 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group cursor-pointer" onClick={() => { if (!editing) setSelectedImage(item); }}>
                                         <EditableImage id={'bts:' + item.image} src={item.image} alt={item.title}
                                             frameClass="aspect-[4/3] bg-beige-100"
                                             imgClass="group-hover:scale-105 transition-transform duration-500">
@@ -1013,15 +1026,13 @@
                                                 </div>
                                             )}
                                         </EditableImage>
-                                        {(item.title || item.desc || item.category) && (
-                                            <div className="p-5">
-                                                {item.category && <span className="text-[10px] font-bold tracking-widest text-gold uppercase block mb-1">{item.category}</span>}
-                                                {item.title && <h3 className="font-bold text-lg mb-2 group-hover:text-gold transition-colors">{item.title}</h3>}
-                                                {item.desc && <p className="text-xs text-espresso-800/70 leading-relaxed">{item.desc}</p>}
-                                            </div>
-                                        )}
+                                        <div className="p-5">
+                                            <span className="text-[10px] font-bold tracking-widest text-gold uppercase block mb-1">BTS • {folder.items.length} ảnh</span>
+                                            <h3 className="font-bold text-lg group-hover:text-gold transition-colors">{folder.name}</h3>
+                                        </div>
                                     </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         )}
                     </section>
