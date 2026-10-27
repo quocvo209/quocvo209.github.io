@@ -6,7 +6,56 @@
       "oy": 0.6072,
       "w": 80.8,
       "ar": 1.0851
+    },
+    "about": {
+      "zoom": 1,
+      "ox": 0.5,
+      "oy": 0.2622,
+      "ar": 1.5385,
+      "w": 83.3,
+      "align": "center"
     }
   },
-  "backgrounds": {}
+  "backgrounds": {
+    "/assets/uploads/IMG_1615097510990_1615097534605.jpg": {
+      "x": 9.6,
+      "y": 69.23,
+      "w": 29.06,
+      "opacity": 0.25,
+      "blur": 0,
+      "feather": 18,
+      "rotate": 0,
+      "z": 4
+    },
+    "/assets/uploads/IMG_1615097511179_1615097538612.jpg": {
+      "x": 90.57,
+      "y": 68.92,
+      "w": 31.76,
+      "opacity": 0.18,
+      "blur": 0,
+      "feather": 18,
+      "rotate": 0,
+      "z": 5
+    },
+    "/assets/uploads/Adobe_Post_20191203_2326570.5169659912640218.jpg": {
+      "x": 93.03,
+      "y": 52.22,
+      "w": 29.5,
+      "opacity": 0.11,
+      "blur": 0,
+      "feather": 18,
+      "rotate": 0,
+      "z": 3
+    },
+    "/assets/uploads/z6807210018041_50df1fe2e2a424b38df11c2b35e73996-1.jpg": {
+      "x": 79.71,
+      "y": 25.8,
+      "w": 15.59,
+      "opacity": 0.18,
+      "blur": 0,
+      "feather": 18,
+      "rotate": 0,
+      "z": 1
+    }
+  }
 }
