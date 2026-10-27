@@ -83,6 +83,7 @@ content:
                 - Color Grading
                 - Reels/TikTok
                 - ADS
+                - Bạch Ngọc Liên Socials
             description: Muốn thêm danh mục mới thì thêm vào danh sách "values" trong file .pages.yml
           - name: thumbnail
             label: Ảnh thumbnail
@@ -99,15 +100,24 @@ content:
     path: data/bts.json
     format: json
     fields:
+      - name: bulk_category
+        label: Nhãn chung cho các ảnh tải hàng loạt (tùy chọn)
+        type: string
+        description: Ví dụ Lighting & Setup. Để trống nếu không cần nhãn.
+      - name: bulk_images
+        label: Tải NHIỀU ảnh cùng lúc
+        type: image
+        options:
+          multiple: true
+        description: Bấm vào đây, chọn hoặc kéo thả nhiều ảnh một lần. Ảnh nào cũng hiện ngay trong mục Hậu trường.
       - name: bts
-        label: Danh sách ảnh hậu trường
+        label: Ảnh hậu trường có tiêu đề / mô tả riêng (tùy chọn)
         type: object
         list: true
         fields:
           - name: title
             label: Tiêu đề
             type: string
-            required: true
           - name: category
             label: Nhãn / phân loại
             type: string
@@ -119,3 +129,17 @@ content:
           - name: desc
             label: Mô tả
             type: text
+
+  # ---------- ẢNH NỀN TRANG TRÍ ----------
+  - name: backgrounds
+    label: Ảnh nền trang trí
+    type: file
+    path: data/backgrounds.json
+    format: json
+    fields:
+      - name: images
+        label: Ảnh nền (chọn / tải nhiều ảnh cùng lúc)
+        type: image
+        options:
+          multiple: true
+        description: Ảnh sẽ hiện mờ nhẹ phía sau nội dung. Tải lên xong, mở web với đuôi ?edit (vd quocvo209.github.io/?edit) → tab "Ảnh nền" để kéo, đổi cỡ, xoay, chỉnh độ mờ từng ảnh.

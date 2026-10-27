@@ -42,7 +42,7 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect } = React;
+        const { useState, useEffect, useRef } = React;
 
         const Icon = ({ name, className = "w-5 h-5", ...props }) => {
             useEffect(() => {
@@ -70,6 +70,7 @@
             const m = (p.url || '').match(/(?:youtu\.be\/|embed\/|watch\?v=|&v=|v\/)([\w-]{11})/);
             return {
                 id: i,
+                key: m ? m[1] : 'p' + i,
                 title: p.title || '',
                 category: p.category || 'Khác',
                 desc: p.desc || '',
@@ -96,26 +97,602 @@
 
         const renderBold = (t) => String(t || '').split(/\*\*(.+?)\*\*/g).map((x, i) => i % 2 ? <strong key={i}>{x}</strong> : x);
 
+        const toList = (v) => Array.isArray(v) ? v : (v ? [v] : []);
+
+        const loadObject = (file) =>
+            fetch(file, { cache: 'no-cache' })
+                .then(r => r.ok ? r.text() : Promise.reject(new Error(r.status)))
+                .then(t => t.trim() ? JSON.parse(t) : {})
+                .catch(err => { console.warn('Không tải được ' + file, err); return {}; });
+
+        /* =====================================================================
+           LOGO THƯƠNG HIỆU (SVG chuẩn, không dùng icon thay thế)
+           ===================================================================== */
+        const ZaloLogo = ({ className = "w-7 h-7" }) => (
+            <svg className={className} viewBox="0 0 48 48" aria-hidden="true">
+                <rect width="48" height="48" rx="11" fill="#0068FF" />
+                <text x="24" y="30.5" textAnchor="middle" fontFamily="'Be Vietnam Pro', Arial, sans-serif" fontWeight="800" fontSize="16.5" fill="#fff" letterSpacing="-0.3">Zalo</text>
+            </svg>
+        );
+
+        const FacebookLogo = ({ className = "w-7 h-7", onBlue = false }) => (
+            <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="12" fill={onBlue ? '#fff' : '#1877F2'} />
+                <path fill={onBlue ? '#1877F2' : '#fff'} d="M16.67 15.47l.53-3.47h-3.33V9.75c0-.95.47-1.88 1.96-1.88h1.51V4.92s-1.37-.23-2.68-.23c-2.74 0-4.53 1.66-4.53 4.67V12H7.08v3.47h3.05V24h3.74v-8.53z" />
+            </svg>
+        );
+
+        const DaVinciLogo = ({ className = "w-full h-full" }) => (
+            <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
+                <defs>
+                    <linearGradient id="dvRing" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0" stopColor="#f2f2f2" />
+                        <stop offset="1" stopColor="#7c828c" />
+                    </linearGradient>
+                </defs>
+                <path fill="url(#dvRing)" d="M17.621 0L5.977.004c-1.37 0-2.756.345-3.762 1.11a4.9 4.9 0 0 0-1.61 2.003C.233 3.93 0 5.02 0 5.951l.012 12.2c.002 1.604.479 3.057 1.461 4.112c.984 1.056 2.462 1.683 4.331 1.691L16.856 24c1.26.005 3.095-.036 4.303-.714c1.075-.605 2.025-1.556 2.497-2.984c.278-.84.345-2.084.344-3.147l-.021-11.13c-.002-.888-.15-2.023-.547-2.934c-.425-.976-1.181-1.815-2.322-2.425C20.353.26 19.123 0 17.622 0zm0 .93c1.378 0 2.538.295 3.04.565c.977.523 1.544 1.166 1.889 1.96c.315.721.47 1.793.473 2.572l.018 11.13c.002 1.013-.097 2.257-.298 2.86c-.396 1.202-1.146 1.946-2.063 2.462c-.814.457-2.612.593-3.82.588l-11.05-.044c-1.657-.007-2.832-.534-3.626-1.386c-.792-.851-1.212-2.06-1.212-3.485L.999 5.95c0-.829.196-1.827.474-2.437c.345-.757.75-1.207 1.365-1.674C3.585 1.27 4.868.97 6.08.97z" />
+                <path fill="#ff5a4e" d="M11.961 4.353c-1.976.089-3.204 1.658-3.214 3.29c.019 1.443 1.635 3.481 2.884 4.53c.12.099.154.109.33.18c.062.025.198-.047.327-.135c.36-.245.993-.947 1.648-1.738a7.7 7.7 0 0 0 1.031-1.683c.409-.89.261-1.599.235-1.888a4 4 0 0 0-.99-1.692a3.36 3.36 0 0 0-2.251-.864z" />
+                <path fill="#3d9bff" d="M16.133 12.275a10.2 10.2 0 0 0-3.244.61c-.15.058-.26.1-.374.17c-.057.036-.11.135-.105.292c.017.433.29 1.278.624 2.27c.384 1.135 1.066 2.27 1.844 2.74a3.23 3.23 0 0 0 2.53.342c.832-.243 1.595-.868 1.962-1.546c.986-1.818.19-3.548-1.121-4.417c-.447-.296-1.133-.445-1.89-.46z" />
+                <path fill="#3ad07d" d="M7.701 12.313a6 6 0 0 0-.752.047c-.596.078-.932.273-1.29.51a3.18 3.18 0 0 0-1.365 1.979c-.075.552-.086 1.053.033 1.507c.433 1.389 1.326 2.222 2.847 2.452c.636.028 1.37-.063 1.99-.45c1.269-.782 2.08-3.17 2.412-4.742c.053-.176.035-.357-.013-.42c-.005-.067-.044-.113-.19-.183c-.398-.192-1.32-.417-2.375-.6a7.7 7.7 0 0 0-1.297-.1z" />
+            </svg>
+        );
+
+        const CapCutLogo = ({ className = "w-full h-full" }) => (
+            <svg className={className} viewBox="0 0 24 24" aria-hidden="true" fill="#fff" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9.998 12L2 16c0 1.886 0 2.328.586 2.914S4.114 19.5 6 19.5h8c1.886 0 2.828 0 3.414-.586S18 17.886 18 16m-8.002-4l11.998-6M9.998 12L2 8c0-1.386 0-2.328.586-2.914S4.114 4.5 6 4.5h8c1.886 0 2.828 0 3.414.586S18 6.614 18 8m-8.002 4l11.998 6" />
+            </svg>
+        );
+
+        /* =====================================================================
+           CHẾ ĐỘ CHỈNH SỬA HÌNH ẢNH
+           Mở web với đuôi ?edit  (vd: https://quocvo209.github.io/?edit)
+           - Kéo ảnh để di chuyển, thanh trượt để phóng to/thu nhỏ
+           - Kéo thanh vàng ở cạnh khung để đổi chiều cao / chiều rộng khung ảnh
+           - Tab "Ảnh nền": kéo, đổi cỡ, xoay, chỉnh độ mờ từng ảnh nền
+           - Bấm "Lưu lên web" để mọi người nhìn thấy bố cục mới
+           ===================================================================== */
+        const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+        const round = (v, n = 4) => Math.round(v * Math.pow(10, n)) / Math.pow(10, n);
+        const LS = {
+            get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+            set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
+            del(k) { try { localStorage.removeItem(k); } catch (e) {} }
+        };
+        const EDIT_MODE = /[?&]edit(=|&|$)/.test(location.search) || location.hash === '#edit';
+        const DRAFT_KEY = 'qv_layout_draft_v1';
+        const TOKEN_KEY = 'qv_gh_token';
+        const normLayout = (d) => ({
+            images: (d && d.images && typeof d.images === 'object') ? d.images : {},
+            backgrounds: (d && d.backgrounds && typeof d.backgrounds === 'object') ? d.backgrounds : {}
+        });
+
+        const EditCtx = React.createContext({
+            editing: false, mode: 'image', layout: { images: {}, backgrounds: {} },
+            setImageCfg: () => {}, setBgCfg: () => {}, selected: null, setSelected: () => {}
+        });
+
+        const bgDefaults = (i, n) => ({
+            x: i % 2 === 0 ? 14 : 86,
+            y: clamp(8 + ((i + 0.5) / Math.max(n, 1)) * 84, 5, 95),
+            w: 26, opacity: 0.18, blur: 0, feather: 18, rotate: 0, z: i
+        });
+        const bgCfgOf = (item, i, n, layout) => ({ ...bgDefaults(i, n), ...(layout.backgrounds[item.key] || {}) });
+
+        /* ---------- Khung ảnh có thể kéo / thu phóng / đổi kích thước ---------- */
+        function EditableImage({ id, src, alt = '', wrapClass = '', frameClass = 'aspect-[16/9]', imgClass = '', canResizeWidth = false, children }) {
+            const { editing, mode, layout, setImageCfg, selected, setSelected } = React.useContext(EditCtx);
+            const saved = layout.images[id];
+            const [live, setLive] = useState(null);
+            const liveRef = useRef(null);
+            const drag = useRef(null);
+            const wrapRef = useRef(null);
+            const frameRef = useRef(null);
+            const imgRef = useRef(null);
+            const [size, setSize] = useState({ w: 0, h: 0 });
+            const [nat, setNat] = useState({ w: 0, h: 0 });
+
+            const cfg = live || saved || null;
+            const active = editing && mode === 'image';
+            const isSel = active && selected === id;
+            const c = { zoom: 1, ox: 0.5, oy: 0.5, ...(cfg || {}) };
+            const align = c.align || 'center';
+
+            useEffect(() => {
+                const el = frameRef.current;
+                if (!el) return;
+                const update = () => setSize({ w: el.clientWidth, h: el.clientHeight });
+                update();
+                if (!window.ResizeObserver) {
+                    window.addEventListener('resize', update);
+                    return () => window.removeEventListener('resize', update);
+                }
+                const ro = new ResizeObserver(update);
+                ro.observe(el);
+                return () => ro.disconnect();
+            }, []);
+
+            useEffect(() => {
+                const im = imgRef.current;
+                if (im && im.complete && im.naturalWidth) setNat({ w: im.naturalWidth, h: im.naturalHeight });
+            }, [src]);
+
+            // Hình học của ảnh trong khung: phóng to theo "cover" x zoom, ox/oy = vị trí (0..1) trong phần ảnh dư ra
+            let geom = null;
+            if ((cfg || active) && size.w && size.h && nat.w) {
+                const base = Math.max(size.w / nat.w, size.h / nat.h);
+                geom = { W: nat.w * base * c.zoom, H: nat.h * base * c.zoom };
+            }
+            const imgStyle = geom
+                ? { position: 'absolute', maxWidth: 'none', width: geom.W, height: geom.H, left: -(geom.W - size.w) * c.ox, top: -(geom.H - size.h) * c.oy }
+                : { width: '100%', height: '100%', objectFit: 'cover' };
+
+            const wrapStyle = {};
+            if (cfg && cfg.w) { wrapStyle.width = cfg.w + '%'; wrapStyle.maxWidth = 'none'; }
+            const alignClass = align === 'left' ? 'mr-auto' : align === 'right' ? 'ml-auto' : 'mx-auto';
+            const frameStyle = {};
+            if (cfg && cfg.ar) frameStyle.aspectRatio = String(cfg.ar);
+            if (isSel) frameStyle.touchAction = 'none';
+
+            const setLiveBoth = (v) => { liveRef.current = v; setLive(v); };
+
+            const onFrameDown = (e) => {
+                if (!active) return;
+                if (e.button !== undefined && e.button !== 0) return;
+                e.stopPropagation();
+                setSelected(id);
+                if (!geom) return;
+                try { e.currentTarget.setPointerCapture(e.pointerId); } catch (err) {}
+                drag.current = { type: 'pan', x: e.clientX, y: e.clientY, base: c, ovX: geom.W - size.w, ovY: geom.H - size.h };
+            };
+
+            const onHandleDown = (e, type) => {
+                e.stopPropagation();
+                if (e.button !== undefined && e.button !== 0) return;
+                try { e.currentTarget.setPointerCapture(e.pointerId); } catch (err) {}
+                const wrapEl = wrapRef.current;
+                const pe = wrapEl.parentElement;
+                const cs = getComputedStyle(pe);
+                const pw = pe.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+                drag.current = { type, x: e.clientX, y: e.clientY, base: c, h0: size.h, fw: size.w, w0: wrapEl.getBoundingClientRect().width, pw };
+            };
+
+            const onMove = (e) => {
+                const d = drag.current;
+                if (!d) return;
+                const dx = e.clientX - d.x, dy = e.clientY - d.y;
+                if (d.type === 'pan') {
+                    setLiveBoth({
+                        ...d.base,
+                        ox: d.ovX > 1 ? round(clamp(d.base.ox - dx / d.ovX, 0, 1)) : d.base.ox,
+                        oy: d.ovY > 1 ? round(clamp(d.base.oy - dy / d.ovY, 0, 1)) : d.base.oy
+                    });
+                } else if (d.type === 'h') {
+                    const nh = clamp(d.h0 + dy, 80, 1600);
+                    setLiveBoth({ ...d.base, ar: round(d.fw / nh) });
+                } else if (d.type === 'w') {
+                    const sign = align === 'right' ? -1 : 1;
+                    const grow = (align === 'center' ? 2 : 1) * sign * dx;
+                    setLiveBoth({ ...d.base, w: round(clamp(((d.w0 + grow) / d.pw) * 100, 20, 100), 1) });
+                }
+            };
+
+            const onUp = () => {
+                if (!drag.current) return;
+                drag.current = null;
+                if (liveRef.current) setImageCfg(id, liveRef.current);
+                setLiveBoth(null);
+            };
+
+            const setZoom = (z) => setImageCfg(id, { ...c, zoom: round(clamp(z, 1, 4), 3) });
+            const setAlign = (a) => setImageCfg(id, { ...c, align: a });
+            const sideLeft = align === 'right';
+
+            const outline = !active ? '' : isSel
+                ? 'outline outline-2 outline-gold outline-offset-2'
+                : 'outline outline-2 outline-dashed outline-gold/60 outline-offset-2 hover:outline-gold';
+
+            return (
+                <div ref={wrapRef} className={`${wrapClass} ${alignClass}`} style={wrapStyle}>
+                    <div
+                        ref={frameRef}
+                        className={`relative overflow-hidden ${frameClass} ${outline} ${active ? 'select-none' : ''}`}
+                        style={{ ...frameStyle, cursor: active ? (isSel ? 'grab' : 'pointer') : undefined }}
+                        onPointerDown={onFrameDown}
+                        onPointerMove={onMove}
+                        onPointerUp={onUp}
+                        onPointerCancel={onUp}
+                    >
+                        <img
+                            ref={imgRef}
+                            src={src}
+                            alt={alt}
+                            draggable={false}
+                            onLoad={(e) => setNat({ w: e.target.naturalWidth, h: e.target.naturalHeight })}
+                            className={`${active ? 'pointer-events-none' : imgClass}`}
+                            style={imgStyle}
+                        />
+                        {children}
+
+                        {isSel && (
+                            <>
+                                <div
+                                    onPointerDown={(e) => e.stopPropagation()}
+                                    className="absolute top-2 left-2 z-30 flex items-center gap-1.5 bg-espresso-900/90 text-white text-[11px] rounded-xl px-2.5 py-1.5 shadow-lg backdrop-blur"
+                                    style={{ cursor: 'default' }}
+                                >
+                                    <button type="button" onClick={() => setZoom(c.zoom - 0.1)} className="w-6 h-6 rounded-md bg-white/15 hover:bg-white/30 text-base leading-none">−</button>
+                                    <input type="range" min="1" max="4" step="0.02" value={c.zoom} onChange={(e) => setZoom(parseFloat(e.target.value))} className="w-20 sm:w-28" style={{ accentColor: '#C49747' }} />
+                                    <button type="button" onClick={() => setZoom(c.zoom + 0.1)} className="w-6 h-6 rounded-md bg-white/15 hover:bg-white/30 text-base leading-none">+</button>
+                                    <span className="tabular-nums w-8 text-center">{c.zoom.toFixed(1)}×</span>
+                                    {canResizeWidth && ['left', 'center', 'right'].map((a) => (
+                                        <button key={a} type="button" onClick={() => setAlign(a)} className={`px-1.5 h-6 rounded-md ${align === a ? 'bg-gold' : 'bg-white/15 hover:bg-white/30'}`}>
+                                            {a === 'left' ? 'Trái' : a === 'right' ? 'Phải' : 'Giữa'}
+                                        </button>
+                                    ))}
+                                    <button type="button" onClick={() => setImageCfg(id, null)} className="px-2 h-6 rounded-md bg-white/15 hover:bg-red-500/80">Đặt lại</button>
+                                </div>
+                                <div
+                                    onPointerDown={(e) => onHandleDown(e, 'h')}
+                                    title="Kéo lên/xuống để đổi chiều cao khung"
+                                    className="absolute bottom-0 left-1/2 -translate-x-1/2 w-20 h-4 rounded-t-xl bg-gold shadow z-30 flex items-center justify-center"
+                                    style={{ cursor: 'ns-resize', touchAction: 'none' }}
+                                ><span className="w-8 h-0.5 bg-white/80 rounded"></span></div>
+                                {canResizeWidth && (
+                                    <div
+                                        onPointerDown={(e) => onHandleDown(e, 'w')}
+                                        title="Kéo sang trái/phải để đổi chiều rộng khung"
+                                        className={`absolute top-1/2 -translate-y-1/2 h-20 w-4 bg-gold shadow z-30 flex items-center justify-center ${sideLeft ? 'left-0 rounded-r-xl' : 'right-0 rounded-l-xl'}`}
+                                        style={{ cursor: 'ew-resize', touchAction: 'none' }}
+                                    ><span className="h-8 w-0.5 bg-white/80 rounded"></span></div>
+                                )}
+                            </>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        /* ---------- Ảnh nền trang trí (mờ nhẹ, tự do vị trí / kích thước) ---------- */
+        function BgItem({ item, index, count }) {
+            const { editing, mode, layout, setBgCfg, selected, setSelected } = React.useContext(EditCtx);
+            const [live, setLive] = useState(null);
+            const liveRef = useRef(null);
+            const drag = useRef(null);
+            const boxRef = useRef(null);
+            const cfg = live || bgCfgOf(item, index, count, layout);
+            const active = editing && mode === 'bg';
+            const sid = 'bg:' + item.key;
+            const isSel = active && selected === sid;
+
+            const f = cfg.feather;
+            const maskImg = f > 0
+                ? `linear-gradient(to right, transparent 0, #000 ${f}%, #000 ${100 - f}%, transparent 100%), linear-gradient(to bottom, transparent 0, #000 ${f}%, #000 ${100 - f}%, transparent 100%)`
+                : 'none';
+
+            const setLiveBoth = (v) => { liveRef.current = v; setLive(v); };
+
+            const onDown = (e) => {
+                if (!active) return;
+                if (e.button !== undefined && e.button !== 0) return;
+                e.stopPropagation();
+                setSelected(sid);
+                const layer = e.currentTarget.parentElement.getBoundingClientRect();
+                try { e.currentTarget.setPointerCapture(e.pointerId); } catch (err) {}
+                drag.current = { type: 'move', x: e.clientX, y: e.clientY, base: cfg, lw: layer.width, lh: layer.height };
+            };
+
+            const onHandleDown = (e) => {
+                e.stopPropagation();
+                if (e.button !== undefined && e.button !== 0) return;
+                setSelected(sid);
+                const layer = boxRef.current.parentElement.getBoundingClientRect();
+                try { e.currentTarget.setPointerCapture(e.pointerId); } catch (err) {}
+                const W0 = boxRef.current.offsetWidth, H0 = boxRef.current.offsetHeight || 1;
+                drag.current = { type: 'size', x: e.clientX, y: e.clientY, base: cfg, lw: layer.width, W0, ratio: W0 / H0 };
+            };
+
+            const onMove = (e) => {
+                const d = drag.current;
+                if (!d) return;
+                const dx = e.clientX - d.x, dy = e.clientY - d.y;
+                if (d.type === 'move') {
+                    setLiveBoth({ ...d.base, x: round(clamp(d.base.x + (dx / d.lw) * 100, -10, 110), 2), y: round(clamp(d.base.y + (dy / d.lh) * 100, -5, 105), 2) });
+                } else {
+                    const th = (d.base.rotate * Math.PI) / 180;
+                    const lx = dx * Math.cos(th) + dy * Math.sin(th);
+                    const ly = -dx * Math.sin(th) + dy * Math.cos(th);
+                    const newW = Math.max(40, d.W0 + lx + ly * d.ratio);
+                    setLiveBoth({ ...d.base, w: round(clamp((newW / d.lw) * 100, 3, 150), 2) });
+                }
+            };
+
+            const onUp = () => {
+                if (!drag.current) return;
+                drag.current = null;
+                if (liveRef.current) setBgCfg(item.key, liveRef.current);
+                setLiveBoth(null);
+            };
+
+            return (
+                <div
+                    ref={boxRef}
+                    onPointerDown={onDown}
+                    onPointerMove={onMove}
+                    onPointerUp={onUp}
+                    onPointerCancel={onUp}
+                    className={active ? (isSel ? 'outline outline-2 outline-gold' : 'outline outline-2 outline-dashed outline-gold/60') : ''}
+                    style={{
+                        position: 'absolute', left: cfg.x + '%', top: cfg.y + '%', width: cfg.w + '%',
+                        transform: `translate(-50%, -50%) rotate(${cfg.rotate}deg)`,
+                        zIndex: cfg.z, pointerEvents: active ? 'auto' : 'none',
+                        touchAction: isSel ? 'none' : 'auto', cursor: active ? (isSel ? 'move' : 'pointer') : 'default'
+                    }}
+                >
+                    <img
+                        src={item.src}
+                        alt=""
+                        draggable={false}
+                        style={{
+                            display: 'block', width: '100%', height: 'auto', pointerEvents: 'none', userSelect: 'none',
+                            opacity: cfg.opacity, filter: cfg.blur ? `blur(${cfg.blur}px)` : undefined,
+                            WebkitMaskImage: maskImg, maskImage: maskImg, WebkitMaskComposite: 'source-in', maskComposite: 'intersect'
+                        }}
+                    />
+                    {isSel && (
+                        <div
+                            onPointerDown={onHandleDown}
+                            title="Kéo để đổi kích thước"
+                            className="absolute -bottom-3 -right-3 w-6 h-6 rounded-full bg-gold border-2 border-white shadow-lg"
+                            style={{ cursor: 'nwse-resize', touchAction: 'none' }}
+                        ></div>
+                    )}
+                </div>
+            );
+        }
+
+        function BgLayer({ items }) {
+            const { editing, mode } = React.useContext(EditCtx);
+            if (!items.length) return null;
+            const front = editing && mode === 'bg';
+            return (
+                <div className="absolute inset-0 overflow-hidden pointer-events-none" style={{ zIndex: front ? 30 : 0 }} aria-hidden={!front}>
+                    {items.map((it, i) => <BgItem key={it.key} item={it} index={i} count={items.length} />)}
+                </div>
+            );
+        }
+
+        /* ---------- Lưu layout lên GitHub (data/layout.json) ---------- */
+        async function saveLayoutToGithub(token, json) {
+            const host = location.hostname;
+            const isGh = /\.github\.io$/.test(host);
+            const owner = isGh ? host.split('.')[0] : 'quocvo209';
+            const repo = isGh ? host : 'quocvo209.github.io';
+            const url = `https://api.github.com/repos/${owner}/${repo}/contents/data/layout.json`;
+            const headers = { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json' };
+            let sha;
+            const cur = await fetch(url, { headers });
+            if (cur.ok) sha = (await cur.json()).sha;
+            else if (cur.status === 401 || cur.status === 403) throw new Error('Token không đúng hoặc không có quyền ghi (cần quyền "Contents: Read and write").');
+            else if (cur.status !== 404) throw new Error('GitHub báo lỗi ' + cur.status);
+            const body = { message: 'Cập nhật bố cục hình ảnh (chỉnh trực tiếp trên web)', content: btoa(unescape(encodeURIComponent(json))) };
+            if (sha) body.sha = sha;
+            const put = await fetch(url, { method: 'PUT', headers: { ...headers, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+            if (put.status === 401 || put.status === 403) throw new Error('Token không có quyền ghi vào repo này.');
+            if (put.status === 404) throw new Error('Không tìm thấy repo ' + owner + '/' + repo + ' hoặc token chưa được cấp quyền cho repo này.');
+            if (!put.ok) throw new Error('Lưu thất bại (mã ' + put.status + ').');
+        }
+
+        function PublishModal({ json, onClose, onSaved }) {
+            const [token, setToken] = useState(LS.get(TOKEN_KEY) || '');
+            const [st, setSt] = useState({ s: 'idle', msg: '' });
+            const publish = async () => {
+                const t = token.trim();
+                if (!t) { setSt({ s: 'error', msg: 'Bạn chưa nhập token GitHub.' }); return; }
+                setSt({ s: 'saving', msg: 'Đang lưu lên GitHub…' });
+                try {
+                    await saveLayoutToGithub(t, json);
+                    LS.set(TOKEN_KEY, t);
+                    if (onSaved) onSaved();
+                    setSt({ s: 'ok', msg: 'Đã lưu! Web sẽ cập nhật cho mọi người sau khoảng 1–2 phút (GitHub Pages cần build lại).' });
+                } catch (err) {
+                    setSt({ s: 'error', msg: String(err.message || err) });
+                }
+            };
+            const copy = async () => {
+                try { await navigator.clipboard.writeText(json); setSt({ s: 'ok', msg: 'Đã sao chép JSON. Dán vào file data/layout.json trên GitHub rồi Commit.' }); }
+                catch (e) { setSt({ s: 'error', msg: 'Không sao chép được. Hãy bấm vào ô JSON, Ctrl+A rồi Ctrl+C.' }); }
+            };
+            const download = () => {
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
+                a.download = 'layout.json';
+                a.click();
+                setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+            };
+            return (
+                <div className="fixed inset-0 z-[80] bg-espresso-900/70 backdrop-blur-sm flex items-center justify-center p-4" onClick={onClose}>
+                    <div className="bg-white rounded-2xl w-full max-w-lg p-6 shadow-2xl max-h-[90vh] overflow-auto" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex items-start justify-between mb-3">
+                            <h3 className="font-bold text-lg">Lưu bố cục lên web</h3>
+                            <button type="button" onClick={onClose} className="w-8 h-8 rounded-full bg-beige-100 hover:bg-red-100 text-lg leading-none">×</button>
+                        </div>
+                        <p className="text-sm text-espresso-800/80 mb-3">
+                            Dán <b>GitHub token</b> một lần duy nhất (lưu trong trình duyệt của bạn). Lần sau chỉ cần bấm nút Lưu.
+                        </p>
+                        <input type="password" value={token} onChange={(e) => setToken(e.target.value)} placeholder="github_pat_xxxxxxxx…" className="w-full border border-beige-300 rounded-xl px-3 py-2 text-sm mb-2" />
+                        <p className="text-[11px] text-espresso-800/60 mb-4 leading-relaxed">
+                            Tạo token: GitHub → Settings → Developer settings → Personal access tokens → <i>Fine-grained tokens</i> → chọn đúng repo <b>quocvo209.github.io</b> → Permissions → <b>Contents: Read and write</b>.
+                        </p>
+                        <button type="button" onClick={publish} disabled={st.s === 'saving'} className="w-full py-2.5 rounded-xl bg-gold text-white font-semibold hover:bg-gold-light disabled:opacity-60">
+                            {st.s === 'saving' ? 'Đang lưu…' : 'Lưu lên web'}
+                        </button>
+                        {st.msg && <p className={`text-sm mt-3 ${st.s === 'error' ? 'text-red-600' : 'text-green-700'}`}>{st.msg}</p>}
+                        <div className="border-t border-beige-200 mt-5 pt-4">
+                            <p className="text-xs text-espresso-800/70 mb-2">Hoặc lưu thủ công: tải / sao chép nội dung bên dưới, dán vào file <code>data/layout.json</code> trên GitHub.</p>
+                            <textarea readOnly value={json} onFocus={(e) => e.target.select()} className="w-full h-28 border border-beige-300 rounded-xl p-2 text-[11px] font-mono mb-2"></textarea>
+                            <div className="flex gap-2">
+                                <button type="button" onClick={copy} className="flex-1 py-2 rounded-xl bg-beige-100 hover:bg-beige-200 text-sm font-medium">Sao chép JSON</button>
+                                <button type="button" onClick={download} className="flex-1 py-2 rounded-xl bg-beige-100 hover:bg-beige-200 text-sm font-medium">Tải layout.json</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        const SliderRow = ({ label, value, min, max, step, unit = '', onChange }) => (
+            <label className="flex items-center gap-2 text-xs">
+                <span className="w-20 shrink-0 text-white/80">{label}</span>
+                <input type="range" min={min} max={max} step={step} value={value} onChange={(e) => onChange(parseFloat(e.target.value))} className="flex-1 min-w-0" style={{ accentColor: '#C49747' }} />
+                <span className="w-12 text-right tabular-nums">{Math.round(value * 100) / 100}{unit}</span>
+            </label>
+        );
+
+        function EditorBar({ mode, setMode, dirty, bgItems, layout, selected, setBgCfg, onPublish, onDiscard }) {
+            const selIdx = (mode === 'bg' && selected) ? bgItems.findIndex((b) => 'bg:' + b.key === selected) : -1;
+            const sel = selIdx >= 0 ? bgItems[selIdx] : null;
+            const cfg = sel ? bgCfgOf(sel, selIdx, bgItems.length, layout) : null;
+            const upd = (patch) => setBgCfg(sel.key, { ...cfg, ...patch });
+            const zs = bgItems.map((b, i) => bgCfgOf(b, i, bgItems.length, layout).z);
+            // Bảng chỉnh nằm ở phía đối diện với ảnh đang chọn để không che ảnh
+            const panelSide = cfg && cfg.x > 50 ? 'left-3' : 'right-3';
+            return (
+                <>
+                    {sel && (
+                        <div className={`fixed top-24 ${panelSide} z-[70] w-64 max-w-[calc(100vw-1.5rem)] bg-espresso-900/95 text-white rounded-2xl p-3 shadow-2xl space-y-1.5`} onPointerDown={(e) => e.stopPropagation()}>
+                            <p className="text-[11px] font-bold text-gold-light pb-1">Chỉnh ảnh nền đang chọn</p>
+                            <SliderRow label="Độ đậm" value={Math.round(cfg.opacity * 100)} min={3} max={100} step={1} unit="%" onChange={(v) => upd({ opacity: round(v / 100, 2) })} />
+                            <SliderRow label="Làm nhòe" value={cfg.blur} min={0} max={40} step={1} unit="px" onChange={(v) => upd({ blur: v })} />
+                            <SliderRow label="Viền mờ" value={cfg.feather} min={0} max={50} step={1} unit="%" onChange={(v) => upd({ feather: v })} />
+                            <SliderRow label="Xoay" value={cfg.rotate} min={-180} max={180} step={1} unit="°" onChange={(v) => upd({ rotate: v })} />
+                            <SliderRow label="Kích thước" value={cfg.w} min={3} max={150} step={0.5} unit="%" onChange={(v) => upd({ w: v })} />
+                            <div className="flex flex-wrap gap-2 pt-1">
+                                <button type="button" onClick={() => upd({ z: Math.max(...zs) + 1 })} className="px-2.5 py-1.5 rounded-lg bg-white/15 hover:bg-white/30 text-[11px]">Đưa lên trên</button>
+                                <button type="button" onClick={() => upd({ z: Math.min(...zs) - 1 })} className="px-2.5 py-1.5 rounded-lg bg-white/15 hover:bg-white/30 text-[11px]">Đưa xuống dưới</button>
+                                <button type="button" onClick={() => setBgCfg(sel.key, null)} className="px-2.5 py-1.5 rounded-lg bg-white/15 hover:bg-red-500/80 text-[11px]">Đặt lại ảnh này</button>
+                            </div>
+                        </div>
+                    )}
+                    <div className="fixed bottom-3 left-1/2 -translate-x-1/2 z-[70] w-[calc(100%-1.5rem)] max-w-3xl flex flex-col gap-2" onPointerDown={(e) => e.stopPropagation()}>
+                        {mode === 'bg' && bgItems.length === 0 && (
+                            <div className="bg-espresso-900/95 text-white text-xs rounded-2xl p-3 shadow-2xl">
+                                Chưa có ảnh nền nào. Vào CMS → <b>Ảnh nền trang trí</b> để tải ảnh lên (chọn nhiều ảnh cùng lúc được), rồi quay lại đây để sắp xếp.
+                            </div>
+                        )}
+                        {mode === 'bg' && bgItems.length > 0 && !sel && (
+                            <div className="bg-espresso-900/95 text-white text-xs rounded-2xl p-3 shadow-2xl">
+                                Bấm vào một ảnh nền để chọn, kéo để di chuyển, kéo chấm vàng ở góc để đổi kích thước.
+                            </div>
+                        )}
+                        <div className="bg-espresso-900 text-white rounded-2xl px-3 py-2.5 shadow-2xl flex flex-wrap items-center gap-2 text-sm">
+                            <span className="font-bold text-gold-light hidden sm:inline">Chế độ chỉnh sửa</span>
+                            <div className="flex bg-white/10 rounded-xl p-0.5">
+                                <button type="button" onClick={() => setMode('image')} className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${mode === 'image' ? 'bg-gold text-white' : 'text-white/80 hover:bg-white/10'}`}>Ảnh trong trang</button>
+                                <button type="button" onClick={() => setMode('bg')} className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${mode === 'bg' ? 'bg-gold text-white' : 'text-white/80 hover:bg-white/10'}`}>Ảnh nền ({bgItems.length})</button>
+                            </div>
+                            <div className="flex-1"></div>
+                            {dirty && <span className="text-[11px] text-amber-300">● Chưa lưu</span>}
+                            <button type="button" onClick={onDiscard} className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs">Hoàn tác</button>
+                            <button type="button" onClick={onPublish} className="px-4 py-1.5 rounded-lg bg-gold hover:bg-gold-light text-white text-xs font-bold">Lưu lên web</button>
+                            <a href={location.pathname} className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs">Thoát</a>
+                        </div>
+                    </div>
+                </>
+            );
+        }
+
         function App() {
             const [projects, setProjects] = useState([]);
             const [btsGalleries, setBtsGalleries] = useState([]);
+            const [bgItems, setBgItems] = useState([]);
             const [activeCategory, setActiveCategory] = useState('All');
             const [selectedProject, setSelectedProject] = useState(null);
             const [selectedImage, setSelectedImage] = useState(null);
             const [site, setSite] = useState(defaultSite);
 
+            // --- Chế độ chỉnh sửa hình ảnh (mở web với ?edit) ---
+            const editing = EDIT_MODE;
+            const [layout, setLayout] = useState({ images: {}, backgrounds: {} });
+            const [selected, setSelected] = useState(null);
+            const [mode, setModeState] = useState('image');
+            const [dirty, setDirty] = useState(false);
+            const [publishOpen, setPublishOpen] = useState(false);
+
             useEffect(() => {
-                loadData('data/projects.json', 'projects').then(list => setProjects(list.map(normalizeProject)));
-                loadData('data/bts.json', 'bts').then(list => setBtsGalleries(list.map(normalizeBts)));
+                loadData('data/projects.json', 'projects').then(list => setProjects(list.filter(p => p && (p.url || p.title)).map(normalizeProject)));
+                loadObject('data/bts.json').then(d => {
+                    const detailed = (Array.isArray(d.bts) ? d.bts : []).filter(b => b && b.image).map(normalizeBts);
+                    // Ảnh tải hàng loạt (chọn nhiều ảnh cùng lúc trong CMS)
+                    const bulk = toList(d.bulk_images).filter(Boolean).map(img => ({
+                        title: '', category: d.bulk_category || '', desc: '', image: asset(img)
+                    }));
+                    setBtsGalleries([...detailed, ...bulk].map((b, i) => ({ ...b, id: i })));
+                });
+                loadObject('data/backgrounds.json').then(d => {
+                    setBgItems(toList(d.images).filter(Boolean).map(src => ({ key: src, src: asset(src) })));
+                });
                 fetch('data/site.json', { cache: 'no-cache' })
                     .then(r => r.ok ? r.json() : Promise.reject())
                     .then(d => setSite(prev => ({ hero: { ...prev.hero, ...d.hero }, about: { ...prev.about, ...d.about }, contact: { ...prev.contact, ...d.contact } })))
                     .catch(() => {});
+                loadObject('data/layout.json').then(d => {
+                    if (EDIT_MODE) {
+                        const draft = LS.get(DRAFT_KEY);
+                        if (draft) {
+                            try { setLayout(normLayout(JSON.parse(draft))); setDirty(true); return; } catch (e) {}
+                        }
+                    }
+                    setLayout(normLayout(d));
+                });
             }, []);
+
+            useEffect(() => {
+                if (editing && dirty) LS.set(DRAFT_KEY, JSON.stringify(layout));
+            }, [layout, dirty]);
 
             useEffect(() => {
                 if (window.lucide) window.lucide.createIcons();
             });
+
+            const setImageCfg = (id, cfg) => {
+                setLayout(prev => {
+                    const images = { ...prev.images };
+                    if (cfg) images[id] = cfg; else delete images[id];
+                    return { ...prev, images };
+                });
+                setDirty(true);
+            };
+            const setBgCfg = (key, cfg) => {
+                setLayout(prev => {
+                    const backgrounds = { ...prev.backgrounds };
+                    if (cfg) backgrounds[key] = cfg; else delete backgrounds[key];
+                    return { ...prev, backgrounds };
+                });
+                setDirty(true);
+            };
+            const setMode = (m) => { setModeState(m); setSelected(null); };
+            const discardDraft = () => {
+                if (!window.confirm('Bỏ mọi thay đổi chưa lưu và quay về bố cục đang đăng trên web?')) return;
+                LS.del(DRAFT_KEY);
+                location.reload();
+            };
+            const ctx = { editing, mode, layout, setImageCfg, setBgCfg, selected, setSelected };
+
+            const stepImage = (d) => setSelectedImage(cur => {
+                if (!cur || btsGalleries.length < 2) return cur;
+                const i = btsGalleries.findIndex(b => b.id === cur.id);
+                return btsGalleries[(i + d + btsGalleries.length) % btsGalleries.length];
+            });
+
+            useEffect(() => {
+                const onKey = (e) => {
+                    if (e.key === 'Escape') { setSelectedProject(null); setSelectedImage(null); }
+                    else if (selectedImage && e.key === 'ArrowRight') stepImage(1);
+                    else if (selectedImage && e.key === 'ArrowLeft') stepImage(-1);
+                };
+                window.addEventListener('keydown', onKey);
+                return () => window.removeEventListener('keydown', onKey);
+            }, [selectedImage, btsGalleries]);
 
             const categories = [...new Set(projects.map(p => p.category))];
             const filteredProjects = activeCategory === 'All'
@@ -123,7 +700,11 @@
                 : projects.filter(p => p.category === activeCategory);
 
             return (
-                <div className="min-h-screen bg-beige-50 text-espresso-900 selection:bg-gold selection:text-white">
+                <EditCtx.Provider value={ctx}>
+                <div className={`relative min-h-screen bg-beige-50 text-espresso-900 selection:bg-gold selection:text-white ${editing ? 'pb-44' : ''}`}>
+                    {/* Ảnh nền trang trí (mờ nhẹ, tự do vị trí) */}
+                    <BgLayer items={bgItems} />
+                    <div className="relative z-10" onPointerDown={editing ? () => setSelected(null) : undefined}>
                     {/* Header Nav */}
                     <header className="sticky top-0 z-40 bg-beige-50/80 backdrop-blur-md border-b border-beige-200">
                         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
@@ -152,9 +733,9 @@
                             {site.hero.description}
                         </p>
                         {site.hero.image && (
-                            <div className="mt-8 max-w-4xl mx-auto aspect-[16/9] sm:aspect-[21/9] rounded-3xl overflow-hidden shadow-xl border-4 border-white bg-beige-200">
-                                <img src={asset(site.hero.image)} alt={site.hero.title} className="w-full h-full object-cover" />
-                            </div>
+                            <EditableImage id="hero" src={asset(site.hero.image)} alt={site.hero.title} canResizeWidth
+                                wrapClass="mt-8 max-w-4xl"
+                                frameClass="aspect-[16/9] sm:aspect-[21/9] rounded-3xl shadow-xl border-4 border-white bg-beige-200" />
                         )}
                     </section>
 
@@ -171,8 +752,8 @@
                                     {renderBold(site.about.paragraph)}
                                 </p>
                                 
-                                {/* Thống kê (Đã bỏ 4K/HDR) */}
-                                <div className="grid grid-cols-2 gap-4 pt-2 max-w-md mx-auto sm:mx-0">
+                                {/* Thống kê (căn giữa) */}
+                                <div className="grid grid-cols-2 gap-4 pt-4 max-w-md mx-auto">
                                     <div className="p-4 rounded-2xl bg-white border border-beige-200 shadow-sm text-center">
                                         <h4 className="text-2xl font-black text-gold mb-1">{site.about.stat1_number}</h4>
                                         <p className="text-xs text-espresso-800/70 font-medium">{site.about.stat1_label}</p>
@@ -186,17 +767,18 @@
 
                             {/* Hình ảnh giới thiệu dính ngay bên dưới */}
                             <div className="pt-4">
-                                <div className="aspect-[16/9] sm:aspect-[21/9] rounded-3xl overflow-hidden shadow-xl border-4 border-white bg-beige-200 relative group">
-                                    <img src={asset(site.about.image)} alt={site.about.image_name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-espresso-900/70 via-espresso-900/20 to-transparent"></div>
-                                    <div className="absolute bottom-6 left-6 right-6 text-white flex items-center justify-between">
+                                <EditableImage id="about" src={asset(site.about.image)} alt={site.about.image_name} canResizeWidth
+                                    frameClass="aspect-[16/9] sm:aspect-[21/9] rounded-3xl shadow-xl border-4 border-white bg-beige-200 group"
+                                    imgClass="group-hover:scale-105 transition-transform duration-500">
+                                    <div className="absolute inset-0 bg-gradient-to-t from-espresso-900/70 via-espresso-900/20 to-transparent pointer-events-none"></div>
+                                    <div className="absolute bottom-6 left-6 right-6 text-white flex items-center justify-between pointer-events-none">
                                         <div>
                                             <p className="text-xs uppercase tracking-widest text-gold font-bold">{site.about.image_name}</p>
                                             <p className="text-lg font-bold">{site.about.image_role}</p>
                                         </div>
                                         <span className="text-xs bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-white font-medium">{site.about.image_location}</span>
                                     </div>
-                                </div>
+                                </EditableImage>
                             </div>
                         </div>
                     </section>
@@ -239,14 +821,19 @@
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
                                 {filteredProjects.map((project) => (
                                     <div key={project.id} className="group bg-white rounded-2xl overflow-hidden border border-beige-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
-                                        <div className="relative aspect-[16/9] overflow-hidden bg-beige-100 cursor-pointer" onClick={() => setSelectedProject(project)}>
-                                            <img src={project.thumbnail} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                                            <div className="absolute inset-0 bg-espresso-900/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                                <div className="w-14 h-14 rounded-full bg-gold text-white flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-transform">
-                                                    <Icon name="play" className="w-6 h-6 fill-current" />
-                                                </div>
-                                            </div>
-                                            <span className="absolute top-4 left-4 bg-espresso-900/80 text-beige-50 text-xs font-semibold px-3 py-1 rounded-full backdrop-blur-sm">{project.category}</span>
+                                        <div className={editing ? '' : 'cursor-pointer'} onClick={() => { if (!editing) setSelectedProject(project); }}>
+                                            <EditableImage id={'project:' + project.key} src={project.thumbnail} alt={project.title}
+                                                frameClass="aspect-[16/9] bg-beige-100"
+                                                imgClass="group-hover:scale-105 transition-transform duration-500">
+                                                {!editing && (
+                                                    <div className="absolute inset-0 bg-espresso-900/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                        <div className="w-14 h-14 rounded-full bg-gold text-white flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-transform">
+                                                            <Icon name="play" className="w-6 h-6 fill-current" />
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                <span className="absolute top-4 left-4 bg-espresso-900/80 text-beige-50 text-xs font-semibold px-3 py-1 rounded-full backdrop-blur-sm pointer-events-none">{project.category}</span>
+                                            </EditableImage>
                                         </div>
                                         <div className="p-6 flex flex-col flex-grow justify-between">
                                             <div>
@@ -325,12 +912,8 @@
 
                                     {/* DaVinci Resolve */}
                                     <div className="p-4 bg-white rounded-2xl border border-beige-200 flex items-center gap-3.5 shadow-sm hover:border-gold transition-colors">
-                                        <div className="w-11 h-11 rounded-xl bg-gray-900 flex items-center justify-center p-2 border border-gray-700 shrink-0">
-                                            <svg className="w-full h-full" viewBox="0 0 24 24" fill="none">
-                                                <circle cx="7" cy="8" r="4" fill="#FF4B4B"/>
-                                                <circle cx="17" cy="8" r="4" fill="#3B82F6"/>
-                                                <circle cx="12" cy="16" r="4" fill="#10B981"/>
-                                            </svg>
+                                        <div className="w-11 h-11 rounded-xl bg-[#16181d] flex items-center justify-center p-1.5 border border-gray-700 shrink-0">
+                                            <DaVinciLogo />
                                         </div>
                                         <div>
                                             <h4 className="font-bold text-sm">DaVinci Resolve</h4>
@@ -358,10 +941,8 @@
 
                                     {/* CapCut */}
                                     <div className="p-4 bg-white rounded-2xl border border-beige-200 flex items-center gap-3.5 shadow-sm hover:border-gold transition-colors">
-                                        <div className="w-11 h-11 rounded-xl bg-black flex items-center justify-center shrink-0 border border-gray-800">
-                                            <svg className="w-6 h-6 fill-white" viewBox="0 0 24 24">
-                                                <path d="M19 3H5C3.89 3 3 3.89 3 5V19C3 20.11 3.89 21 5 21H19C20.11 21 21 20.11 21 19V5C21 3.89 20.11 3 19 3ZM8.5 15.5L7 14L10 11L7 8L8.5 6.5L13 11L8.5 15.5ZM17 15.5H15V8.5H17V15.5Z"/>
-                                            </svg>
+                                        <div className="w-11 h-11 rounded-xl bg-black flex items-center justify-center p-2.5 shrink-0 border border-gray-800">
+                                            <CapCutLogo />
                                         </div>
                                         <div>
                                             <h4 className="font-bold text-sm">CapCut Pro</h4>
@@ -420,36 +1001,41 @@
                         ) : (
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
                                 {btsGalleries.map((item) => (
-                                    <div key={item.id} className="bg-white rounded-2xl border border-beige-200 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group cursor-pointer" onClick={() => setSelectedImage(item)}>
-                                        <div className="aspect-[4/3] overflow-hidden bg-beige-100 relative">
-                                            <img src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                                            <div className="absolute inset-0 bg-espresso-900/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                                <div className="w-10 h-10 rounded-full bg-white/90 text-espresso-900 flex items-center justify-center shadow-md">
-                                                    <Icon name="maximize-2" className="w-5 h-5" />
+                                    <div key={item.id} className="bg-white rounded-2xl border border-beige-200 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group cursor-pointer" onClick={() => { if (!editing) setSelectedImage(item); }}>
+                                        <EditableImage id={'bts:' + item.image} src={item.image} alt={item.title}
+                                            frameClass="aspect-[4/3] bg-beige-100"
+                                            imgClass="group-hover:scale-105 transition-transform duration-500">
+                                            {!editing && (
+                                                <div className="absolute inset-0 bg-espresso-900/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                    <div className="w-10 h-10 rounded-full bg-white/90 text-espresso-900 flex items-center justify-center shadow-md">
+                                                        <Icon name="maximize-2" className="w-5 h-5" />
+                                                    </div>
                                                 </div>
+                                            )}
+                                        </EditableImage>
+                                        {(item.title || item.desc || item.category) && (
+                                            <div className="p-5">
+                                                {item.category && <span className="text-[10px] font-bold tracking-widest text-gold uppercase block mb-1">{item.category}</span>}
+                                                {item.title && <h3 className="font-bold text-lg mb-2 group-hover:text-gold transition-colors">{item.title}</h3>}
+                                                {item.desc && <p className="text-xs text-espresso-800/70 leading-relaxed">{item.desc}</p>}
                                             </div>
-                                        </div>
-                                        <div className="p-5">
-                                            {item.category && <span className="text-[10px] font-bold tracking-widest text-gold uppercase block mb-1">{item.category}</span>}
-                                            <h3 className="font-bold text-lg mb-2 group-hover:text-gold transition-colors">{item.title}</h3>
-                                            {item.desc && <p className="text-xs text-espresso-800/70 leading-relaxed">{item.desc}</p>}
-                                        </div>
+                                        )}
                                     </div>
                                 ))}
                             </div>
                         )}
                     </section>
 
-                    {/* Contact Section (Đã thêm nút Facebook) */}
+                    {/* Contact Section (Zalo + Facebook có logo) */}
                     <section id="contact" className="py-20 px-6 max-w-4xl mx-auto text-center border-t border-beige-200">
                         <h2 className="text-3xl md:text-4xl font-bold mb-4">Kết Nối Hợp Tác</h2>
                         <p className="text-espresso-800/70 mb-8 max-w-xl mx-auto">{site.contact.description}</p>
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                            <a href={site.contact.zalo_url} target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-espresso-900 text-beige-50 font-semibold hover:bg-gold transition-all shadow-lg">
-                                <Icon name="message-circle" className="w-5 h-5 text-gold" /> {site.contact.zalo_label}
+                            <a href={site.contact.zalo_url} target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-7 py-3.5 rounded-2xl bg-espresso-900 text-beige-50 font-semibold hover:bg-gold transition-all shadow-lg">
+                                <ZaloLogo className="w-8 h-8 shrink-0" /> {site.contact.zalo_label}
                             </a>
-                            <a href={site.contact.facebook_url} target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-[#1877F2] text-white font-semibold hover:bg-blue-700 transition-all shadow-lg">
-                                <Icon name="facebook" className="w-5 h-5 text-white" /> {site.contact.facebook_label}
+                            <a href={site.contact.facebook_url} target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-7 py-3.5 rounded-2xl bg-[#1877F2] text-white font-semibold hover:bg-blue-700 transition-all shadow-lg">
+                                <FacebookLogo onBlue className="w-8 h-8 shrink-0" /> {site.contact.facebook_label}
                             </a>
                         </div>
                     </section>
@@ -487,21 +1073,27 @@
                         </div>
                     )}
 
-                    {/* BTS Image Modal */}
+                    {/* BTS Image Modal (có nút trước / sau, phím ← →) */}
                     {selectedImage && (
                         <div className="fixed inset-0 z-50 bg-espresso-900/90 backdrop-blur-md flex items-center justify-center p-4" onClick={() => setSelectedImage(null)}>
                             <div className="bg-white rounded-3xl overflow-hidden max-w-3xl w-full shadow-2xl border border-beige-200" onClick={e => e.stopPropagation()}>
                                 <div className="p-4 flex items-center justify-between border-b border-beige-200">
                                     <div>
-                                        <span className="text-[10px] font-bold tracking-widest text-gold uppercase block">{selectedImage.category}</span>
-                                        <h3 className="font-bold text-base md:text-lg">{selectedImage.title}</h3>
+                                        {selectedImage.category && <span className="text-[10px] font-bold tracking-widest text-gold uppercase block">{selectedImage.category}</span>}
+                                        <h3 className="font-bold text-base md:text-lg">{selectedImage.title || ('Ảnh ' + (btsGalleries.findIndex(b => b.id === selectedImage.id) + 1) + ' / ' + btsGalleries.length)}</h3>
                                     </div>
                                     <button onClick={() => setSelectedImage(null)} className="w-10 h-10 rounded-full bg-beige-100 flex items-center justify-center hover:bg-red-100 hover:text-red-600 transition-colors">
                                         <Icon name="x" className="w-5 h-5" />
                                     </button>
                                 </div>
-                                <div className="max-h-[70vh] overflow-hidden bg-black flex items-center justify-center">
+                                <div className="relative max-h-[70vh] overflow-hidden bg-black flex items-center justify-center">
                                     <img src={selectedImage.image} alt={selectedImage.title} className="max-h-[70vh] w-auto object-contain" />
+                                    {btsGalleries.length > 1 && (
+                                        <>
+                                            <button type="button" onClick={() => stepImage(-1)} aria-label="Ảnh trước" className="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/85 hover:bg-white text-2xl leading-none shadow-lg">‹</button>
+                                            <button type="button" onClick={() => stepImage(1)} aria-label="Ảnh sau" className="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/85 hover:bg-white text-2xl leading-none shadow-lg">›</button>
+                                        </>
+                                    )}
                                 </div>
                                 {selectedImage.desc && (
                                     <div className="p-5">
@@ -512,7 +1104,18 @@
                         </div>
                     )}
 
+                    </div>
+
+                    {editing && (
+                        <EditorBar mode={mode} setMode={setMode} dirty={dirty} bgItems={bgItems} layout={layout} selected={selected}
+                            setBgCfg={setBgCfg} onPublish={() => setPublishOpen(true)} onDiscard={discardDraft} />
+                    )}
+                    {editing && publishOpen && (
+                        <PublishModal json={JSON.stringify(layout, null, 2)} onClose={() => setPublishOpen(false)}
+                            onSaved={() => { LS.del(DRAFT_KEY); setDirty(false); }} />
+                    )}
                 </div>
+                </EditCtx.Provider>
             );
         }
 
