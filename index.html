@@ -66,27 +66,53 @@
 
         const asset = (p) => (p && p.startsWith('/') && !p.startsWith('//')) ? p.slice(1) : (p || '');
 
+        /* ---- Cấu hình hiển thị ---- */
+        const PAGE_SIZE = 6;        // số video hiện ban đầu, và mỗi lần bấm "Xem thêm"
+        const ALBUM_PAGE_SIZE = 6;  // số album BTS hiện ban đầu, và mỗi lần bấm "Xem thêm"
+
+        // Chấp nhận thêm link YouTube Shorts / Live
+        const cleanYoutube = (u) => String(u || '').trim().replace(/youtube\.com\/(?:shorts|live)\//, 'youtube.com/embed/');
+
+        // Thêm hàng loạt: mỗi dòng là  "link"  hoặc  "Tên | link"  hoặc  "Tên | link | Danh mục"
+        const parseBulkLinks = (text, defaultCat) => String(text || '')
+            .split(/\r?\n/).map(l => l.trim()).filter(Boolean)
+            .map(line => {
+                const parts = line.split('|').map(x => x.trim()).filter(Boolean);
+                const url = parts.find(x => /^(https?:\/\/|www\.|youtu)/i.test(x));
+                if (!url) return null;
+                const rest = parts.filter(x => x !== url);
+                return { url: /^https?:\/\//i.test(url) ? url : 'https://' + url, title: rest[0] || '', category: rest[1] || defaultCat || '' };
+            })
+            .filter(Boolean);
+
         const normalizeProject = (p, i) => {
-            const m = (p.url || '').match(/(?:youtu\.be\/|embed\/|watch\?v=|&v=|v\/)([\w-]{11})/);
+            const url = cleanYoutube(p.url);
+            const m = url.match(/(?:youtu\.be\/|embed\/|watch\?v=|&v=|v\/)([\w-]{11})/);
             return {
                 id: i,
                 key: m ? m[1] : 'p' + i,
+                vid: m ? m[1] : '',
                 title: p.title || '',
                 category: p.category || 'Khác',
                 desc: p.desc || '',
-                url: parseYoutubeUrl(p.url).embedUrl,
+                url: parseYoutubeUrl(url).embedUrl,
                 thumbnail: p.thumbnail ? asset(p.thumbnail) : (m ? `https://img.youtube.com/vi/${m[1]}/hqdefault.jpg` : '')
             };
         };
 
-        const normalizeBts = (b, i) => ({
-            id: i,
-            title: b.title || '',
-            folder: b.folder || b.category || b.title || 'Behind The Scenes',
-            category: b.category || 'Behind The Scenes',
-            desc: b.desc || '',
-            image: asset(b.image)
-        });
+        // Một album BTS = 1 ảnh đại diện + nhiều ảnh bên trong
+        const normalizeAlbum = (a, i) => {
+            const images = toList(a.images).filter(Boolean).map(asset);
+            const cover = a.cover ? asset(a.cover) : (images[0] || '');
+            return {
+                id: i,
+                title: a.title || '',
+                category: a.category || '',
+                desc: a.desc || '',
+                cover,
+                images: images.length ? images : (cover ? [cover] : [])
+            };
+        };
 
         const loadData = (file, key) =>
             fetch(file, { cache: 'no-cache' })
@@ -603,13 +629,16 @@
         }
 
         function App() {
-            const [projects, setProjects] = useState([]);
-            const [btsGalleries, setBtsGalleries] = useState([]);
+            const [projectsRaw, setProjectsRaw] = useState([]);
+            const [ytTitles, setYtTitles] = useState({});
+            const [btsAlbums, setBtsAlbums] = useState([]);
+            const [openAlbum, setOpenAlbum] = useState(null);
+            const [photoIdx, setPhotoIdx] = useState(null);
+            const [projLimit, setProjLimit] = useState(PAGE_SIZE);
+            const [albumLimit, setAlbumLimit] = useState(ALBUM_PAGE_SIZE);
             const [bgItems, setBgItems] = useState([]);
             const [activeCategory, setActiveCategory] = useState('All');
-            const [showAllProjects, setShowAllProjects] = useState(false);
             const [selectedProject, setSelectedProject] = useState(null);
-            const [selectedImage, setSelectedImage] = useState(null);
             const [site, setSite] = useState(defaultSite);
 
             // --- Chế độ chỉnh sửa hình ảnh (mở web với ?edit) ---
@@ -621,14 +650,22 @@
             const [publishOpen, setPublishOpen] = useState(false);
 
             useEffect(() => {
-                loadData('data/projects.json', 'projects').then(list => setProjects(list.filter(p => p && (p.url || p.title)).map(normalizeProject)));
+                loadObject('data/projects.json').then(d => {
+                    const detailed = toList(d.projects).filter(p => p && (p.url || p.title));
+                    const bulk = parseBulkLinks(d.bulk_links, d.bulk_category);
+                    let list = [...detailed, ...bulk];
+                    if (d.newest_first) list = list.reverse();
+                    setProjectsRaw(list.map(normalizeProject));
+                });
                 loadObject('data/bts.json').then(d => {
-                    const detailed = (Array.isArray(d.bts) ? d.bts : []).filter(b => b && b.image).map(normalizeBts);
-                    // Ảnh tải hàng loạt (chọn nhiều ảnh cùng lúc trong CMS)
-                    const bulk = toList(d.bulk_images).filter(Boolean).map(img => ({
-                        title: '', category: d.bulk_category || '', desc: '', image: asset(img)
-                    }));
-                    setBtsGalleries([...detailed, ...bulk].map((b, i) => ({ ...b, id: i })));
+                    let albums = toList(d.albums).filter(a => a && (toList(a.images).length || a.cover));
+                    // Tương thích dữ liệu cũ (ảnh lẻ): gom hết vào 1 album chung
+                    const legacy = [
+                        ...toList(d.bts).filter(b => b && b.image).map(b => b.image),
+                        ...toList(d.bulk_images).filter(Boolean)
+                    ];
+                    if (legacy.length) albums = [...albums, { title: 'Ảnh hậu trường khác', images: legacy }];
+                    setBtsAlbums(albums.map(normalizeAlbum).filter(a => a.images.length));
                 });
                 loadObject('data/backgrounds.json').then(d => {
                     setBgItems(toList(d.images).filter(Boolean).map(src => ({ key: src, src: asset(src) })));
@@ -647,6 +684,21 @@
                     setLayout(normLayout(d));
                 });
             }, []);
+
+            useEffect(() => {
+                projectsRaw.filter(p => !p.title && p.vid).forEach(p => {
+                    fetch('https://www.youtube.com/oembed?format=json&url=' + encodeURIComponent('https://www.youtube.com/watch?v=' + p.vid))
+                        .then(r => r.ok ? r.json() : Promise.reject())
+                        .then(j => j && j.title && setYtTitles(prev => ({ ...prev, [p.vid]: j.title })))
+                        .catch(() => {});
+                });
+            }, [projectsRaw]);
+
+            // Khoá cuộn trang khi đang mở album / video
+            useEffect(() => {
+                document.body.style.overflow = (openAlbum || selectedProject) ? 'hidden' : '';
+                return () => { document.body.style.overflow = ''; };
+            }, [openAlbum, selectedProject]);
 
             useEffect(() => {
                 if (editing && dirty) LS.set(DRAFT_KEY, JSON.stringify(layout));
@@ -680,28 +732,36 @@
             };
             const ctx = { editing, mode, layout, setImageCfg, setBgCfg, selected, setSelected };
 
-            const stepImage = (d) => setSelectedImage(cur => {
-                if (!cur || btsGalleries.length < 2) return cur;
-                const i = btsGalleries.findIndex(b => b.id === cur.id);
-                return btsGalleries[(i + d + btsGalleries.length) % btsGalleries.length];
+            const closeAlbum = () => { setOpenAlbum(null); setPhotoIdx(null); };
+            const stepPhoto = (d) => setPhotoIdx(i => {
+                if (i === null || !openAlbum || openAlbum.images.length < 2) return i;
+                const n = openAlbum.images.length;
+                return (i + d + n) % n;
             });
 
             useEffect(() => {
                 const onKey = (e) => {
-                    if (e.key === 'Escape') { setSelectedProject(null); setSelectedImage(null); }
-                    else if (selectedImage && e.key === 'ArrowRight') stepImage(1);
-                    else if (selectedImage && e.key === 'ArrowLeft') stepImage(-1);
+                    if (e.key === 'Escape') {
+                        if (photoIdx !== null) setPhotoIdx(null);
+                        else { setSelectedProject(null); setOpenAlbum(null); }
+                    }
+                    else if (openAlbum && photoIdx !== null && e.key === 'ArrowRight') stepPhoto(1);
+                    else if (openAlbum && photoIdx !== null && e.key === 'ArrowLeft') stepPhoto(-1);
                 };
                 window.addEventListener('keydown', onKey);
                 return () => window.removeEventListener('keydown', onKey);
-            }, [selectedImage, btsGalleries]);
+            }, [openAlbum, photoIdx]);
 
+            const projects = projectsRaw.map(p => p.title ? p : { ...p, title: ytTitles[p.vid] || 'Video' });
+            const pickCategory = (cat) => { setActiveCategory(cat); setProjLimit(PAGE_SIZE); };
             const categories = [...new Set(projects.map(p => p.category))];
             const filteredProjects = activeCategory === 'All'
                 ? projects
                 : projects.filter(p => p.category === activeCategory);
-            const displayedProjects = showAllProjects ? filteredProjects : filteredProjects.slice(0, 5);
-            const btsFolders = [...new Map(btsGalleries.map(item => [item.folder || item.category || item.title || 'Behind The Scenes', []])).keys()].map(name => ({ name, items: btsGalleries.filter(item => (item.folder || item.category || item.title || 'Behind The Scenes') === name) }));
+            const shownProjects = editing ? filteredProjects : filteredProjects.slice(0, projLimit);
+            const hiddenProjects = filteredProjects.length - shownProjects.length;
+            const shownAlbums = editing ? btsAlbums : btsAlbums.slice(0, albumLimit);
+            const hiddenAlbums = btsAlbums.length - shownAlbums.length;
 
             return (
                 <EditCtx.Provider value={ctx}>
@@ -797,7 +857,7 @@
                             </div>
                             <div className="flex flex-wrap gap-2 bg-beige-200/60 p-1.5 rounded-2xl">
                                 <button 
-                                    onClick={() => { setActiveCategory('All'); setShowAllProjects(false); }} 
+                                    onClick={() => pickCategory('All')} 
                                     className={`px-4 py-2 rounded-xl text-xs md:text-sm font-medium transition-all ${activeCategory === 'All' ? 'bg-espresso-900 text-beige-50 shadow-md' : 'text-espresso-900 hover:bg-beige-100'}`}
                                 >
                                     Tất cả ({projects.length})
@@ -807,7 +867,7 @@
                                     return (
                                         <button 
                                             key={idx} 
-                                            onClick={() => { setActiveCategory(cat); setShowAllProjects(false); }} 
+                                            onClick={() => pickCategory(cat)} 
                                             className={`px-4 py-2 rounded-xl text-xs md:text-sm font-medium transition-all ${activeCategory === cat ? 'bg-espresso-900 text-beige-50 shadow-md' : 'text-espresso-900 hover:bg-beige-100'}`}
                                         >
                                             {cat} ({count})
@@ -823,7 +883,7 @@
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-                                {displayedProjects.map((project) => (
+                                {shownProjects.map((project) => (
                                     <div key={project.id} className="group bg-white rounded-2xl overflow-hidden border border-beige-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
                                         <div className={editing ? '' : 'cursor-pointer'} onClick={() => { if (!editing) setSelectedProject(project); }}>
                                             <EditableImage id={'project:' + project.key} src={project.thumbnail} alt={project.title}
@@ -853,13 +913,21 @@
                                     </div>
                                 ))}
                             </div>
-                            {filteredProjects.length > 5 && (
-                                <div className="text-center mt-8">
-                                    <button onClick={() => setShowAllProjects(v => !v)} className="px-6 py-3 rounded-full bg-espresso-900 text-white text-sm font-semibold hover:bg-gold transition-colors">
-                                        {showAllProjects ? 'Thu gọn' : `Xem thêm ${filteredProjects.length - 5} video`}
+                        )}
+                        {!editing && filteredProjects.length > PAGE_SIZE && (
+                            <div className="mt-10 flex justify-center">
+                                {hiddenProjects > 0 ? (
+                                    <button type="button" onClick={() => setProjLimit(l => l + PAGE_SIZE)}
+                                        className="px-8 py-3 rounded-full bg-espresso-900 text-beige-50 text-sm font-semibold hover:bg-gold transition-colors shadow-md">
+                                        Xem thêm ({hiddenProjects} video) ↓
                                     </button>
-                                </div>
-                            )}
+                                ) : (
+                                    <button type="button" onClick={() => { setProjLimit(PAGE_SIZE); const el = document.getElementById('portfolio'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }}
+                                        className="px-8 py-3 rounded-full border border-espresso-900/20 text-espresso-900 text-sm font-semibold hover:bg-beige-200 transition-colors">
+                                        Thu gọn ↑
+                                    </button>
+                                )}
+                            </div>
                         )}
                     </section>
 
@@ -1005,35 +1073,49 @@
                             <p className="text-espresso-800/70 text-sm md:text-base">Góc nhìn chân thực từ quy trình chuẩn bị thiết bị, chiếu sáng cho tới quy trình dựng và Color Grading trong studio.</p>
                         </div>
 
-                        {btsGalleries.length === 0 ? (
+                        {btsAlbums.length === 0 ? (
                             <div className="text-center py-12 bg-white rounded-2xl border border-beige-200">
-                                <p className="text-espresso-800/60 text-sm">Chưa có hình ảnh hậu trường nào. Hãy thêm trong CMS!</p>
+                                <p className="text-espresso-800/60 text-sm">Chưa có album hậu trường nào. Hãy thêm trong CMS!</p>
                             </div>
                         ) : (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-                                {btsFolders.map((folder) => {
-                                    const item = folder.items[0];
-                                    return (
-                                    <div key={folder.name} className="bg-white rounded-2xl border border-beige-200 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group cursor-pointer" onClick={() => { if (!editing) setSelectedImage(item); }}>
-                                        <EditableImage id={'bts:' + item.image} src={item.image} alt={item.title}
-                                            frameClass="aspect-[4/3] bg-beige-100"
-                                            imgClass="group-hover:scale-105 transition-transform duration-500">
-                                            {!editing && (
-                                                <div className="absolute inset-0 bg-espresso-900/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                                    <div className="w-10 h-10 rounded-full bg-white/90 text-espresso-900 flex items-center justify-center shadow-md">
-                                                        <Icon name="maximize-2" className="w-5 h-5" />
+                            <>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+                                    {shownAlbums.map((album) => (
+                                        <div key={album.id} className="bg-white rounded-2xl border border-beige-200 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group cursor-pointer" onClick={() => { if (!editing) { setOpenAlbum(album); setPhotoIdx(null); } }}>
+                                            <EditableImage id={'bts:' + album.cover} src={album.cover} alt={album.title}
+                                                frameClass="aspect-[4/3] bg-beige-100"
+                                                imgClass="group-hover:scale-105 transition-transform duration-500">
+                                                {!editing && (
+                                                    <div className="absolute inset-0 bg-espresso-900/25 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                                                        <span className="px-4 py-2 rounded-full bg-white/90 text-espresso-900 text-xs font-bold shadow-md">Xem album</span>
                                                     </div>
-                                                </div>
-                                            )}
-                                        </EditableImage>
-                                        <div className="p-5">
-                                            <span className="text-[10px] font-bold tracking-widest text-gold uppercase block mb-1">BTS • {folder.items.length} ảnh</span>
-                                            <h3 className="font-bold text-lg group-hover:text-gold transition-colors">{folder.name}</h3>
+                                                )}
+                                                <span className="absolute bottom-3 right-3 bg-espresso-900/80 text-beige-50 text-xs font-semibold px-3 py-1 rounded-full backdrop-blur-sm pointer-events-none">{album.images.length} ảnh</span>
+                                            </EditableImage>
+                                            <div className="p-5">
+                                                {album.category && <span className="text-[10px] font-bold tracking-widest text-gold uppercase block mb-1">{album.category}</span>}
+                                                <h3 className="font-bold text-lg group-hover:text-gold transition-colors">{album.title || 'Album hậu trường'}</h3>
+                                                {album.desc && <p className="text-xs text-espresso-800/70 leading-relaxed mt-2 line-clamp-2">{album.desc}</p>}
+                                            </div>
                                         </div>
+                                    ))}
+                                </div>
+                                {!editing && btsAlbums.length > ALBUM_PAGE_SIZE && (
+                                    <div className="mt-10 flex justify-center">
+                                        {hiddenAlbums > 0 ? (
+                                            <button type="button" onClick={() => setAlbumLimit(l => l + ALBUM_PAGE_SIZE)}
+                                                className="px-8 py-3 rounded-full bg-espresso-900 text-beige-50 text-sm font-semibold hover:bg-gold transition-colors shadow-md">
+                                                Xem thêm ({hiddenAlbums} album) ↓
+                                            </button>
+                                        ) : (
+                                            <button type="button" onClick={() => { setAlbumLimit(ALBUM_PAGE_SIZE); const el = document.getElementById('behind-the-scenes'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }}
+                                                className="px-8 py-3 rounded-full border border-espresso-900/20 text-espresso-900 text-sm font-semibold hover:bg-beige-200 transition-colors">
+                                                Thu gọn ↑
+                                            </button>
+                                        )}
                                     </div>
-                                    );
-                                })}
-                            </div>
+                                )}
+                            </>
                         )}
                     </section>
 
@@ -1084,31 +1166,44 @@
                         </div>
                     )}
 
-                    {/* BTS Image Modal (có nút trước / sau, phím ← →) */}
-                    {selectedImage && (
-                        <div className="fixed inset-0 z-50 bg-espresso-900/90 backdrop-blur-md flex items-center justify-center p-4" onClick={() => setSelectedImage(null)}>
-                            <div className="bg-white rounded-3xl overflow-hidden max-w-3xl w-full shadow-2xl border border-beige-200" onClick={e => e.stopPropagation()}>
-                                <div className="p-4 flex items-center justify-between border-b border-beige-200">
-                                    <div>
-                                        {selectedImage.category && <span className="text-[10px] font-bold tracking-widest text-gold uppercase block">{selectedImage.category}</span>}
-                                        <h3 className="font-bold text-base md:text-lg">{selectedImage.title || ('Ảnh ' + (btsGalleries.findIndex(b => b.id === selectedImage.id) + 1) + ' / ' + btsGalleries.length)}</h3>
+                    {/* Album BTS: lưới ảnh nhỏ -> bấm vào để xem ảnh lớn (nút trước / sau, phím ← →) */}
+                    {openAlbum && (
+                        <div className="fixed inset-0 z-50 bg-espresso-900/90 backdrop-blur-md flex items-center justify-center p-4" onClick={closeAlbum}>
+                            <div className="bg-white rounded-3xl overflow-hidden max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-beige-200" onClick={e => e.stopPropagation()}>
+                                <div className="p-4 flex items-center justify-between gap-3 border-b border-beige-200 flex-shrink-0">
+                                    <div className="flex items-center gap-3 min-w-0">
+                                        {photoIdx !== null && (
+                                            <button type="button" onClick={() => setPhotoIdx(null)} className="flex-shrink-0 px-3 h-10 rounded-full bg-beige-100 hover:bg-beige-200 text-sm font-semibold transition-colors">‹ Tất cả ảnh</button>
+                                        )}
+                                        <div className="min-w-0">
+                                            {openAlbum.category && <span className="text-[10px] font-bold tracking-widest text-gold uppercase block">{openAlbum.category}</span>}
+                                            <h3 className="font-bold text-base md:text-lg truncate">{openAlbum.title || 'Album hậu trường'}</h3>
+                                            <span className="text-xs text-espresso-800/60">{photoIdx === null ? openAlbum.images.length + ' ảnh' : 'Ảnh ' + (photoIdx + 1) + ' / ' + openAlbum.images.length}</span>
+                                        </div>
                                     </div>
-                                    <button onClick={() => setSelectedImage(null)} className="w-10 h-10 rounded-full bg-beige-100 flex items-center justify-center hover:bg-red-100 hover:text-red-600 transition-colors">
-                                        <Icon name="x" className="w-5 h-5" />
-                                    </button>
+                                    <button type="button" onClick={closeAlbum} aria-label="Đóng" className="flex-shrink-0 w-10 h-10 rounded-full bg-beige-100 flex items-center justify-center text-xl leading-none hover:bg-red-100 hover:text-red-600 transition-colors">×</button>
                                 </div>
-                                <div className="relative max-h-[70vh] overflow-hidden bg-black flex items-center justify-center">
-                                    <img src={selectedImage.image} alt={selectedImage.title} className="max-h-[70vh] w-auto object-contain" />
-                                    {btsGalleries.length > 1 && (
-                                        <>
-                                            <button type="button" onClick={() => stepImage(-1)} aria-label="Ảnh trước" className="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/85 hover:bg-white text-2xl leading-none shadow-lg">‹</button>
-                                            <button type="button" onClick={() => stepImage(1)} aria-label="Ảnh sau" className="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/85 hover:bg-white text-2xl leading-none shadow-lg">›</button>
-                                        </>
-                                    )}
-                                </div>
-                                {selectedImage.desc && (
-                                    <div className="p-5">
-                                        <p className="text-espresso-800/80 text-sm leading-relaxed">{selectedImage.desc}</p>
+
+                                {photoIdx === null ? (
+                                    <div className="overflow-y-auto p-4 md:p-5">
+                                        {openAlbum.desc && <p className="text-espresso-800/80 text-sm leading-relaxed mb-4">{openAlbum.desc}</p>}
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                                            {openAlbum.images.map((src, i) => (
+                                                <button type="button" key={src + i} onClick={() => setPhotoIdx(i)} className="group aspect-square rounded-xl overflow-hidden bg-beige-100">
+                                                    <img src={src} alt={(openAlbum.title || 'BTS') + ' ' + (i + 1)} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="relative flex-1 min-h-0 bg-black flex items-center justify-center">
+                                        <img src={openAlbum.images[photoIdx]} alt={openAlbum.title} className="max-h-[75vh] w-auto max-w-full object-contain" />
+                                        {openAlbum.images.length > 1 && (
+                                            <>
+                                                <button type="button" onClick={() => stepPhoto(-1)} aria-label="Ảnh trước" className="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/85 hover:bg-white text-2xl leading-none shadow-lg">‹</button>
+                                                <button type="button" onClick={() => stepPhoto(1)} aria-label="Ảnh sau" className="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/85 hover:bg-white text-2xl leading-none shadow-lg">›</button>
+                                            </>
+                                        )}
                                     </div>
                                 )}
                             </div>

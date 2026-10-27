@@ -1,4 +1,7 @@
 {
+  "bulk_category": "",
+  "bulk_links": "",
+  "newest_first": false,
   "projects": [
     {
       "title": "KOLS ME",
@@ -26,7 +29,6 @@
       "title": "MV lyric BIẾT THÌ NÓI",
       "url": "https://youtu.be/DWD0jWMYXLQ",
       "category": "TVC/MV"
-    },
-    {}
+    }
   ]
 }
