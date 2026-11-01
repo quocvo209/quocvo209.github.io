@@ -1,6 +1,4 @@
 {
-  "bulk_category": "",
-  "bulk_links": "",
   "newest_first": false,
   "projects": [
     {
@@ -28,6 +26,11 @@
     {
       "title": "MV lyric BIẾT THÌ NÓI",
       "url": "https://youtu.be/DWD0jWMYXLQ",
+      "category": "TVC/MV"
+    },
+    {
+      "title": " ĐỊNH VỊ NIỀNG RĂNG MẮC CÀI",
+      "url": "https://youtu.be/ixIep-6A2sg",
       "category": "TVC/MV"
     }
   ]
