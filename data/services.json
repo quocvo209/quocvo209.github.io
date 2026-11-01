@@ -1,0 +1,25 @@
+{
+  "services": [
+    {
+      "name": "Video quảng cáo / TVC",
+      "price": "Liên hệ báo giá",
+      "desc": "Video giới thiệu thương hiệu, sản phẩm, dịch vụ.",
+      "features": "Lên ý tưởng & kịch bản\nQuay phim chuyên nghiệp\nDựng, chỉnh màu, âm thanh\nBàn giao file chất lượng cao",
+      "highlight": false
+    },
+    {
+      "name": "Reels / TikTok / Shorts",
+      "price": "Liên hệ báo giá",
+      "desc": "Video ngắn bắt trend, tối ưu cho mạng xã hội.",
+      "features": "Quay & dựng dọc 9:16\nSub, hiệu ứng, nhạc\nGiao nhanh theo gói tháng",
+      "highlight": true
+    },
+    {
+      "name": "Chỉnh màu (Color Grading)",
+      "price": "Liên hệ báo giá",
+      "desc": "Đồng bộ màu và tạo chất điện ảnh cho video có sẵn.",
+      "features": "Cân chỉnh màu trên DaVinci Resolve\nTạo look theo thương hiệu\nSửa 1–2 lần miễn phí",
+      "highlight": false
+    }
+  ]
+}

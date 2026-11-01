@@ -1,21 +1,5 @@
 {
-  "images": {
-    "hero": {
-      "zoom": 1,
-      "ox": 0.5,
-      "oy": 0.6072,
-      "w": 80.8,
-      "ar": 1.0851
-    },
-    "about": {
-      "zoom": 1,
-      "ox": 0.5,
-      "oy": 0.2622,
-      "ar": 1.5385,
-      "w": 83.3,
-      "align": "center"
-    }
-  },
+  "images": {},
   "backgrounds": {
     "/assets/uploads/IMG_1615097510990_1615097534605.jpg": {
       "x": 9.6,
