@@ -60,9 +60,13 @@
     },
     {
       "title": "BẠCH NGỌC LIÊN - VŨNG TÀU",
+      "cover": "/assets/uploads/BNL VŨNG TÀU-40.jpg",
       "images": [
-        "/assets/uploads/BNL VŨNG TÀU-48.jpg",
-        "/assets/uploads/BNL VŨNG TÀU-47.jpg"
+        "/assets/uploads/BNL VŨNG TÀU-2.jpg",
+        "/assets/uploads/BNL VŨNG TÀU-25.jpg",
+        "/assets/uploads/BNL VŨNG TÀU-16.jpg",
+        "/assets/uploads/BNL VŨNG TÀU-29.jpg",
+        "/assets/uploads/BNL VŨNG TÀU-41.jpg"
       ],
       "category": "CAMOP -VIDEO EDITOR - COLORGRADING"
     }
